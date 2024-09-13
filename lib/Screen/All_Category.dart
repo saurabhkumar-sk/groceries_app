@@ -1,10 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Provider/CategoryProvider.dart';
 import 'package:eshop/Provider/HomeProvider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
+import 'package:eshop/Provider/UserProvider.dart';
+import 'package:eshop/Screen/Dashboard.dart';
 
 import '../Helper/Session.dart';
 import '../Model/Section_Model.dart';
@@ -13,7 +17,11 @@ import '../ui/styles/DesignConfig.dart';
 import 'HomePage.dart';
 
 class AllCategory extends StatefulWidget {
-  const AllCategory({Key? key}) : super(key: key);
+  bool? isSeeAll;
+  AllCategory({
+    super.key,
+    this.isSeeAll,
+  });
 
   @override
   AllCategoryState createState() => AllCategoryState();
@@ -33,108 +41,137 @@ class AllCategoryState extends State<AllCategory> {
     hideAppbarAndBottomBarOnScroll(_scrollControllerOnCategory, context);
     hideAppbarAndBottomBarOnScroll(_scrollControllerOnSubCategory, context);
     return Scaffold(
+        appBar: widget.isSeeAll == true
+            ? AppBar(
+                elevation: 0,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Theme.of(context).colorScheme.black,
+                    size: 16,
+                  ),
+                ),
+                title: Text(
+                  "Categories",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 21,
+                  ),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.lightWhite,
+              )
+            : null,
         body: Consumer<HomeProvider>(builder: (context, homeProvider, _) {
-      if (homeProvider.catLoading) {
-        return Center(
-          child: CircularProgressIndicator(
-            color: Theme.of(context).colorScheme.primarytheme,
-          ),
-        );
-      }
-      return Row(
-        children: [
-          Expanded(
-              flex: 1,
-              child: Container(
-                  color: Theme.of(context).colorScheme.lightWhite,
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics()),
-                    controller: _scrollControllerOnCategory,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsetsDirectional.only(top: 10.0),
-                    itemCount: catList.length,
-                    itemBuilder: (context, index) {
-                      return catItem(index, context);
-                    },
-                  ))),
-          Expanded(
-            flex: 3,
-            child: catList.isNotEmpty
-                ? Column(
-                    children: [
-                      Selector<CategoryProvider, int>(
-                        builder: (context, data, child) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
+          if (homeProvider.catLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primarytheme,
+              ),
+            );
+          }
+          return Row(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                      color: Theme.of(context).colorScheme.lightWhite,
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        controller: _scrollControllerOnCategory,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        padding: const EdgeInsetsDirectional.only(top: 10.0),
+                        itemCount: catList.length,
+                        itemBuilder: (context, index) {
+                          return catItem(index, context);
+                        },
+                      ))),
+              Expanded(
+                flex: 3,
+                child: catList.isNotEmpty
+                    ? Column(
+                        children: [
+                          Selector<CategoryProvider, int>(
+                            builder: (context, data, child) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                        "${capitalize(catList[data].name!.toLowerCase())} "),
-                                    const Expanded(
-                                        child: Divider(
-                                      thickness: 2,
-                                    ))
+                                    Row(
+                                      children: [
+                                        Text(
+                                            "${capitalize(catList[data].name!.toLowerCase())} "),
+                                        const Expanded(
+                                            child: Divider(
+                                          thickness: 2,
+                                        ))
+                                      ],
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                          "${getTranslated(context, 'All')!} ${capitalize(catList[data].name!.toLowerCase())} ",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .fontColor,
+                                              ),
+                                        ))
                                   ],
                                 ),
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Text(
-                                      "${getTranslated(context, 'All')!} ${capitalize(catList[data].name!.toLowerCase())} ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .fontColor,
-                                          ),
-                                    ))
-                              ],
-                            ),
-                          );
-                        },
-                        selector: (_, cat) => cat.curCat,
-                      ),
-                      Expanded(
-                          child: Selector<CategoryProvider, List<Product>>(
-                        builder: (context, data, child) {
-                          return data.isNotEmpty
-                              ? GridView.count(
-                                  physics: const BouncingScrollPhysics(
-                                      parent: AlwaysScrollableScrollPhysics()),
-                                  controller: _scrollControllerOnSubCategory,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  crossAxisCount: 3,
-                                  shrinkWrap: true,
-                                  childAspectRatio: .6,
-                                  children: List.generate(
-                                    data.length,
-                                    (index) {
-                                      return subCatItem(data, index, context);
-                                    },
-                                  ))
-                              : Center(
-                                  child:
-                                      Text(getTranslated(context, 'noItem')!));
-                        },
-                        selector: (_, categoryProvider) =>
-                            categoryProvider.subList,
-                      )),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
-      );
-    }));
+                              );
+                            },
+                            selector: (_, cat) => cat.curCat,
+                          ),
+                          Expanded(
+                              child: Selector<CategoryProvider, List<Product>>(
+                            builder: (context, data, child) {
+                              return data.isNotEmpty
+                                  ? GridView.count(
+                                      physics: const BouncingScrollPhysics(
+                                          parent:
+                                              AlwaysScrollableScrollPhysics()),
+                                      controller:
+                                          _scrollControllerOnSubCategory,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      crossAxisCount: 3,
+                                      shrinkWrap: true,
+                                      childAspectRatio: .6,
+                                      children: List.generate(
+                                        data.length,
+                                        (index) {
+                                          return subCatItem(
+                                              data, index, context);
+                                        },
+                                      ))
+                                  : Center(
+                                      child: Text(
+                                          getTranslated(context, 'noItem')!));
+                            },
+                            selector: (_, categoryProvider) =>
+                                categoryProvider.subList,
+                          )),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          );
+        }));
   }
 
   Widget catItem(int index, BuildContext context1) {

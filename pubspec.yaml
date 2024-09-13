@@ -97,6 +97,8 @@ dependencies:
   hive_flutter: ^1.1.0
   app_links: ^6.1.1
   google_fonts: ^4.0.4
+  font_awesome_flutter: ^10.7.0
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -133,6 +135,7 @@ flutter:
     - assets/eShop.db
     - assets/animation/maintenance.json
     - lib/Language/
+    - assets/images/home/
 
   fonts:
     - family: OpenSans

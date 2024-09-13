@@ -18,7 +18,8 @@ class StripeTransactionResponse {
 }
 
 class StripeService {
-  static String apiBase = 'https://api.stripe.com/v1';
+  static String apiBase = 'https://eshopweb.store/app/v1/api/';
+  // static String apiBase = 'https://api.stripe.com/v1';
   static String paymentApiUrl = '${StripeService.apiBase}/payment_intents';
   static String? secret;
 
@@ -89,19 +90,17 @@ class StripeService {
             success: false,
             status: statusOfTransaction);
       }
-    }on Exception catch (e) {
+    } on Exception catch (e) {
       if (e is StripeException) {
         return StripeTransactionResponse(
             message: 'Transaction failed: ${e.error.localizedMessage}',
             success: false,
             status: 'fail');
-
       } else {
         return StripeTransactionResponse(
             message: 'Unforeseen error: ${e.toString()}',
             success: false,
             status: 'fail');
-
       }
     } /*on PlatformException catch (err) {
       return StripeService.getPlatformExceptionErrorResult(err);

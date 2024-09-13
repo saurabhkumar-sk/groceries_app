@@ -241,10 +241,8 @@ class PushNotificationService {
           } else if (type == 'chat') {
             _onTapChatNotification(message: message);
           } else if (type == "categories") {
-            Navigator.push(
-                context,
-                (CupertinoPageRoute(
-                    builder: (context) => const AllCategory())));
+            Navigator.push(context,
+                (CupertinoPageRoute(builder: (context) => AllCategory())));
           } else if (type == "wallet") {
             Navigator.pushNamed(context, Routers.myWalletScreen);
           } else if (type == 'order' || type == 'place_order') {
@@ -308,7 +306,7 @@ class PushNotificationService {
       } else if (type == "categories") {
         Navigator.push(
           context,
-          CupertinoPageRoute(builder: (context) => const AllCategory()),
+          CupertinoPageRoute(builder: (context) => AllCategory()),
         );
       } else if (type == "wallet") {
         Navigator.pushNamed(context, Routers.myWalletScreen);

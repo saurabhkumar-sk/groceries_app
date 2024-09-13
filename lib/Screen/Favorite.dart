@@ -120,16 +120,17 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: getAppBar(getTranslated(context, 'FAVORITE')!, context),
-        body: _isNetworkAvail
-            ? Stack(
-                children: <Widget>[
-                  _showContent(context),
-                  showCircularProgress(context, _isProgress,
-                      Theme.of(context).colorScheme.primarytheme)
-                ],
-              )
-            : noInternet(context));
+      appBar: getAppBar(getTranslated(context, 'FAVORITE')!, context),
+      body: _isNetworkAvail
+          ? Stack(
+              children: <Widget>[
+                _showContent(context),
+                showCircularProgress(context, _isProgress,
+                    Theme.of(context).colorScheme.primarytheme)
+              ],
+            )
+          : noInternet(context),
+    );
   }
 
   Widget listItem(int index, List<Product> favList) {

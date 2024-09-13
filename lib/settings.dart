@@ -11,7 +11,8 @@ class AppSettings {
   static const String appStoreId = '123456789';
   //change this with your client secret and API urls
 
-  static const String baseUrl = 'PLACE_YOUR_HOST_URL_HERE';
+  static const String baseUrl = 'https://eshopweb.store/app/v1/api/';
+  // static const String baseUrl = 'PLACE_YOUR_HOST_URL_HERE';
   static const String chatBaseUrl = "PLACE_YOUR_CHAT_BASE_URL_HERE";
 
   static const String deepLinkUrlPrefix = 'https://eshopwrteamin.page.link';

@@ -47,12 +47,14 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
   bool visible = false;
   final mobileController = TextEditingController();
   final ccodeController = TextEditingController();
+  final passwordController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String? mobile, id, countrycode, countryName, mobileno;
   bool _isNetworkAvail = true;
   Animation? buttonSqueezeanimation;
   AnimationController? buttonController;
   bool acceptTnC = true;
+  bool _obsecureText = true;
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
@@ -253,18 +255,19 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             fontWeight: FontWeight.normal),
         controller: mobileController,
         decoration: InputDecoration(
-          hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.6),
-              fontWeight: FontWeight.normal),
-          hintText: getTranslated(context, 'MOBILEHINT_LBL'),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10)),
-          fillColor: Theme.of(context).colorScheme.lightWhite,
-          filled: true,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-        ),
+            hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Theme.of(context).colorScheme.fontColor.withOpacity(0.6),
+                fontWeight: FontWeight.normal),
+            hintText: getTranslated(context, 'MOBILEHINT_LBL'),
+            border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(10)),
+            fillColor: Theme.of(context).colorScheme.white,
+            // fillColor: Theme.of(context).colorScheme.lightWhite,
+            filled: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            prefixIcon: const Icon(Icons.call)),
         initialCountryCode: defaultCountryCode,
         onSaved: (phoneNumber) {
           setState(() {
@@ -295,6 +298,90 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
           countryNameStyle:
               TextStyle(color: Theme.of(context).colorScheme.fontColor),
           padding: const EdgeInsets.only(left: 10, right: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget passwordField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: SizedBox(
+        height: 50,
+        child: TextFormField(
+          controller: passwordController,
+          obscureText: _obsecureText,
+          style: TextStyle(
+            letterSpacing: 2,
+            color: Theme.of(context).colorScheme.fontColor,
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            border: const OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+            ),
+            fillColor: Theme.of(context).colorScheme.white,
+            filled: true,
+            hintText: '••••••••',
+            hintStyle: TextStyle(
+              letterSpacing: 2,
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.35),
+            ),
+            prefixIcon: Icon(
+              Icons.lock_outline_rounded,
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.25),
+            ),
+            suffixIcon: IconButton(
+              icon: _obsecureText
+                  ? const Icon(Icons.visibility_off)
+                  : const Icon(Icons.visibility),
+              onPressed: () {
+                setState(() {
+                  _obsecureText = !_obsecureText;
+                });
+              },
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.25),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget emailField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: SizedBox(
+        height: 50,
+        child: TextFormField(
+          obscureText: _obsecureText,
+          style: TextStyle(
+            letterSpacing: 2,
+            color: Theme.of(context).colorScheme.fontColor,
+          ),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            border: const OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+            ),
+            fillColor: Theme.of(context).colorScheme.white,
+            filled: true,
+            hintText: 'Email address',
+            hintStyle: TextStyle(
+              fontSize: 15,
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.35),
+            ),
+            prefixIcon: Icon(
+              Icons.email_outlined,
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.25),
+            ),
+          ),
         ),
       ),
     );
@@ -336,16 +423,53 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
   }
 
   Widget verifyBtn() {
-    return AppBtn(
-        title: widget.title == getTranslated(context, 'SEND_OTP_TITLE')
-            ? getTranslated(context, 'SEND_OTP')
-            : getTranslated(context, 'CONTINUE'),
-        btnAnim: buttonSqueezeanimation,
-        btnCntrl: buttonController,
-        onBtnSelected: () async {
-          FocusScope.of(context).requestFocus(FocusNode());
-          validateAndSubmit();
-        });
+    // return AppBtn(
+    //     title: getTranslated(context, 'SIGN_UP_LBL'),
+    //     // ? getTranslated(context, 'SEND_OTP')
+    //     // : getTranslated(context, 'CONTINUE'),
+    // title: widget.title == getTranslated(context, 'SEND_OTP_TITLE')
+    //     ? getTranslated(context, 'SEND_OTP')
+    //     : getTranslated(context, 'CONTINUE'),
+    //     btnAnim: buttonSqueezeanimation,
+    //     btnCntrl: buttonController,
+    // onBtnSelected: () async {
+    //   FocusScope.of(context).requestFocus(FocusNode());
+    //   validateAndSubmit();
+    // });
+    return CupertinoButton(
+      child: Container(
+        width: buttonSqueezeanimation!.value,
+        height: 45,
+        alignment: FractionalOffset.center,
+        decoration: const BoxDecoration(
+          color: Color(0XFF4BA203),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: buttonSqueezeanimation!.value > 75.0
+            ? Text(
+                getTranslated(context, 'SIGN_UP_LBL') ?? 'Sign Up',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: colors.whiteTemp,
+                      fontWeight: FontWeight.normal,
+                    ),
+              )
+            : CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primarytheme,
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(colors.whiteTemp),
+              ),
+      ),
+      onPressed: () {
+        //if it's not loading do the thing
+        if (buttonSqueezeanimation!.value == 15) {
+          () async {
+            FocusScope.of(context).requestFocus(FocusNode());
+            validateAndSubmit();
+          };
+        }
+      },
+    );
   }
 
   Widget termAndPolicyTxt() {
@@ -498,7 +622,6 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     super.initState();
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
-
     buttonSqueezeanimation = Tween(
       begin: deviceWidth! * 0.7,
       end: 50.0,
@@ -517,19 +640,39 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 15,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
         body: _isNetworkAvail
             ? Stack(
                 children: [
-                  Image.asset(
-                    'assets/images/doodle.png',
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Theme.of(context).colorScheme.primarytheme,
-                  ),
+                  // Image.asset(
+                  //   'assets/images/doodle.png',
+                  //   fit: BoxFit.fill,
+                  //   width: double.infinity,
+                  //   height: double.infinity,
+                  //   color: Theme.of(context).colorScheme.primarytheme,
+                  // ),
                   getLoginContainer(),
                   getLogo(),
+                  Positioned(
+                      bottom: 20,
+                      left: 10,
+                      right: 10,
+                      child: termAndPolicyTxt()),
                 ],
               )
             : noInternet(context));
@@ -540,40 +683,73 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
       alignment: Alignment.center,
       child: Container(
         alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.50,
+        height: MediaQuery.of(context).size.height * 0.9,
         width: MediaQuery.of(context).size.width * 0.95,
-        color: Theme.of(context).colorScheme.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Form(
           key: _formkey,
           child: ScrollConfiguration(
             behavior: MyBehavior(),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        widget.title == getTranslated(context, 'SEND_OTP_TITLE')
-                            ? getTranslated(context, 'SIGN_UP_LBL')!
-                            : getTranslated(context, 'FORGOT_PASSWORDTITILE')!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primarytheme,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //   child: Align(
+                  //     alignment: Alignment.topLeft,
+                  //     child: Text(
+                  //       widget.title == getTranslated(context, 'SEND_OTP_TITLE')
+                  //           ? getTranslated(context, 'SIGN_UP_LBL')!
+                  //           : getTranslated(context, 'FORGOT_PASSWORDTITILE')!,
+                  // style: TextStyle(
+                  //   color: Theme.of(context).colorScheme.primarytheme,
+                  //   fontSize: 30,
+                  //   fontWeight: FontWeight.bold,
+                  // ),
+                  //     ),
+                  //   ),
+                  // ),
+                  Text(
+                    "Create Account",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.black,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  verifyCodeTxt(),
-                  setCodeWithMono(),
                   const SizedBox(
                     height: 10,
                   ),
-                  termAndPolicyTxt(),
+                  Text(
+                    "Almost there ! Put your valid details \nbelow and create an account",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .fontColor
+                          .withOpacity(0.3),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  // verifyCodeTxt(),
+                  setCodeWithMono(),
+                  passwordField(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  emailField(),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   verifyBtn(),
+                  // termAndPolicyTxt(),
                 ],
               ),
             ),
@@ -585,17 +761,23 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   Widget getLogo() {
     return Positioned(
-      left: (MediaQuery.of(context).size.width / 2) - (150 / 2),
-      top: (MediaQuery.of(context).size.height * 0.11) - 40,
+      // left: (MediaQuery.of(context).size.width / 2) - (150 / 2),
+      left: 0,
+      right: 0,
+      top: 50,
       child: SizedBox(
-        width: 150,
-        height: 150,
-        child: SvgPicture.asset(
-          "assets/images/homelogo.svg",
-          colorFilter: ColorFilter.mode(
-              Theme.of(context).colorScheme.primarytheme, BlendMode.srcIn),
-        ),
-      ),
+          width: 90,
+          height: 90,
+          child: Image.asset(
+            "assets/images/Splash-Logo.png",
+            // color: Theme.of(context).colorScheme.primarytheme,
+          )
+          // child: SvgPicture.asset(
+          //   "assets/images/homelogo.svg",
+          //   colorFilter: ColorFilter.mode(
+          //       Theme.of(context).colorScheme.primarytheme, BlendMode.srcIn),
+          // ),
+          ),
     );
   }
 }

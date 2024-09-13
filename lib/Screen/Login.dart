@@ -37,6 +37,7 @@ import 'HomePage.dart';
 import 'Privacy_Policy.dart';
 
 class LoginScreen extends StatefulWidget {
+  final String? mobileController;
   final Widget? classType;
   final bool isPop;
   final bool? isRefresh;
@@ -48,6 +49,7 @@ class LoginScreen extends StatefulWidget {
           isPop: arguments?['isPop'],
           isRefresh: arguments?['isRefresh'],
           classType: arguments?['classType'],
+          mobileController: arguments?['mobileController'],
         );
       },
     );
@@ -57,6 +59,7 @@ class LoginScreen extends StatefulWidget {
     Key? key,
     this.classType,
     this.isRefresh,
+    this.mobileController,
     required this.isPop,
   }) : super(key: key);
 
@@ -65,8 +68,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
-  final mobileController =
-      TextEditingController(text: isDemoApp ? "9876543210" : "");
+  TextEditingController mobileController = TextEditingController();
+  // TextEditingController(text: isDemoApp ? "9876543210" : );
+  // final mobileController =
+  //     TextEditingController(text: isDemoApp ? "9876543210" : "");
   final passwordController =
       TextEditingController(text: isDemoApp ? "12345678" : "");
   String? countryName;
@@ -109,7 +114,9 @@ class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
         vsync: this, duration: const Duration(milliseconds: 2500));
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
-
+    mobileController = TextEditingController(
+      text: isDemoApp ? "9876543210" : widget.mobileController,
+    );
     buttonSqueezeanimation = Tween(
       begin: deviceWidth! * 0.7,
       end: 50.0,
@@ -801,17 +808,18 @@ class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.white,
         resizeToAvoidBottomInset: true,
         body: _isNetworkAvail
             ? Stack(
                 children: [
-                  Image.asset(
-                    'assets/images/doodle.png',
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Theme.of(context).colorScheme.primarytheme,
-                  ),
+                  // Image.asset(
+                  //   'assets/images/doodle.png',
+                  //   fit: BoxFit.fill,
+                  //   width: double.infinity,
+                  //   height: double.infinity,
+                  //   color: Theme.of(context).colorScheme.primarytheme,
+                  // ),
                   getLoginContainer(),
                   getLogo(),
                   if (socialLoginLoading)
@@ -1531,17 +1539,23 @@ class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
 
   Widget getLogo() {
     return Positioned(
-      left: (MediaQuery.of(context).size.width / 2) - (150 / 2),
-      top: (MediaQuery.of(context).size.height * 0.11) - 66,
+      left: 0,
+      right: 0,
+      // left: (MediaQuery.of(context).size.width / 2) - (150 / 2),
+      top: (MediaQuery.of(context).size.height * 0.11) - 25,
       child: SizedBox(
-        width: 150,
-        height: 150,
-        child: SvgPicture.asset(
-          "assets/images/homelogo.svg",
-          colorFilter: ColorFilter.mode(
-              Theme.of(context).colorScheme.primarytheme, BlendMode.srcIn),
-        ),
-      ),
+          width: 90,
+          height: 90,
+          child: Image.asset(
+            "assets/images/Splash-Logo.png",
+            // color: Theme.of(context).colorScheme.primarytheme,
+          )
+          // child: SvgPicture.asset(
+          //   "assets/images/homelogo.svg",
+          //   colorFilter: ColorFilter.mode(
+          //       Theme.of(context).colorScheme.primarytheme, BlendMode.srcIn),
+          // ),
+          ),
     );
   }
 

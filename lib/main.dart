@@ -198,7 +198,8 @@ class _MyAppState extends State<MyApp> {
         locale: _locale,
         supportedLocales: [...Languages().codes()],
         onGenerateRoute: Routers.onGenerateRouted,
-        initialRoute: Routers.splash,
+        initialRoute: Routers.dashboardScreen,
+        // initialRoute: Routers.splash,
         //scaffoldMessengerKey: scaffoldMessageKey,
         localizationsDelegates: const [
           AppLocalization.delegate,

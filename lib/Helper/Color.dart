@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 extension colors on ColorScheme {
   static MaterialColor primary_app = const MaterialColor(
-    0xff6133BD,
+    0xff025C00,
+    // 0xff6133BD,
     <int, Color>{
       50: primary,
       100: primary,
@@ -18,7 +19,8 @@ extension colors on ColorScheme {
   );
 
   static MaterialColor dark_primary_app = const MaterialColor(
-    0xff7E57C2,
+    // 0xff7E57C2,
+    0xff78BC00,
     <int, Color>{
       50: primary,
       100: primary,
@@ -33,25 +35,28 @@ extension colors on ColorScheme {
     },
   );
 
-  static const Color primary = Color(0xff6133BD);
+  static const Color primary = Color(0xff025C00);
+  // static const Color primary = Color(0xff6133BD);
 
-  static const Color secondary = Color(0xff2C91FE);
+  static const Color secondary = Color(0xff78BC00);
+  // static const Color secondary = Color(0xff2C91FE);
 
-  static const darkprimary = Color(0xff7E57C2);
+  static const darkprimary = Color(0xff025C00);
+  // static const darkprimary = Color(0xff7E57C2);
 
   static const darksecondary = Color(0xff4AB0FF);
 
-  static const primaryGreen = Color(0xff0A7C08);
+  // static const primaryGreen = Color(0xff0A7C08);
 
-  static const darkGreen = Color(0xff025C00);
+  // static const darkGreen = Color(0xff025C00);
 
-  static const lightGreen = Color(0xff78BC00);
+  // static const lightGreen = Color(0xff78BC00);
 
-  static const primaryWhite = Color(0xffF3F5F7);
+  // static const primaryWhite = Color(0xffF3F5F7);
 
-  static const whiteClr = Color(0xffF8F8F8);
+  // static const whiteClr = Color(0xffF8F8F8);
 
-  static const blackclr = Color(0xff000000);
+  // static const blackclr = Color(0xff000000);
 
   Color get primarytheme =>
       brightness == Brightness.dark ? darkprimary : primary;
@@ -65,6 +70,9 @@ extension colors on ColorScheme {
 
   Color get fontColor =>
       brightness == Brightness.dark ? whiteTemp : const Color(0xff1F1F1F);
+
+  Color get lightGreen =>
+      brightness == Brightness.dark ? whiteTemp : const Color(0xff78BC00);
 
   Color get gray =>
       brightness == Brightness.dark ? darkColor3 : const Color(0xfff0f0f0);

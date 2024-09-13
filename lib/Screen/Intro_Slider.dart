@@ -262,11 +262,10 @@ class _GettingStartedScreenState extends State<IntroSlider>
     deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: colors.primaryWhite,
       body: SafeArea(
         child: PageView.builder(
           controller: _pageController,
-          // physics: const NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: 2,
           itemBuilder: (context, index) {
             if (index == 0) {
@@ -308,7 +307,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 "Get Your Groceries \nDelivered to Your Home",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.fontColor,
+                      color: Colors.black,
                       fontSize: 20,
                       fontFamily: "Poppins",
                     ),
@@ -335,7 +334,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: const WidgetStatePropertyAll(
-                      colors.darkGreen,
+                      Color(0xff025C00),
                     ),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
@@ -396,7 +395,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 "Welcome To \nOur Super Store",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.white,
+                      color: Colors.white,
                       fontSize: 19,
                       fontFamily: "Poppins",
                     ),
@@ -408,7 +407,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                   "The best delivery app in town for delivering your daily fresh groceries",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        color: colors.whiteClr,
+                        color: Colors.white,
                         fontSize: 13,
                         fontFamily: "Poppins",
                       ),
@@ -421,7 +420,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: const WidgetStatePropertyAll(
-                      colors.darkGreen,
+                      colors.darkprimary,
                     ),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
@@ -442,7 +441,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
                   child: Text(
                     'Get Started',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                          color: colors.primaryWhite,
+                          color: colors.lightWhite2,
                           fontSize: 13,
                           fontFamily: "Poppins",
                         ),

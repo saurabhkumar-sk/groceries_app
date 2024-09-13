@@ -2,12 +2,14 @@ import 'package:eshop/Helper/Session.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Screen/Dashboard.dart';
 import 'package:eshop/settings.dart';
+import 'package:eshop/ui/styles/DesignConfig.dart';
 import 'package:eshop/ui/styles/Validators.dart';
 import 'package:eshop/ui/widgets/AppBtn.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
@@ -27,9 +29,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   final mobileController = TextEditingController();
   String defaultCountryCode = AppSettings.defaultCountryCode;
   String? mobile, id, countrycode, countryName, mobileno;
+
   _subLogo() {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(top: 30.0),
+      padding: const EdgeInsetsDirectional.only(top: 35),
       child: SizedBox(
         width: 65,
         height: 65,
@@ -114,6 +117,48 @@ class _SignInUpAccState extends State<SignInUpAcc> {
     );
   }
 
+  continueWithGoogle() {
+    return CupertinoButton(
+      child: Container(
+        width: deviceWidth! * 0.8,
+        height: 45,
+        alignment: FractionalOffset.center,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.white,
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Image.asset(
+              'assets/images/google.png',
+              width: 22,
+            ),
+            Text(
+              getTranslated(context, 'Continue with google')!,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+            ),
+          ],
+        ),
+      ),
+      onPressed: () {
+        // Navigator.pushNamed(context, Routers.loginScreen,
+        //     arguments: {"isPop": false});
+        Dashboard.dashboardScreenKey = GlobalKey<HomePageState>();
+
+        Navigator.pushReplacementNamed(
+          context,
+          Routers.dashboardScreen,
+        );
+      },
+    );
+  }
+
   verifyOtp() {
     return CupertinoButton(
       child: Container(
@@ -136,8 +181,16 @@ class _SignInUpAccState extends State<SignInUpAcc> {
         ),
       ),
       onPressed: () {
-        Navigator.pushNamed(context, Routers.loginScreen,
-            arguments: {"isPop": false});
+        mobileController.text.isNotEmpty
+            ? Navigator.pushNamed(
+                context,
+                Routers.loginScreen,
+                arguments: {
+                  "isPop": false,
+                  "mobileController": mobileController.text
+                },
+              )
+            : null;
       },
     );
   }
@@ -145,17 +198,25 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   createAccBtn() {
     return CupertinoButton(
       child: Container(
-          width: deviceWidth! * 0.8,
-          height: 45,
-          alignment: FractionalOffset.center,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primarytheme,
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-          ),
-          child: Text(getTranslated(context, 'CREATE_ACC_LBL')!,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: colors.whiteTemp, fontWeight: FontWeight.normal))),
+        width: deviceWidth! * 0.8,
+        height: 45,
+        alignment: FractionalOffset.center,
+        decoration: BoxDecoration(
+          // color: colors.darkGreen,
+          color: Theme.of(context).colorScheme.primarytheme,
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Text(
+          getTranslated(context, 'CREATE_ACC_LBL')!,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: colors.whiteTemp,
+                fontWeight: FontWeight.normal,
+                fontSize: 16,
+                fontFamily: "Poppins",
+              ),
+        ),
+      ),
       onPressed: () {
         Navigator.pushNamed(context, Routers.sendOTPScreen,
             arguments: {"title": getTranslated(context, 'SEND_OTP_TITLE')});
@@ -203,7 +264,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   //             child: InkWell(
   //               borderRadius: BorderRadius.circular(4),
   //               onTap: () => Navigator.of(context).pop(),
-  //               child: const Center(
+  //               child: Center(
   //                 child: Icon(
   //                   Icons.keyboard_arrow_left,
   //                   color: Theme.of(context).colorScheme.primarytheme,
@@ -214,6 +275,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   //         )),
   //   );
   // }
+
   // setCodeWithMono() {
   // return Padding(
   //   padding: const EdgeInsetsDirectional.only(start: 15, end: 15),
@@ -349,46 +411,90 @@ class _SignInUpAccState extends State<SignInUpAcc> {
     );
   }
 
+  Widget orText(BuildContext context) {
+    return Text(
+      "OR",
+      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+            color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5),
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            fontFamily: "Poppins",
+          ),
+    );
+  }
+
+  Widget termsAndUse() {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: "By clicking on “Continue” you are agreeing\n to our ",
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.fontColor.withOpacity(0.5),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: "Poppins",
+                ),
+          ),
+          TextSpan(
+            text: "terms of use",
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  decoration: TextDecoration.underline,
+                  color: Theme.of(context).colorScheme.primarytheme,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: "Poppins",
+                ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.lightWhite,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.lightWhite,
-      ),
-      body: Container(
-        color: Theme.of(context).colorScheme.lightWhite,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _subLogo(),
-                welcomeEshopTxt(),
-                eCommerceforBusinessTxt(),
-                setCodeWithMono(),
-                verifyOtp(),
-                // signInyourAccTxt(),
-                Text(
-                  "OR",
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .fontColor
-                            .withOpacity(0.5),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Poppins",
-                      ),
-                ),
-                signInBtn(),
-                createAccBtn(),
-                skipSignInBtn(),
-              ],
-            ),
+        leading: IconButton(
+          onPressed: () {
+            SystemNavigator.pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Theme.of(context).colorScheme.primarytheme,
+            size: 15,
           ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          // crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _subLogo(),
+            welcomeEshopTxt(),
+            eCommerceforBusinessTxt(),
+            setCodeWithMono(),
+            verifyOtp(),
+            // signInyourAccTxt(),
+            orText(context),
+            continueWithGoogle(),
+            createAccBtn(),
+            // skipSignInBtn(),
+            SizedBox(height: deviceHeight! * 0.13),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: termsAndUse(),
+            ),
+          ],
         ),
       ),
     );
