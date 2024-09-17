@@ -136,6 +136,7 @@ flutter:
     - assets/animation/maintenance.json
     - lib/Language/
     - assets/images/home/
+    - assets/images/categories/
 
   fonts:
     - family: OpenSans

@@ -9,6 +9,7 @@ import 'package:eshop/Provider/CategoryProvider.dart';
 import 'package:eshop/Provider/HomeProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Screen/Dashboard.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../Helper/Session.dart';
 import '../Model/Section_Model.dart';
@@ -41,137 +42,588 @@ class AllCategoryState extends State<AllCategory> {
     hideAppbarAndBottomBarOnScroll(_scrollControllerOnCategory, context);
     hideAppbarAndBottomBarOnScroll(_scrollControllerOnSubCategory, context);
     return Scaffold(
-        appBar: widget.isSeeAll == true
-            ? AppBar(
-                elevation: 0,
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: Theme.of(context).colorScheme.black,
-                    size: 16,
-                  ),
+      appBar: widget.isSeeAll == true
+          ? AppBar(
+              elevation: 0,
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Theme.of(context).colorScheme.black,
+                  size: 16,
                 ),
-                title: Text(
-                  "Categories",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 21,
-                  ),
-                ),
-                backgroundColor: Theme.of(context).colorScheme.lightWhite,
-              )
-            : null,
-        body: Consumer<HomeProvider>(builder: (context, homeProvider, _) {
-          if (homeProvider.catLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.primarytheme,
               ),
-            );
-          }
-          return Row(
+              title: Text(
+                "Categories",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 21,
+                ),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.lightWhite,
+            )
+          : null,
+      body: SingleChildScrollView(
+        controller: _scrollControllerOnSubCategory,
+        child: Column(
+          children: [
+            Consumer<HomeProvider>(builder: (context, homeProvider, _) {
+              if (homeProvider.catLoading) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primarytheme,
+                  ),
+                );
+              }
+
+              // Row(
+              //   children: [
+              //     Expanded(
+              //         flex: 1,
+              //         child: Container(
+              //             color: Theme.of(context).colorScheme.lightWhite,
+              //             child: ListView.builder(
+              //               physics: const BouncingScrollPhysics(
+              //                   parent: AlwaysScrollableScrollPhysics()),
+              //               controller: _scrollControllerOnCategory,
+              //               shrinkWrap: true,
+              //               scrollDirection: Axis.vertical,
+              //               padding: const EdgeInsetsDirectional.only(top: 10.0),
+              //               itemCount: catList.length,
+              //               itemBuilder: (context, index) {
+              //                 return catItem(index, context);
+              //               },
+              //             ))),
+              //     Expanded(
+              //       flex: 3,
+              //       child: catList.isNotEmpty
+              //           ? Column(
+              //               children: [
+              //                 Selector<CategoryProvider, int>(
+              //                   builder: (context, data, child) {
+              //                     return Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: Column(
+              //                         crossAxisAlignment: CrossAxisAlignment.start,
+              //                         mainAxisSize: MainAxisSize.min,
+              //                         children: [
+              //                           Row(
+              //                             children: [
+              //                               Text(
+              //                                   "${capitalize(catList[data].name!.toLowerCase())} "),
+              //                               const Expanded(
+              //                                   child: Divider(
+              //                                 thickness: 2,
+              //                               ))
+              //                             ],
+              //                           ),
+              //                           Padding(
+              //                               padding: const EdgeInsets.symmetric(
+              //                                   vertical: 8.0),
+              //                               child: Text(
+              //                                 "${getTranslated(context, 'All')!} ${capitalize(catList[data].name!.toLowerCase())} ",
+              //                                 style: Theme.of(context)
+              //                                     .textTheme
+              //                                     .titleMedium!
+              //                                     .copyWith(
+              //                                       color: Theme.of(context)
+              //                                           .colorScheme
+              //                                           .fontColor,
+              //                                     ),
+              //                               ))
+              //                         ],
+              //                       ),
+              //                     );
+              //                   },
+              //                   selector: (_, cat) => cat.curCat,
+              //                 ),
+              //                 Expanded(
+              //                     child: Selector<CategoryProvider, List<Product>>(
+              //                   builder: (context, data, child) {
+              //                     return data.isNotEmpty
+              //                         ? GridView.count(
+              //                             physics: const BouncingScrollPhysics(
+              //                                 parent:
+              //                                     AlwaysScrollableScrollPhysics()),
+              //                             controller:
+              //                                 _scrollControllerOnSubCategory,
+              //                             padding: const EdgeInsets.symmetric(
+              //                                 horizontal: 20),
+              //                             crossAxisCount: 3,
+              //                             shrinkWrap: true,
+              //                             childAspectRatio: .6,
+              //                             children: List.generate(
+              //                               data.length,
+              //                               (index) {
+              //                                 return subCatItem(
+              //                                     data, index, context);
+              //                               },
+              //                             ))
+              //                         : Center(
+              //                             child: Text(
+              //                                 getTranslated(context, 'noItem')!));
+              //                   },
+              //                   selector: (_, categoryProvider) =>
+              //                       categoryProvider.subList,
+              //                 )),
+              //               ],
+              //             )
+              //           : const SizedBox.shrink(),
+              //     ),
+              //   ],
+              // );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  searchBar(context),
+                  const SizedBox(height: 10),
+                  findTHeBEst(context),
+                  _catList(),
+                  const SizedBox(height: 20),
+                  recentViews(context),
+                  const SizedBox(height: 20),
+                  _recentviewItem(context),
+                ],
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  GridView _recentviewItem(BuildContext context) {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics()),
+      // controller:
+      //     _scrollControllerOnSubCategory,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      mainAxisSpacing: 15,
+      crossAxisSpacing: 15,
+      childAspectRatio: .6,
+      children: List.generate(
+        4,
+        (index) {
+          return Stack(
             children: [
-              Expanded(
-                  flex: 1,
-                  child: Container(
-                      color: Theme.of(context).colorScheme.lightWhite,
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics()),
-                        controller: _scrollControllerOnCategory,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        padding: const EdgeInsetsDirectional.only(top: 10.0),
-                        itemCount: catList.length,
-                        itemBuilder: (context, index) {
-                          return catItem(index, context);
-                        },
-                      ))),
-              Expanded(
-                flex: 3,
-                child: catList.isNotEmpty
-                    ? Column(
-                        children: [
-                          Selector<CategoryProvider, int>(
-                            builder: (context, data, child) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                            "${capitalize(catList[data].name!.toLowerCase())} "),
-                                        const Expanded(
-                                            child: Divider(
-                                          thickness: 2,
-                                        ))
-                                      ],
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Text(
-                                          "${getTranslated(context, 'All')!} ${capitalize(catList[data].name!.toLowerCase())} ",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .fontColor,
-                                              ),
-                                        ))
-                                  ],
-                                ),
-                              );
-                            },
-                            selector: (_, cat) => cat.curCat,
+              Container(
+                decoration: BoxDecoration(
+                  color:
+                      const Color.fromARGB(255, 233, 233, 233).withOpacity(0.9),
+                  // shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .fontColor
+                          .withOpacity(0.042),
+                      spreadRadius: 2,
+                      blurRadius: 13,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Image.asset(
+                      'assets/images/categories/Product Image.png',
+                      height: 90,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                      "Orange",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
                           ),
-                          Expanded(
-                              child: Selector<CategoryProvider, List<Product>>(
-                            builder: (context, data, child) {
-                              return data.isNotEmpty
-                                  ? GridView.count(
-                                      physics: const BouncingScrollPhysics(
-                                          parent:
-                                              AlwaysScrollableScrollPhysics()),
-                                      controller:
-                                          _scrollControllerOnSubCategory,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      crossAxisCount: 3,
-                                      shrinkWrap: true,
-                                      childAspectRatio: .6,
-                                      children: List.generate(
-                                        data.length,
-                                        (index) {
-                                          return subCatItem(
-                                              data, index, context);
-                                        },
-                                      ))
-                                  : Center(
-                                      child: Text(
-                                          getTranslated(context, 'noItem')!));
-                            },
-                            selector: (_, categoryProvider) =>
-                                categoryProvider.subList,
-                          )),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
+                    ),
+                    Text(
+                      // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                      "1kg, 45\u{20B9}",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                    ),
+                    Text(
+                      "45\u{20B9}",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .fontColor
+                                .withOpacity(0.5),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                    ),
+                    const SizedBox(height: 3),
+                    const Divider(),
+                    TextButton.icon(
+                      style: const ButtonStyle(
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                      ),
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/images/home/cart.png',
+                        width: 12,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      label: Text(
+                        " Add to cart",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.black,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 18,
+                top: 0,
+                child: Container(
+                  height: 38,
+                  width: 35,
+                  decoration: BoxDecoration(
+                    color: index == 0 || index == 2 ? Colors.green : Colors.red,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(6),
+                      bottomRight: Radius.circular(6),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Center(
+                      child: Text(
+                        breakTextIntoLines(
+                          sellingDiscount[index],
+                        ),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 7,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Poppins",
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           );
-        }));
+        },
+      ),
+    );
+  }
+
+  Padding findTHeBEst(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25),
+      child: Text(
+        "Find The Best",
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: Theme.of(context).colorScheme.fontColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Padding recentViews(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25),
+      child: Text(
+        "Recent Views",
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: Theme.of(context).colorScheme.fontColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Padding searchBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: InkWell(
+        onTap: () async {
+          await Navigator.pushNamed(context, Routers.searchScreen);
+
+          if (mounted) setState(() {});
+        },
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                enabled: false,
+                textAlign: TextAlign.left,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
+                    borderSide: BorderSide.none,
+                  ),
+                  isDense: true,
+                  hintText: getTranslated(context, 'Search products'),
+                  // hintText: getTranslated(context, 'searchHint'),
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .fontColor
+                            .withOpacity(0.3),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: SvgPicture.asset(
+                        'assets/images/search.svg',
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).colorScheme.primarytheme,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // fillColor: const Color(0XFFF3F5F7),
+                  fillColor:
+                      const Color.fromARGB(255, 224, 224, 224).withOpacity(0.3),
+                  filled: true,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: const Color(0XffE6FFD2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/images/categories/Vector (20).png',
+                cacheWidth: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget catLoading() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                children: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    .map((_) => Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.white,
+                            shape: BoxShape.circle,
+                          ),
+                          width: 50.0,
+                          height: 50.0,
+                        ))
+                    .toList()),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          width: double.infinity,
+          height: 18.0,
+          color: Theme.of(context).colorScheme.white,
+        ),
+      ],
+    );
+  }
+
+  // searchBar() {
+  //   return InkWell(
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 18),
+  //       child: SizedBox(
+  //         height: 50,
+  //         child:
+  //       ),
+  //     ),
+  //     onTap: () async {
+  //       // await Navigator.push(
+  //       //     context,
+  //       //     CupertinoPageRoute(
+  //       //       builder: (context) => const SearchScreen(),
+  //       //     ));
+
+  //       await Navigator.pushNamed(context, Routers.searchScreen);
+
+  //       if (mounted) setState(() {});
+  //     },
+  //   );
+  // }
+
+  _catList() {
+    return Selector<HomeProvider, bool>(
+      builder: (context, data, child) {
+        return data
+            ? SizedBox(
+                width: double.infinity,
+                child: Shimmer.fromColors(
+                    baseColor: Theme.of(context).colorScheme.simmerBase,
+                    highlightColor: Theme.of(context).colorScheme.simmerHigh,
+                    child: catLoading()))
+            : Container(
+                padding: const EdgeInsets.only(top: 10, left: 10),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  // direction:
+                  //     Axis.vertical,
+                  spacing: 20.0,
+                  runSpacing: 10.0,
+                  children: List.generate(
+                    catList.length < 9 ? catList.length : 9,
+                    (index) {
+                      if (index == 0) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return Padding(
+                          padding: EdgeInsets.zero,
+                          // EdgeInsets.only(left: index == 5 ? 22.0 : 0.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (catList[index].subList == null ||
+                                  catList[index].subList!.isEmpty) {
+                                await Navigator.pushNamed(
+                                    context, Routers.productListScreen,
+                                    arguments: {
+                                      "name": catList[index].name,
+                                      "id": catList[index].id,
+                                      "tag": false,
+                                      "fromSeller": false,
+                                    });
+                              } else {
+                                await Navigator.pushNamed(
+                                    context, Routers.subCategoryScreen,
+                                    arguments: {
+                                      "title": catList[index].name!,
+                                      "subList": catList[index].subList,
+                                    });
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                      bottom: 5.0, top: 8.0),
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .black
+                                              .withOpacity(0.048),
+                                          spreadRadius: 2,
+                                          blurRadius: 13,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ],
+                                      color: const Color.fromARGB(
+                                              255, 224, 224, 224)
+                                          .withOpacity(0.7),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: networkImageCommon(
+                                        catList[index].image!,
+                                        30,
+                                        width: 40,
+                                        height: 40,
+                                        false,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  child: Text(
+                                    breakTextIntoLines(capitalize(catList[index]
+                                        .name!
+                                        .toLowerCase())), // Split text on spaces
+                                    maxLines: 2,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .fontColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                        ),
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              );
+      },
+      selector: (_, homeProvider) => homeProvider.catLoading,
+    );
+  }
+
+  String breakTextIntoLines(String text) {
+    return text.split(' ').join('\n');
   }
 
   Widget catItem(int index, BuildContext context1) {

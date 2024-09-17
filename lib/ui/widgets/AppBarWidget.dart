@@ -12,6 +12,7 @@ import '../styles/DesignConfig.dart';
 
 getAppBar(String title, BuildContext context, {int? from}) {
   return AppBar(
+    centerTitle: true,
     elevation: 0,
     titleSpacing: 0,
     backgroundColor: Theme.of(context).colorScheme.white,
@@ -21,23 +22,26 @@ getAppBar(String title, BuildContext context, {int? from}) {
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () => Navigator.of(context).pop(),
-          child: Center(
+          child: const Center(
             child: Icon(
               Icons.arrow_back_ios_rounded,
-              color: Theme.of(context).colorScheme.primarytheme,
+              color: Colors.black,
+              // color: Theme.of(context).colorScheme.primarytheme,
             ),
           ),
         ),
       );
     }),
     title: Text(title,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.primarytheme,
-            fontWeight: FontWeight.normal)
+        style: const TextStyle(
+          color: Colors.black,
+          // color: Theme.of(context).colorScheme.primarytheme,
+          fontWeight: FontWeight.w600,
+        )
         // const TextStyle(color: Theme.of(context).colorScheme.primarytheme, fontWeight: FontWeight.normal),
         ),
     actions: <Widget>[
-      from == 1
+      from == 1 || title == "Profile"
           ? const SizedBox()
           : IconButton(
               icon: SvgPicture.asset(
@@ -98,29 +102,40 @@ getAppBar(String title, BuildContext context, {int? from}) {
                 return IconButton(
                   icon: Stack(
                     children: [
-                      Center(
-                          child: SvgPicture.asset(
-                        "${imagePath}appbarCart.svg",
-                        colorFilter: ColorFilter.mode(
-                            Theme.of(context)
-                                .colorScheme
-                                .blackInverseInDarkTheme,
-                            BlendMode.srcIn),
-                      )),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Center(
+                            child: Image.asset(
+                          "assets/images/home/cart.png",
+                          color: Colors.black,
+                          width: 18,
+                        )),
+                      ),
+                      // Center(
+                      //     child: SvgPicture.asset(
+                      //   "${imagePath}appbarCart.svg",
+                      //   colorFilter: ColorFilter.mode(
+                      //       Theme.of(context)
+                      //           .colorScheme
+                      //           .blackInverseInDarkTheme,
+                      //       BlendMode.srcIn),
+                      // )),
                       (data.isNotEmpty && data != "0")
                           ? Positioned(
-                              bottom: 20,
-                              right: 0,
+                              bottom: 21,
+                              right: 1,
                               child: Container(
                                   //  height: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primarytheme),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  // color: Theme.of(context)
+                                  //     .colorScheme
+                                  //     .primarytheme),
                                   child: Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(3),
+                                      padding: const EdgeInsets.all(4),
                                       child: Text(
                                         data,
                                         style: TextStyle(

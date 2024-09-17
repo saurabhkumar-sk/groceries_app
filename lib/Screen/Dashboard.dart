@@ -209,7 +209,7 @@ class HomePageState extends State<Dashboard>
                   const Cart(
                     fromBottom: true,
                   ),
-                  const MyProfile()
+                  // const MyProfile()
                 ],
                 onPageChanged: (index) {
                   setState(() {
@@ -604,33 +604,33 @@ class HomePageState extends State<Dashboard>
                                   softWrap: true)
                             ],
                           ),
-                          (data.isNotEmpty && data != "0")
-                              ? Positioned.directional(
-                                  end: 0,
-                                  textDirection: Directionality.of(context),
-                                  top: 0,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primarytheme),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(3),
-                                          child: Text(
-                                            data,
-                                            style: TextStyle(
-                                                fontSize: 7,
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .white),
-                                          ),
-                                        ),
-                                      )),
-                                )
-                              : const SizedBox.shrink()
+                          // (data.isNotEmpty && data != "0")
+                          //     ? Positioned.directional(
+                          //         end: 0,
+                          //         textDirection: Directionality.of(context),
+                          //         top: -6,
+                          //         child: Container(
+                          //             decoration: BoxDecoration(
+                          //                 shape: BoxShape.circle,
+                          //                 color: Theme.of(context)
+                          //                     .colorScheme
+                          //                     .primarytheme),
+                          //             child: Center(
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.all(3),
+                          //                 child: Text(
+                          //                   data,
+                          //                   style: TextStyle(
+                          //                       fontSize: 7,
+                          //                       fontWeight: FontWeight.bold,
+                          //                       color: Theme.of(context)
+                          //                           .colorScheme
+                          //                           .white),
+                          //                 ),
+                          //               ),
+                          //             )),
+                          //       )
+                          //     : const SizedBox.shrink()
                         ],
                       );
                     },

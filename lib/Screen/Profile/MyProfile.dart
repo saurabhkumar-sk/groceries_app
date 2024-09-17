@@ -19,6 +19,7 @@ import 'package:eshop/Screen/Profile/widget/editProfileBottomSheet.dart';
 import 'package:eshop/Screen/ReferEarn.dart';
 import 'package:eshop/app/languages.dart';
 import 'package:eshop/app/routes.dart';
+import 'package:eshop/ui/widgets/AppBarWidget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -172,8 +173,9 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
         child: Container(
           padding: const EdgeInsetsDirectional.only(
             start: 10.0,
+            top: 20,
           ),
-          child: Row(
+          child: Column(
             children: [
               Selector<UserProvider, String>(
                   selector: (_, provider) => provider.profilePic,
@@ -183,7 +185,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                   }),
               Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Selector<UserProvider, String>(
                       selector: (_, provider) => provider.curUserName,
@@ -466,10 +468,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             : _getDrawerItem(getTranslated(context, 'MANAGE_ADD_LBL')!,
                 'assets/images/pro_address.svg'),
         //CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
-        context.read<UserProvider>().userId == ""
-            ? const SizedBox.shrink()
-            : _getDrawerItem(getTranslated(context, 'MYWALLET')!,
-                'assets/images/pro_wh.svg'),
+        // context.read<UserProvider>().userId == ""
+        //     ? const SizedBox.shrink()
+        //     : _getDrawerItem(getTranslated(context, 'MYWALLET')!,
+        //         'assets/images/pro_wh.svg'),
         context.read<UserProvider>().userId == ""
             ? const SizedBox.shrink()
             : _getDrawerItem(getTranslated(context, 'YOUR_PROM_CO')!,
@@ -481,14 +483,14 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                 'assets/images/pro_th.svg'),
         // CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
 
-        if (disableDarkTheme == false) ...{
-          _getDrawerItem(getTranslated(context, 'CHANGE_THEME_LBL')!,
-              'assets/images/pro_theme.svg'),
-        },
+        // if (disableDarkTheme == false) ...{
+        //   _getDrawerItem(getTranslated(context, 'CHANGE_THEME_LBL')!,
+        //       'assets/images/pro_theme.svg'),
+        // },
 
         // _getDivider(),
-        _getDrawerItem(getTranslated(context, 'CHANGE_LANGUAGE_LBL')!,
-            'assets/images/pro_language.svg'),
+        // _getDrawerItem(getTranslated(context, 'CHANGE_LANGUAGE_LBL')!,
+        //     'assets/images/pro_language.svg'),
         //  CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
         context.read<UserProvider>().userId == "" ||
                 context.read<UserProvider>().loginType != PHONE_TYPE
@@ -496,20 +498,20 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             : _getDrawerItem(getTranslated(context, 'CHANGE_PASS_LBL')!,
                 'assets/images/pro_pass.svg'),
         // _getDivider(),
-        context.read<UserProvider>().userId == "" || !refer
-            ? const SizedBox.shrink()
-            : _getDrawerItem(getTranslated(context, 'REFEREARN')!,
-                'assets/images/pro_referral.svg'),
+        // context.read<UserProvider>().userId == "" || !refer
+        //     ? const SizedBox.shrink()
+        //     : _getDrawerItem(getTranslated(context, 'REFEREARN')!,
+        //         'assets/images/pro_referral.svg'),
         // CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
-        context.read<UserProvider>().userId == ""
-            ? const SizedBox.shrink()
-            : _getDrawerItem(getTranslated(context, 'CUSTOMER_SUPPORT')!,
-                'assets/images/pro_customersupport.svg'),
+        // context.read<UserProvider>().userId == ""
+        //     ? const SizedBox.shrink()
+        //     : _getDrawerItem(getTranslated(context, 'CUSTOMER_SUPPORT')!,
+        //         'assets/images/pro_customersupport.svg'),
         // _getDivider(),
-        context.read<UserProvider>().userId == ''
-            ? const SizedBox()
-            : _getDrawerItem(
-                getTranslated(context, 'CHAT')!, 'assets/images/pro_chat.svg'),
+        // context.read<UserProvider>().userId == ''
+        //     ? const SizedBox()
+        //     : _getDrawerItem(
+        //         getTranslated(context, 'CHAT')!, 'assets/images/pro_chat.svg'),
         _getDrawerItem(getTranslated(context, 'ABOUT_LBL')!,
             'assets/images/pro_aboutus.svg'),
         // _getDivider(),
@@ -1196,36 +1198,36 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
     BuildContext ctx,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (value == getTranslated(ctx, 'SYSTEM_DEFAULT')) {
-      themeNotifier.setThemeMode(ThemeMode.system);
-      prefs.setString(APP_THEME, DEFAULT_SYSTEM);
+    // if (value == getTranslated(ctx, 'SYSTEM_DEFAULT')) {
+    //   themeNotifier.setThemeMode(ThemeMode.system);
+    //   prefs.setString(APP_THEME, DEFAULT_SYSTEM);
 
-      var brightness =
-          SchedulerBinding.instance.platformDispatcher.platformBrightness;
-      if (mounted) {
-        isDark = brightness == Brightness.dark;
-        if (isDark) {
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-        } else {
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-        }
-      }
-    } else if (value == getTranslated(ctx, 'LIGHT_THEME')) {
-      themeNotifier.setThemeMode(ThemeMode.light);
-      prefs.setString(APP_THEME, LIGHT);
-      if (mounted) {
-        isDark = false;
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-      }
-    } else if (value == getTranslated(ctx, 'DARK_THEME')) {
-      themeNotifier.setThemeMode(ThemeMode.dark);
-      prefs.setString(APP_THEME, DARK);
-      if (mounted) {
-        isDark = true;
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-      }
+    //   var brightness =
+    //       SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    //   if (mounted) {
+    //     isDark = brightness == Brightness.dark;
+    //     if (isDark) {
+    //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    //     } else {
+    //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    //     }
+    //   }
+    // } else if (value == getTranslated(ctx, 'LIGHT_THEME')) {
+    themeNotifier.setThemeMode(ThemeMode.light);
+    prefs.setString(APP_THEME, LIGHT);
+    if (mounted) {
+      isDark = false;
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     }
-    ISDARK = isDark.toString();
+    // } else if (value == getTranslated(ctx, 'DARK_THEME')) {
+    //   themeNotifier.setThemeMode(ThemeMode.dark);
+    //   prefs.setString(APP_THEME, DARK);
+    //   if (mounted) {
+    //     isDark = true;
+    //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    //   }
+    // }
+    // ISDARK = isDark.toString();
 
     //Provider.of<SettingProvider>(context,listen: false).setPrefrence(APP_THEME, value);
   }
@@ -1325,28 +1327,29 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
     themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
+        appBar: getAppBar("Profile", context),
         body: Consumer<UserProvider>(builder: (context, data, child) {
-      return _isNetworkAvail
-          ? Stack(
-              children: [
-                SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  controller: _scrollBottomBarController,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _getHeader(),
-                      _getDrawer(),
-                    ],
-                  ),
-                ),
-                showCircularProgress(context, isLoading,
-                    Theme.of(context).colorScheme.primarytheme),
-              ],
-            )
-          : noInternet(context);
-    }));
+          return _isNetworkAvail
+              ? Stack(
+                  children: [
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
+                      controller: _scrollBottomBarController,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _getHeader(),
+                          _getDrawer(),
+                        ],
+                      ),
+                    ),
+                    showCircularProgress(context, isLoading,
+                        Theme.of(context).colorScheme.primarytheme),
+                  ],
+                )
+              : noInternet(context);
+        }));
   }
 
   Future<void> _playAnimation(AnimationController ctrl) async {
@@ -1422,11 +1425,11 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             if (context.read<UserProvider>().userId != "")
               Positioned.directional(
                   textDirection: Directionality.of(context),
+                  top: 0,
                   end: 20,
-                  bottom: 5,
                   child: Container(
-                    height: 20,
-                    width: 20,
+                    height: 25,
+                    width: 25,
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primarytheme,
                         borderRadius: const BorderRadius.all(

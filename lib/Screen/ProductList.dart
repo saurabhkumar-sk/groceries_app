@@ -628,7 +628,7 @@ class StateProduct extends State<ProductListScreen>
                                                                           () {
                                                                         if (_isProgress ==
                                                                                 false &&
-                                                                            (int.parse(_controller[index].text) >
+                                                                            (int.parse(_controller[index].text.trim()) >
                                                                                 0)) {
                                                                           removeFromCart(
                                                                               index);
@@ -669,7 +669,11 @@ class StateProduct extends State<ProductListScreen>
                                                                             onSelected:
                                                                                 (String value) {
                                                                               if (_isProgress == false) {
-                                                                                addToCart(index, value, 2);
+                                                                                (
+                                                                                  index,
+                                                                                  value,
+                                                                                  2
+                                                                                );
                                                                               }
                                                                             },
                                                                             itemBuilder:

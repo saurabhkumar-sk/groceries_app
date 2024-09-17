@@ -3560,7 +3560,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             checkoutState = setState;
             return Container(
                 constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.8),
+                    maxHeight: MediaQuery.of(context).size.height * 0.9),
                 child: Scaffold(
                   resizeToAvoidBottomInset: false,
                   body: _isNetworkAvailable

@@ -18,13 +18,16 @@ import 'package:eshop/Provider/HomeProvider.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Screen/All_Category.dart';
+import 'package:eshop/Screen/Profile/MyProfile.dart';
 import 'package:eshop/Screen/cart/Cart.dart';
 import 'package:eshop/Screen/homeWidgets/popupOfferDialoge.dart';
 import 'package:eshop/cubits/brandsListCubit.dart';
 import 'package:eshop/cubits/fetch_citites.dart';
 import 'package:eshop/cubits/fetch_featured_sections_cubit.dart';
 import 'package:eshop/ui/widgets/AppBtn.dart';
+import 'package:eshop/ui/widgets/ProductListView.dart';
 import 'package:eshop/ui/widgets/SimBtn.dart';
+import 'package:eshop/ui/widgets/setTitleWidget.dart';
 import 'package:eshop/utils/Extensions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -201,7 +204,7 @@ class _HomePageState extends State<HomePage>
                                             horizontal: 20),
                                         crossAxisCount: 2,
                                         shrinkWrap: true,
-                                        childAspectRatio: .6,
+                                        childAspectRatio: .55,
                                         children: List.generate(
                                           4,
                                           (index) {
@@ -227,7 +230,8 @@ class _HomePageState extends State<HomePage>
                             Stack(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 150),
+                                  padding: const EdgeInsets.only(top: 0),
+                                  // padding: const EdgeInsets.only(top: 150),
                                   child: Container(
                                     // height: 217,
                                     width: double.infinity,
@@ -313,433 +317,186 @@ class _HomePageState extends State<HomePage>
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 30),
+                                          // const SizedBox(height: 30),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
-                                carouselSlider2(),
+                                // carouselSlider2(),
                               ],
                             ),
-                            GridView.count(
-                              physics: const NeverScrollableScrollPhysics(
-                                  parent: AlwaysScrollableScrollPhysics()),
-                              // controller:
-                              //     _scrollControllerOnSubCategory,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              crossAxisCount: 2,
-                              shrinkWrap: true,
-                              mainAxisSpacing: 15,
-                              crossAxisSpacing: 15,
-                              childAspectRatio: .65,
-                              children: List.generate(
-                                4,
-                                (index) {
-                                  return Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                                  255, 233, 233, 233)
-                                              .withOpacity(0.5),
-                                          // shape: BoxShape.circle,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .fontColor
-                                                  .withOpacity(0.042),
-                                              spreadRadius: 2,
-                                              blurRadius: 13,
-                                              offset: const Offset(0,
-                                                  0), // changes position of shadow
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(height: 20),
-                                            Image.asset(
-                                              'assets/images/home/Surf.png',
-                                              height: 90,
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              // "${capitalize(subList[index].name!.toLowerCase())}\n",
-                                              "Surf excel",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 13,
-                                                  ),
-                                            ),
-                                            Text(
-                                              // "${capitalize(subList[index].name!.toLowerCase())}\n",
-                                              "1kg, 45\u{20B9}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 14,
-                                                  ),
-                                            ),
-                                            Text(
-                                              "45\u{20B9}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor
-                                                        .withOpacity(0.5),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                  ),
-                                            ),
-                                            const SizedBox(height: 3),
-                                            const Divider(),
-                                            TextButton.icon(
-                                              style: const ButtonStyle(
-                                                padding: WidgetStatePropertyAll(
-                                                    EdgeInsets.zero),
-                                              ),
-                                              onPressed: () {},
-                                              icon: Image.asset(
-                                                'assets/images/home/cart.png',
-                                                width: 12,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
-                                              label: Text(
-                                                " Add to cart",
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .black,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Poppins",
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 20,
-                                        top: 0,
-                                        child: Container(
-                                          height: 38,
-                                          width: 35,
-                                          decoration: BoxDecoration(
-                                            color: index == 0
-                                                ? Colors.green
-                                                : Colors.red,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              bottomLeft: Radius.circular(6),
-                                              bottomRight: Radius.circular(6),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5),
-                                            child: Center(
-                                              child: Text(
-                                                breakTextIntoLines(
-                                                  sellingDiscount[index],
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 7,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "Poppins",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 50),
-                            Container(
-                              // height: 217,
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(173, 214, 255, 214),
-                                    Color.fromARGB(64, 198, 236, 198),
-                                    Color.fromARGB(0, 255, 255, 255),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: [0.2, 0.5, 0.9],
-                                ),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 15),
-                                    Text(
-                                      "One Stop Pantry Shop",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .black,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                    Text(
-                                      "Find Exclusive",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .fontColor,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                          ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Products",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .fontColor,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                              ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {},
-                                          child: Text(
-                                            "See all",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall!
-                                                .copyWith(
-                                                  color:
-                                                      const Color(0xFF23AA49),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 12,
-                                                ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 30),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GridView.count(
-                              physics: const NeverScrollableScrollPhysics(
-                                  parent: AlwaysScrollableScrollPhysics()),
-                              // controller:
-                              //     _scrollControllerOnSubCategory,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              crossAxisCount: 2,
-                              shrinkWrap: true,
-                              mainAxisSpacing: 15,
-                              crossAxisSpacing: 15,
-                              childAspectRatio: .65,
-                              children: List.generate(
-                                4,
-                                (index) {
-                                  return Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                                  255, 233, 233, 233)
-                                              .withOpacity(0.5),
-                                          // shape: BoxShape.circle,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .fontColor
-                                                  .withOpacity(0.042),
-                                              spreadRadius: 2,
-                                              blurRadius: 13,
-                                              offset: const Offset(0,
-                                                  0), // changes position of shadow
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(height: 20),
-                                            Image.asset(
-                                              'assets/images/home/Product.png',
-                                              height: 90,
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              // "${capitalize(subList[index].name!.toLowerCase())}\n",
-                                              "Fortune Oil",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 13,
-                                                  ),
-                                            ),
-                                            Text(
-                                              // "${capitalize(subList[index].name!.toLowerCase())}\n",
-                                              "1kg, 45\u{20B9}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 14,
-                                                  ),
-                                            ),
-                                            Text(
-                                              "45\u{20B9}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .fontColor
-                                                        .withOpacity(0.5),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                  ),
-                                            ),
-                                            const SizedBox(height: 3),
-                                            const Divider(),
-                                            TextButton.icon(
-                                              style: const ButtonStyle(
-                                                padding: WidgetStatePropertyAll(
-                                                    EdgeInsets.zero),
-                                              ),
-                                              onPressed: () {},
-                                              icon: Image.asset(
-                                                'assets/images/home/cart.png',
-                                                width: 12,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
-                                              label: Text(
-                                                " Add to cart",
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .black,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Poppins",
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 18,
-                                        top: 0,
-                                        child: Container(
-                                          height: 38,
-                                          width: 35,
-                                          decoration: BoxDecoration(
-                                            color: index == 0 || index == 2
-                                                ? Colors.green
-                                                : Colors.red,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              bottomLeft: Radius.circular(6),
-                                              bottomRight: Radius.circular(6),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5),
-                                            child: Center(
-                                              child: Text(
-                                                breakTextIntoLines(
-                                                  sellingDiscount[index],
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 7,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "Poppins",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
+                            // GridView.count(
+                            //   physics: const NeverScrollableScrollPhysics(
+                            //       parent: AlwaysScrollableScrollPhysics()),
+                            //   // controller:
+                            //   //     _scrollControllerOnSubCategory,
+                            //   padding:
+                            //       const EdgeInsets.symmetric(horizontal: 20),
+                            //   crossAxisCount: 2,
+                            //   shrinkWrap: true,
+                            //   mainAxisSpacing: 15,
+                            //   crossAxisSpacing: 15,
+                            //   childAspectRatio: .6,
+                            //   children: List.generate(
+                            //     4,
+                            //     (index) {
+                            //       return Stack(
+                            //         children: [
+                            //           Container(
+                            //             decoration: BoxDecoration(
+                            //               color: const Color.fromARGB(
+                            //                       255, 233, 233, 233)
+                            //                   .withOpacity(0.5),
+                            //               // shape: BoxShape.circle,
+                            //               borderRadius:
+                            //                   BorderRadius.circular(16),
+                            //               boxShadow: [
+                            //                 BoxShadow(
+                            //                   color: Theme.of(context)
+                            //                       .colorScheme
+                            //                       .fontColor
+                            //                       .withOpacity(0.042),
+                            //                   spreadRadius: 2,
+                            //                   blurRadius: 13,
+                            //                   offset: const Offset(0,
+                            //                       0), // changes position of shadow
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //             child: Column(
+                            //               children: [
+                            //                 const SizedBox(height: 20),
+                            //                 Image.asset(
+                            //                   'assets/images/home/Surf.png',
+                            //                   height: 90,
+                            //                 ),
+                            //                 const SizedBox(height: 10),
+                            //                 Text(
+                            //                   // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                            //                   "Surf excel",
+                            //                   textAlign: TextAlign.center,
+                            //                   maxLines: 1,
+                            //                   overflow: TextOverflow.ellipsis,
+                            //                   style: Theme.of(context)
+                            //                       .textTheme
+                            //                       .bodySmall!
+                            //                       .copyWith(
+                            //                         color: Colors.black,
+                            //                         fontWeight: FontWeight.w500,
+                            //                         fontSize: 13,
+                            //                       ),
+                            //                 ),
+                            //                 Text(
+                            //                   // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                            //                   "1kg, 45\u{20B9}",
+                            //                   textAlign: TextAlign.center,
+                            //                   maxLines: 1,
+                            //                   overflow: TextOverflow.ellipsis,
+                            //                   style: Theme.of(context)
+                            //                       .textTheme
+                            //                       .bodySmall!
+                            //                       .copyWith(
+                            //                         color: Colors.red,
+                            //                         fontWeight: FontWeight.w600,
+                            //                         fontSize: 14,
+                            //                       ),
+                            //                 ),
+                            //                 Text(
+                            //                   "45\u{20B9}",
+                            //                   textAlign: TextAlign.center,
+                            //                   maxLines: 1,
+                            //                   overflow: TextOverflow.ellipsis,
+                            //                   style: Theme.of(context)
+                            //                       .textTheme
+                            //                       .bodySmall!
+                            //                       .copyWith(
+                            //                         color: Theme.of(context)
+                            //                             .colorScheme
+                            //                             .fontColor
+                            //                             .withOpacity(0.5),
+                            //                         fontWeight: FontWeight.w500,
+                            //                         fontSize: 12,
+                            //                         decoration: TextDecoration
+                            //                             .lineThrough,
+                            //                       ),
+                            //                 ),
+                            //                 const SizedBox(height: 3),
+                            //                 const Divider(),
+                            //                 TextButton.icon(
+                            //                   style: const ButtonStyle(
+                            //                     padding: WidgetStatePropertyAll(
+                            //                         EdgeInsets.zero),
+                            //                   ),
+                            //                   onPressed: () {},
+                            //                   icon: Image.asset(
+                            //                     'assets/images/home/cart.png',
+                            //                     width: 12,
+                            //                     color: Theme.of(context)
+                            //                         .colorScheme
+                            //                         .primary,
+                            //                   ),
+                            //                   label: Text(
+                            //                     " Add to cart",
+                            //                     style: TextStyle(
+                            //                       color: Theme.of(context)
+                            //                           .colorScheme
+                            //                           .black,
+                            //                       fontSize: 10,
+                            //                       fontWeight: FontWeight.w500,
+                            //                       fontFamily: "Poppins",
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //           Positioned(
+                            //             right: 15,
+                            //             top: 0,
+                            //             child: Container(
+                            //               height: 38,
+                            //               width: 35,
+                            //               decoration: BoxDecoration(
+                            //                 color: index == 0
+                            //                     ? Colors.green
+                            //                     : Colors.red,
+                            //                 borderRadius:
+                            //                     const BorderRadius.only(
+                            //                   bottomLeft: Radius.circular(6),
+                            //                   bottomRight: Radius.circular(6),
+                            //                 ),
+                            //               ),
+                            //               child: Padding(
+                            //                 padding: const EdgeInsets.all(5),
+                            //                 child: Center(
+                            //                   child: Text(
+                            //                     breakTextIntoLines(
+                            //                       sellingDiscount[index],
+                            //                     ),
+                            //                     textAlign: TextAlign.center,
+                            //                     style: const TextStyle(
+                            //                       color: Colors.white,
+                            //                       fontSize: 7,
+                            //                       fontWeight: FontWeight.w600,
+                            //                       fontFamily: "Poppins",
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       );
+                            //     },
+                            //   ),
+                            // ),
+                            _mostLike(),
+                            const SizedBox(height: 5),
+
+                            oneStopPantryShop(context),
+                            _mostFav(),
+                            // oneStopPantryProductList(context),
                             // _slider(),
                             // const BrandsListWidget(),
                             // _section(),
@@ -763,6 +520,252 @@ class _HomePageState extends State<HomePage>
                 ),
               )
             : noInternet(context));
+  }
+
+  GridView oneStopPantryProductList(BuildContext context) {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics()),
+      // controller:
+      //     _scrollControllerOnSubCategory,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      mainAxisSpacing: 15,
+      crossAxisSpacing: 15,
+      childAspectRatio: .6,
+      children: List.generate(
+        4,
+        (index) {
+          return Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color:
+                      const Color.fromARGB(255, 233, 233, 233).withOpacity(0.5),
+                  // shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .fontColor
+                          .withOpacity(0.042),
+                      spreadRadius: 2,
+                      blurRadius: 13,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Image.asset(
+                      'assets/images/home/Product.png',
+                      height: 90,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                      "Fortune Oil",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                    ),
+                    Text(
+                      // "${capitalize(subList[index].name!.toLowerCase())}\n",
+                      "1kg, 45\u{20B9}",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                    ),
+                    Text(
+                      "45\u{20B9}",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .fontColor
+                                .withOpacity(0.5),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                    ),
+                    const SizedBox(height: 3),
+                    const Divider(),
+                    TextButton.icon(
+                      style: const ButtonStyle(
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                      ),
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/images/home/cart.png',
+                        width: 12,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      label: Text(
+                        " Add to cart",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.black,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 18,
+                top: 0,
+                child: Container(
+                  height: 38,
+                  width: 35,
+                  decoration: BoxDecoration(
+                    color: index == 0 || index == 2 ? Colors.green : Colors.red,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(6),
+                      bottomRight: Radius.circular(6),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Center(
+                      child: Text(
+                        breakTextIntoLines(
+                          sellingDiscount[index],
+                        ),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 7,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Poppins",
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  _mostFav() {
+    return mostFavProList.isNotEmpty
+        ? Padding(
+            padding: const EdgeInsets.only(top: 0.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // setHeadTitle(
+                //     getTranslated(context, 'YOU_ARE_LOOKING_FOR_LBL')!,
+                //     context),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      return productItemView(
+                          index, mostFavProList, context, detail1Hero);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const SizedBox();
+  }
+
+  Container oneStopPantryShop(BuildContext context) {
+    return Container(
+      // height: 217,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(173, 214, 255, 214),
+            Color.fromARGB(64, 198, 236, 198),
+            Color.fromARGB(0, 255, 255, 255),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.2, 0.5, 0.9],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 15),
+            Text(
+              "One Stop Pantry Shop",
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                  ),
+            ),
+            Text(
+              "Find Exclusive",
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.fontColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Products",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.fontColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "See all",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: const Color(0xFF23AA49),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
   }
 
   bestSelling(
@@ -1326,104 +1329,167 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  ListTile _appBar(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.only(top: 38, left: 18, right: 18),
-      leading: CircleAvatar(
-        maxRadius: 20,
-        backgroundColor: colors.lightWhite2.withOpacity(0.5),
-        // backgroundColor: colors.primary.withOpacity(0.5),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Image.asset(
-            'assets/images/profile.png',
-            fit: BoxFit.cover,
-            height: 25,
-          ),
-        ),
-      ),
-      title: Text(
-        'Hello, Welcome',
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          fontFamily: "Poppins",
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        'Saurbh Kumar',
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          fontFamily: "Poppins",
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                Routers.favoriteScreen,
-              );
-            },
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Image.asset(
-                  'assets/images/home/wishlist.png',
-                  width: 20,
-                ),
-                Positioned(
-                  right: -7,
-                  top: -5,
-                  child: notificationCircle(context),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 20),
-          InkWell(
-            onTap: () {
-              Navigator.push(
+//  Selector<UserProvider, String>(
+//                       selector: (_, provider) => provider.curUserName,
+//                       builder: (context, userName, child) {
+//                         nameController = TextEditingController(text: userName);
+//                         return Text(
+//                           userName == ""
+//                               ? getTranslated(context, 'GUEST')!
+//                               : userName,
+//                           style: Theme.of(context)
+//                               .textTheme
+//                               .titleMedium!
+//                               .copyWith(
+//                                 color: Theme.of(context).colorScheme.fontColor,
+//                               ),
+//                         );
+//                       }),
+  _appBar(BuildContext context) {
+    return Selector<UserProvider, String>(
+        selector: (_, provider) => provider.curUserName,
+        builder: (context, userName, child) {
+          // nameController = TextEditingController(text: userName);
+          return ListTile(
+            contentPadding: const EdgeInsets.only(top: 38, left: 18, right: 18),
+            leading: InkWell(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Cart(
-                      fromBottom: false,
-                    ),
-                  ));
-            },
-            child: Stack(
-              clipBehavior: Clip.none,
+                    builder: (context) => const MyProfile(),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                maxRadius: 20,
+                backgroundColor: colors.lightWhite2.withOpacity(0.5),
+                // backgroundColor: colors.primary.withOpacity(0.5),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Image.asset(
+                    'assets/images/profile.png',
+                    fit: BoxFit.cover,
+                    height: 25,
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              'Hello, Welcome',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Poppins",
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              userName == "" ? getTranslated(context, 'GUEST')! : userName,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Poppins",
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/home/Bag.png',
-                  width: 20,
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routers.favoriteScreen,
+                    );
+                  },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset(
+                        'assets/images/home/wishlist.png',
+                        width: 20,
+                      ),
+                      // Positioned(
+                      //   right: -7,
+                      //   top: -5,
+                      //   child: notificationCircle(context, ''),
+                      // ),
+                    ],
+                  ),
                 ),
-                Positioned(
-                  right: -7,
-                  top: -5,
-                  child: notificationCircle(context),
+                const SizedBox(width: 20),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => const Cart(
+                //             fromBottom: false,
+                //           ),
+                //         ));
+                //   },
+                //   child: Stack(
+                //     clipBehavior: Clip.none,
+                //     children: [
+                //       Image.asset(
+                //         'assets/images/home/Bag.png',
+                //         width: 20,
+                //       ),
+                //       Positioned(
+                //         right: -7,
+                //         top: -5,
+                //         child: notificationCircle(context),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                Selector<UserProvider, String>(
+                  builder: (context, data, child) {
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Image.asset(
+                          "assets/images/home/cart.png",
+                          // "${imagePath}sel_home.svg",
+                          color: Colors.white,
+
+                          width: 18,
+                          height: 20,
+                        ),
+                        (data.isNotEmpty && data != "0")
+                            ? Positioned(
+                                right: -7,
+                                top: -5,
+                                // textDirection: Directionality.of(context),
+                                child: notificationCircle(context, data),
+                              )
+                            : const SizedBox.shrink()
+                      ],
+                    );
+                  },
+                  selector: (_, homeProvider) => homeProvider.curCartCount,
                 ),
+                const SizedBox(width: 10),
               ],
             ),
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-    );
+          );
+          // return Text(
+          //   userName == "" ? getTranslated(context, 'GUEST')! : userName,
+          //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
+          //         color: Theme.of(context).colorScheme.fontColor,
+          //       ),
+          // );
+        });
   }
 
-  Container notificationCircle(BuildContext context) {
+  Container notificationCircle(BuildContext context, String text) {
     return Container(
       height: 15,
       width: 15,
@@ -1435,7 +1501,7 @@ class _HomePageState extends State<HomePage>
         padding: const EdgeInsets.all(0),
         child: Center(
           child: Text(
-            "5",
+            text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -1716,41 +1782,50 @@ class _HomePageState extends State<HomePage>
       builder: (context, data, child) {
         return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 0),
               child: Stack(children: [
                 Positioned.fill(
                   child: Container(
-                      margin: const EdgeInsets.only(bottom: 40),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.back3,
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)))),
+                    margin: const EdgeInsets.only(bottom: 40),
+                    decoration: const BoxDecoration(
+                      // color: const Color.fromARGB(255, 233, 233, 233)
+                      //     .withOpacity(0.5),
+                      // shape: BoxShape.circle,
+
+                      // color: Theme.of(context).colorScheme.back3,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                  ),
                 ),
                 Selector<ProductProvider, List<Product>>(
                   builder: (context, data1, child) {
                     return data1.isNotEmpty
                         ? Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
+                            padding: const EdgeInsets.only(top: 0.0),
                             child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  _getHeading(
-                                      getTranslated(
-                                          context, 'YOU_MIGHT_ALSO_LIKE')!,
-                                      0,
-                                      2,
-                                      data1),
+                                  // _getHeading(
+                                  //     getTranslated(
+                                  //         context, 'YOU_MIGHT_ALSO_LIKE')!,
+                                  //     0,
+                                  //     2,
+                                  //     data1),
                                   Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: GridView.count(
                                         padding:
                                             const EdgeInsetsDirectional.only(
-                                                top: 5),
+                                                top: 0),
                                         crossAxisCount: 2,
+                                        mainAxisSpacing: 15,
+                                        crossAxisSpacing: 15,
                                         shrinkWrap: true,
-                                        //childAspectRatio: 0.8,
+                                        childAspectRatio: 0.8,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         children: List.generate(
@@ -1809,6 +1884,7 @@ class _HomePageState extends State<HomePage>
             : Container(
                 padding: const EdgeInsets.only(top: 10, left: 10),
                 child: Wrap(
+                  alignment: WrapAlignment.center,
                   // direction:
                   //     Axis.vertical,
                   spacing: 20.0,
@@ -1820,8 +1896,8 @@ class _HomePageState extends State<HomePage>
                         return const SizedBox.shrink();
                       } else {
                         return Padding(
-                          padding:
-                              EdgeInsets.only(left: index == 5 ? 22.0 : 0.0),
+                          padding: EdgeInsets.zero,
+                          // EdgeInsets.only(left: index == 5 ? 22.0 : 0.0),
                           child: GestureDetector(
                             onTap: () async {
                               if (catList[index].subList == null ||
@@ -1851,8 +1927,8 @@ class _HomePageState extends State<HomePage>
                                     padding: const EdgeInsetsDirectional.only(
                                         bottom: 5.0, top: 8.0),
                                     child: Container(
-                                      height: 73,
-                                      width: 73,
+                                      height: 60,
+                                      width: 60,
                                       decoration: BoxDecoration(
                                         boxShadow: [
                                           BoxShadow(

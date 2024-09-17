@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:eshop/Helper/SqliteData.dart';
@@ -281,7 +282,49 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                 fontSize: 9),
                                           ),
                                         ),
-                                      )
+                                      ),
+                                      Positioned.directional(
+                                        textDirection:
+                                            Directionality.of(context),
+                                        bottom: 5,
+                                        start: 12,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          alignment: Alignment.topRight,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: InkWell(
+                                            child: const Icon(
+                                              Icons.delete_outline,
+                                              size: 18,
+                                              color: Colors.red,
+                                            ),
+                                            onTap: () {
+                                              if (context
+                                                      .read<UserProvider>()
+                                                      .userId !=
+                                                  "") {
+                                                _removeFav(
+                                                    index, favList, context);
+                                              } else {
+                                                setState(() {
+                                                  db.addAndRemoveFav(
+                                                      favList[index].id!,
+                                                      false);
+                                                  context
+                                                      .read<FavoriteProvider>()
+                                                      .removeFavItem(
+                                                          favList[index]
+                                                              .prVarientList![0]
+                                                              .id!);
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ))),
                           Expanded(
@@ -306,39 +349,6 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                       .lightBlack),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(right: 5),
-                                        alignment: Alignment.topRight,
-                                        child: InkWell(
-                                          child: Icon(
-                                            Icons.close,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .lightBlack,
-                                          ),
-                                          onTap: () {
-                                            if (context
-                                                    .read<UserProvider>()
-                                                    .userId !=
-                                                "") {
-                                              _removeFav(
-                                                  index, favList, context);
-                                            } else {
-                                              setState(() {
-                                                db.addAndRemoveFav(
-                                                    favList[index].id!, false);
-                                                context
-                                                    .read<FavoriteProvider>()
-                                                    .removeFavItem(
-                                                        favList[index]
-                                                            .prVarientList![0]
-                                                            .id!);
-                                              });
-                                            }
-                                          },
                                         ),
                                       ),
                                     ],
@@ -421,15 +431,47 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                                 ),
                                                               ),
                                                               onTap: () {
+                                                                // if (_isProgress ==
+                                                                //         false &&
+                                                                //     (int.parse(_controller[index]
+                                                                //             .text) >
+                                                                //         0)) {
+                                                                //   removeFromCart(
+                                                                //       index,
+                                                                //       favList,
+                                                                //       context);
+                                                                // }
                                                                 if (_isProgress ==
-                                                                        false &&
-                                                                    (int.parse(_controller[index]
-                                                                            .text) >
-                                                                        0)) {
-                                                                  removeFromCart(
-                                                                      index,
-                                                                      favList,
-                                                                      context);
+                                                                    false) {
+                                                                  String
+                                                                      textValue =
+                                                                      _controller[
+                                                                              index]
+                                                                          .text;
+
+                                                                  // Log or print the value for debugging
+                                                                  log("Controller Text: $textValue");
+
+                                                                  if (textValue !=
+                                                                      "") {
+                                                                    int?
+                                                                        parsedValue =
+                                                                        int.tryParse(
+                                                                            textValue);
+                                                                    if (parsedValue !=
+                                                                            null &&
+                                                                        parsedValue >
+                                                                            0) {
+                                                                      removeFromCart(
+                                                                          index,
+                                                                          favList,
+                                                                          context);
+                                                                    } else {
+                                                                      log("Parsed value is either null or not greater than 0");
+                                                                    }
+                                                                  } else {
+                                                                    log("Text is empty");
+                                                                  }
                                                                 }
                                                               },
                                                             ),
@@ -542,7 +584,62 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                                   : const SizedBox.shrink(),
                                         ],
                                       )
-                                    : const SizedBox.shrink(),
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsetsDirectional.only(
+                                                start: 8.0,
+                                                top: 5.0,
+                                                bottom: 10),
+                                        child: InkWell(
+                                          child: Container(
+                                            width: 100,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0,
+                                              vertical: 6,
+                                            ),
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: Colors.green,
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      offset: Offset(2, 2),
+                                                      blurRadius: 12,
+                                                      color: Color.fromRGBO(
+                                                          0, 0, 0, 0.13),
+                                                      spreadRadius: 0.4)
+                                                ]),
+                                            child: Text(
+                                              "Add to cart",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium!
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                  ),
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            if (_isProgress == false) {
+                                              addToCart(
+                                                  index,
+                                                  favList,
+                                                  context,
+                                                  (int.parse(_controller[index]
+                                                              .text) +
+                                                          int.parse(favList[
+                                                                  index]
+                                                              .qtyStepSize!))
+                                                      .toString(),
+                                                  1);
+                                            }
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -550,46 +647,56 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  if (_controller[index].text == "0" &&
-                      favList[index].availability != "0")
-                    Positioned.directional(
-                        textDirection: Directionality.of(context),
-                        bottom: -13,
-                        end: 15,
-                        child: InkWell(
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40.0),
-                                color: Theme.of(context).colorScheme.white,
-                                boxShadow: const [
-                                  BoxShadow(
-                                      offset: Offset(2, 2),
-                                      blurRadius: 12,
-                                      color: Color.fromRGBO(0, 0, 0, 0.13),
-                                      spreadRadius: 0.4)
-                                ]),
-                            child: Icon(
-                              Icons.shopping_cart,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.primarytheme,
-                            ),
-                          ),
-                          onTap: () async {
-                            if (_isProgress == false) {
-                              addToCart(
-                                  index,
-                                  favList,
-                                  context,
-                                  (int.parse(_controller[index].text) +
-                                          int.parse(
-                                              favList[index].qtyStepSize!))
-                                      .toString(),
-                                  1);
-                            }
-                          },
-                        ))
+
+                  // if (_controller[index].text == "0" &&
+                  //     favList[index].availability != "0")
+                  //     Positioned.directional(
+                  //         textDirection: Directionality.of(context),
+                  //         bottom: 10,
+                  //         start: deviceWidth! * 0.3,
+                  // child: InkWell(
+                  //   child: Container(
+                  //     padding: const EdgeInsets.symmetric(
+                  //       horizontal: 10.0,
+                  //       vertical: 6,
+                  //     ),
+                  //     alignment: Alignment.center,
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(5),
+                  //         color: Colors.green,
+                  //         boxShadow: const [
+                  //           BoxShadow(
+                  //               offset: Offset(2, 2),
+                  //               blurRadius: 12,
+                  //               color: Color.fromRGBO(0, 0, 0, 0.13),
+                  //               spreadRadius: 0.4)
+                  //         ]),
+                  //     child: Text(
+                  //       "Add to cart",
+                  //       style: Theme.of(context)
+                  //           .textTheme
+                  //           .titleMedium!
+                  //           .copyWith(
+                  //             color: Colors.white,
+                  //             fontSize: 10,
+                  //             fontWeight: FontWeight.normal,
+                  //           ),
+                  //     ),
+                  //   ),
+                  //   onTap: () async {
+                  //     if (_isProgress == false) {
+                  //       addToCart(
+                  //           index,
+                  //           favList,
+                  //           context,
+                  //           (int.parse(_controller[index].text) +
+                  //                   int.parse(
+                  //                       favList[index].qtyStepSize!))
+                  //               .toString(),
+                  //           1);
+                  //     }
+                  //   },
+                  // ))
                 ],
               ));
         },
