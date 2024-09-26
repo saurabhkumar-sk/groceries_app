@@ -21,18 +21,19 @@ void hideAppbarAndBottomBarOnScroll(
   BuildContext context,
 ) {
   scrollBottomBarController.addListener(() {
-    if (scrollBottomBarController.position.userScrollDirection ==
-        ScrollDirection.reverse) {
-      if (!context.read<HomeProvider>().animationController.isAnimating) {
-        context.read<HomeProvider>().animationController.forward();
-        context.read<HomeProvider>().showBars(false);
-      }
-    } else {
-      if (!context.read<HomeProvider>().animationController.isAnimating) {
-        context.read<HomeProvider>().animationController.reverse();
-        context.read<HomeProvider>().showBars(true);
-      }
-    }
+    // if (scrollBottomBarController.position.userScrollDirection ==
+    //     ScrollDirection.reverse) {
+    //   if (!context.read<HomeProvider>().animationController.isAnimating) {
+    //     context.read<HomeProvider>().animationController.forward();
+    //     context.read<HomeProvider>().showBars(true);
+    //     // context.read<HomeProvider>().showBars(false);
+    //   }
+    // } else {
+    //   if (!context.read<HomeProvider>().animationController.isAnimating) {
+    //     context.read<HomeProvider>().animationController.reverse();
+    //     context.read<HomeProvider>().showBars(true);
+    //   }
+    // }
   });
 }
 
@@ -46,13 +47,14 @@ shadow() {
 
 placeHolder(double height) {
   return const AssetImage(
-    'assets/images/Placeholder_Rectangle.png',
+    "assets/images/categories/luxa.org-opacity-changed-Logo (1).png",
   );
 }
 
 erroWidget(BuildContext context, double size) {
   return Image.asset(
-    "assets/images/Placeholder_Rectangle.png",
+    "assets/images/categories/luxa.org-opacity-changed-Logo (1).png",
+    // "assets/images/Placeholder_Rectangle.png",
     color: Theme.of(context).colorScheme.primarytheme,
     width: size,
     height: size,
@@ -61,25 +63,30 @@ erroWidget(BuildContext context, double size) {
 
 Widget networkImageCommon(String image, double placeHeight, bool isSlider,
     {double? height, double? width, BoxFit? boxFit}) {
-  return FadeInImage(
-    fadeInDuration: const Duration(milliseconds: 150),
-    image: NetworkImage(image),
-    height: height ?? height,
-    width: width ?? width,
-    fit: boxFit ?? (extendImg ? BoxFit.cover : BoxFit.contain),
-    placeholder: isSlider ? sliderPlaceHolder() : placeHolder(placeHeight),
-    placeholderErrorBuilder: ((context, error, stackTrace) {
-      return erroWidget(context, placeHeight);
-    }),
-    imageErrorBuilder: ((context, error, stackTrace) {
-      return erroWidget(context, placeHeight);
-    }),
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(0),
+    child: FadeInImage(
+      placeholderFit: BoxFit.fitHeight,
+      fadeInDuration: const Duration(milliseconds: 150),
+      image: NetworkImage(image),
+      height: height ?? height,
+      width: width ?? width,
+      fit: boxFit ?? (extendImg ? BoxFit.cover : BoxFit.contain),
+      placeholder: isSlider ? sliderPlaceHolder() : placeHolder(placeHeight),
+      placeholderErrorBuilder: ((context, error, stackTrace) {
+        return erroWidget(context, placeHeight);
+      }),
+      imageErrorBuilder: ((context, error, stackTrace) {
+        return erroWidget(context, placeHeight);
+      }),
+    ),
   );
 }
 
 sliderPlaceHolder() {
   return const AssetImage(
-    "assets/images/sliderph.png",
+    "assets/images/categories/luxa.org-opacity-changed-Logo (1).png",
+    // "assets/images/sliderph.png",
   );
 }
 
@@ -130,13 +137,22 @@ getThemeColor(BuildContext context) {
 
   if (systemBrightness == Brightness.dark &&
       applicationBrightness == Brightness.light) {
-    return 'assets/images/loginlogo.svg';
+    return appLogo;
   } else if (systemBrightness == Brightness.light &&
       applicationBrightness == Brightness.light) {
-    return 'assets/images/loginlogo.svg';
+    return appLogo;
   } else {
-    return 'assets/images/dark_loginlogo.svg';
+    return appLogo;
   }
+  // if (systemBrightness == Brightness.dark &&
+  //     applicationBrightness == Brightness.light) {
+  //   return 'assets/images/loginlogo.svg';
+  // } else if (systemBrightness == Brightness.light &&
+  //     applicationBrightness == Brightness.light) {
+  //   return 'assets/images/loginlogo.svg';
+  // } else {
+  //   return 'assets/images/dark_loginlogo.svg';
+  // }
 }
 
 Widget bottomSheetHandle(BuildContext context) {

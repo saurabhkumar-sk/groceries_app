@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, unnecessary_brace_in_string_interps, use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -10,6 +12,7 @@ import 'package:eshop/Provider/CartProvider.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Screen/Dashboard.dart';
+import 'package:eshop/Screen/MyOrder.dart';
 import 'package:eshop/app/routes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +22,7 @@ import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -69,6 +73,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   bool _isCartLoad = true, //7
       _placeOrder = true, //20
       _isSaveLoad = true; //4
+  bool _isNetworkAvail = true;
 
   Animation? buttonSqueezeanimation; //3
   AnimationController? buttonController; //6
@@ -320,13 +325,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ? Stack(
                       children: <Widget>[
                         _showContent(context),
-                        Selector<CartProvider, bool>(
-                          builder: (context, data, child) {
-                            return showCircularProgress(context, data,
-                                Theme.of(context).colorScheme.primarytheme);
-                          },
-                          selector: (_, provider) => provider.isProgress,
-                        ),
+                        // Selector<CartProvider, bool>(
+                        //   builder: (context, data, child) {
+                        //     return showCircularProgress(context, data,
+                        //         Theme.of(context).colorScheme.primarytheme);
+                        //   },
+                        //   selector: (_, provider) => provider.isProgress,
+                        // ),
                       ],
                     )
                   : Stack(
@@ -522,7 +527,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       tag:
                           "$cartHero$index${cartList[index].productList![0].id}",
                       child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Stack(
                             children: [
                               ClipRRect(
@@ -663,10 +668,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                       false) {
                                     if (context.read<UserProvider>().userId !=
                                         "") {
-                                      deleteProductFromCart(
-                                          index, 1, cartList, selectedPos);
-                                      /* removeFromCart(index, true, cartList,
-                                          false, selectedPos);*/
+                                      // deleteProductFromCart(
+                                      //     index, 1, cartList, selectedPos);
+                                      removeFromCart(index, true, cartList,
+                                          false, selectedPos);
+                                      setState(() {});
                                     } else {
                                       db.removeCart(
                                           cartList[index]
@@ -741,7 +747,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     ]);
                                   })
                               : const SizedBox(),
-                          SizedBox(
+                          const SizedBox(
                             height: 3,
                           ),
                           Row(
@@ -787,7 +793,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 2,
                           ),
                           cartList[index].productList![0].availability == "1" ||
@@ -1131,6 +1137,60 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 ))
           ],
         ));
+  }
+
+  getAddress() async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      try {
+        Map parameter = {
+          // USER_ID: context.read<UserProvider>().userId,
+        };
+
+        apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
+          bool error = getdata["error"];
+          if (!error) {
+            var data = getdata["data"];
+
+            addressList =
+                (data as List).map((data) => User.fromAddress(data)).toList();
+
+            for (int i = 0; i < addressList.length; i++) {
+              if (addressList[i].isDefault == "1") {
+                selectedAddress = i;
+                selAddress = addressList[i].id;
+                if (IS_SHIPROCKET_ON == "0") {
+                  if (!ISFLAT_DEL) {
+                    if (totalPrice < double.parse(addressList[i].freeAmt!)) {
+                      deliveryCharge =
+                          double.parse(addressList[i].deliveryCharge!);
+                    } else {
+                      deliveryCharge = 0;
+                    }
+                  }
+                }
+              }
+            }
+
+            // addAddressModel();
+          } else {}
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }, onError: (error) {
+          setSnackbar(error.toString(), context);
+        });
+      } on TimeoutException catch (_) {}
+    } else {
+      if (mounted) {
+        setState(() {
+          _isNetworkAvail = false;
+        });
+      }
+    }
+    return;
   }
 
   //1
@@ -1654,7 +1714,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                     tag:
                         "$cartHero$index${saveLaterList[index].productList![0].id}",
                     child: Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Stack(
                           children: [
                             ClipRRect(
@@ -3521,6 +3581,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 }
                               }),
                         ),
+                        const SizedBox(height: 30),
                       ],
                     )
                   ],
@@ -3570,6 +3631,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               ? shimmer(context)
                               : Column(
                                   children: [
+                                    // SizedBox(
+                                    //   height: 100,
+                                    //   child: getAddress(),
+                                    // ),
+                                    // Text("data"),
                                     Expanded(
                                       child: Stack(
                                         children: <Widget>[
@@ -3613,6 +3679,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                             selector: (_, provider) =>
                                                 provider.isProgress,
                                           ),
+                                          // const OrderConfirmationDialog(),
                                         ],
                                       ),
                                     ),
@@ -3801,15 +3868,15 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                     !deliverable) {
                                                   checkDeliverable(1);
                                                 } else {
-                                                  if (confDia) {
-                                                    if (!context
-                                                        .read<CartProvider>()
-                                                        .isProgress) {
-                                                      confirmDialog(cartList);
-                                                      setState(() {
-                                                        confDia = false;
-                                                      });
-                                                    }
+                                                  // if (confDia) {
+                                                  if (!context
+                                                      .read<CartProvider>()
+                                                      .isProgress) {
+                                                    confirmDialog(cartList);
+                                                    setState(() {
+                                                      confDia = false;
+                                                    });
+                                                    // }
                                                   }
                                                 }
                                               } /*: null*/),
@@ -4299,9 +4366,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         if (response.statusCode == 200) {
           var getdata = json.decode(responseString);
           print("getdata cart****$getdata");
-
           bool error = getdata["error"];
           String? msg = getdata["message"];
+
           if (!error) {
             print("get new balance***${getdata["balance"][0]["balance"]}");
             context
@@ -4364,7 +4431,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   Routers.orderSuccessScreen, (route) => route.isFirst);
             }
           } else {
-            setSnackbar(msg!, context);
+            setSnackbar(msg.toString(), context);
             context.read<CartProvider>().setProgress(false);
           }
         }
@@ -4503,7 +4570,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             //       builder: (BuildContext context) => const OrderSuccess()),
             //   (final Route route) => route.isFirst,
             // );
-
+            // const OrderConfirmationDialog();
             Navigator.pushNamedAndRemoveUntil(
                 context, Routers.orderSuccessScreen, (route) => route.isFirst);
           }
@@ -5762,10 +5829,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                   },
                                   onTapDone: () {
                                     placeOrder('');
+                                    // const OrderConfirmationDialog();
                                   },
                                 );
                               } else {
                                 placeOrder('');
+                                // const OrderConfirmationDialog();
                                 Navigator.pop(context);
                               }
                             }
@@ -5783,10 +5852,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 },
                                 onTapDone: () {
                                   placeOrder('');
+                                  // const OrderConfirmationDialog();
                                 },
                               );
                             } else {
                               placeOrder('');
+                              // const OrderConfirmationDialog();
+
                               Navigator.pop(context);
                             }
                           }
@@ -5986,3 +6058,112 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         : const SizedBox.shrink();
   }
 }
+
+// class OrderConfirmationDialog extends StatelessWidget {
+//   const OrderConfirmationDialog({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Dialog(
+//       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+//       child: Stack(
+//         clipBehavior: Clip.none,
+//         children: [
+//           Positioned(
+//             top: -40,
+//             left: deviceWidth! * 0.3,
+//             child: const SizedBox(
+//               height: 80,
+//               width: 80,
+//               child: Card(
+//                 elevation: 3,
+//                 shape: RoundedRectangleBorder(
+//                   side: BorderSide(
+//                     width: 12,
+//                     color: Colors.white,
+//                   ),
+//                   borderRadius: BorderRadius.all(
+//                     Radius.circular(100),
+//                   ),
+//                 ),
+//                 color: Colors.green,
+//                 child: Icon(
+//                   Icons.done,
+
+//                   color: Colors.white,
+//                   // size: 60,
+//                 ),
+//               ),
+//             ),
+//           ),
+//           Container(
+//             padding: const EdgeInsets.all(20),
+//             height: 200,
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: <Widget>[
+//                 const SizedBox(height: 25),
+//                 Text(
+//                   "Done!",
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 18,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 10),
+//                 Text(
+//                   "Your order has been successfully placed",
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 12,
+//                     fontWeight: FontWeight.normal,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+//                 ElevatedButton(
+//                   style: const ButtonStyle(
+//                     shape: WidgetStatePropertyAll(
+//                       RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.all(
+//                           Radius.circular(20),
+//                         ),
+//                       ),
+//                     ),
+//                     elevation: WidgetStatePropertyAll(0),
+//                     backgroundColor: WidgetStatePropertyAll(
+//                       Color(0XFFE7E8EB),
+//                     ),
+//                   ),
+//                   onPressed: () {
+//                     Navigator.pushReplacement(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => const MyOrder(),
+//                       ),
+//                     ).then(
+//                       (value) {
+//                         Navigator.pop(context);
+//                       },
+//                     );
+//                   },
+//                   child: Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
+//                     child: Text(
+//                       'My Orders',
+//                       style: GoogleFonts.poppins(
+//                         fontSize: 12,
+//                         fontWeight: FontWeight.w600,
+//                         color: Colors.black,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

@@ -435,7 +435,9 @@ class _GettingStartedScreenState extends State<IntroSlider>
                     Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const SignInUpAcc()),
+                          builder: (context) => const SignInUpAcc(
+                                isPop: false,
+                              )),
                     );
                   },
                   child: Text(

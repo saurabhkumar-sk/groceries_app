@@ -17,10 +17,10 @@ class ElseStyleSection extends FeaturedSection {
             padding: const EdgeInsetsDirectional.only(top: 5),
             crossAxisCount: 2,
             shrinkWrap: true,
-            childAspectRatio: 1.2,
+            childAspectRatio: 0.8,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 0,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
             children: List.generate(
               products!.length < 6 ? products.length : 6,
               (index) {

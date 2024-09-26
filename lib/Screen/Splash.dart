@@ -167,8 +167,8 @@ class _SplashScreen extends State<Splash> {
       //     key: Dashboard.dashboardScreenKey,
       //   );
       // }));
-      // Navigator.pushReplacementNamed(context, Routers.dashboardScreen);
-      Navigator.pushReplacementNamed(context, Routers.introSliderScreen);
+      Navigator.pushReplacementNamed(context, Routers.dashboardScreen);
+      // Navigator.pushReplacementNamed(context, Routers.introSliderScreen);
     } else {
       setState(() {
         from = false;

@@ -160,16 +160,16 @@ class FeaturedProductItem extends StatelessWidget {
                   padding: WidgetStatePropertyAll(EdgeInsets.zero),
                 ),
                 onPressed: () {
-                  // Product model = product;
-                  // // currentHero = homeHero;
-                  // print("GOING TO ROUTER");
-                  // Navigator.pushNamed(context, Routers.productDetails,
-                  //     arguments: {
-                  //       "secPos": sectionPosition,
-                  //       "index": index,
-                  //       "list": false,
-                  //       "id": model.id!,
-                  //     });
+                  Product model = product;
+                  // currentHero = homeHero;
+                  print("GOING TO ROUTER");
+                  Navigator.pushNamed(context, Routers.productDetails,
+                      arguments: {
+                        "secPos": sectionPosition,
+                        "index": index,
+                        "list": false,
+                        "id": model.id!,
+                      });
                   // if (_isProgress == false) {
                   //   addToCart(
                   //       index,

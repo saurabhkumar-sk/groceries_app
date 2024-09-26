@@ -515,7 +515,8 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet>
             }
                 : () {})*/
                             saveButton(
-                                getTranslated(context, 'SAVE_LBL')!,
+                                getTranslated(context, 'Save changes')!,
+                                // getTranslated(context, 'SAVE_LBL')!,
                                 !userProvider.getProgress
                                     ? () {
                                         validateAndSave(_changeUserDetailsKey);

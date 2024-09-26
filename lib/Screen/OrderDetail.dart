@@ -317,7 +317,8 @@ class StateOrder extends State<OrderDetail>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${getTranslated(context, 'PRICE_LBL')!} :",
+                    Text(
+                        "${getTranslated(context, 'Price (Incl. of Taxes)')!} :",
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                             color: Theme.of(context).colorScheme.lightBlack2)),
                     Text(
@@ -328,22 +329,22 @@ class StateOrder extends State<OrderDetail>
                   ],
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("${getTranslated(context, 'TAXPER')!} :",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        "+ ${getPriceFormat(context, double.parse(widget.model!.taxAmt!))!}",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text("${getTranslated(context, 'TAXPER')!} :",
+              //           style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              //               color: Theme.of(context).colorScheme.lightBlack2)),
+              //       Text(
+              //           "+ ${getPriceFormat(context, double.parse(widget.model!.taxAmt!))!}",
+              //           style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              //               color: Theme.of(context).colorScheme.lightBlack2))
+              //     ],
+              //   ),
+              // ),
               if (model.itemList![0].productType != 'digital_product')
                 Padding(
                   padding:
@@ -387,22 +388,22 @@ class StateOrder extends State<OrderDetail>
                   ],
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("${getTranslated(context, 'WALLET_BAL')!} :",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2)),
-                    Text(
-                        '-${getPriceFormat(context, double.parse(widget.model!.walBal!))!}',
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.lightBlack2))
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text("${getTranslated(context, 'WALLET_BAL')!} :",
+              //           style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              //               color: Theme.of(context).colorScheme.lightBlack2)),
+              //       Text(
+              //           '-${getPriceFormat(context, double.parse(widget.model!.walBal!))!}',
+              //           style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              //               color: Theme.of(context).colorScheme.lightBlack2))
+              //     ],
+              //   ),
+              // ),
               Padding(
                 padding:
                     const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
@@ -2384,7 +2385,7 @@ class StateOrder extends State<OrderDetail>
                 orderPrescriptionAttachments(model),
                 bankTransfer(model),
                 getSingleProduct(model, ''),
-                downloadInvoice(),
+                // downloadInvoice(),
                 Card(
                   elevation: 0,
                   child: InkWell(

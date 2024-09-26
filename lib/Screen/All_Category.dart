@@ -185,9 +185,9 @@ class AllCategoryState extends State<AllCategory> {
                   findTHeBEst(context),
                   _catList(),
                   const SizedBox(height: 20),
-                  recentViews(context),
-                  const SizedBox(height: 20),
-                  _recentviewItem(context),
+                  // recentViews(context),
+                  // const SizedBox(height: 20),
+                  // _recentviewItem(context),
                 ],
               );
             }),

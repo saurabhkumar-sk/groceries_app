@@ -488,7 +488,7 @@ import '../utils/blured_router.dart';
 // }
 
 class VerifyOtp extends StatefulWidget {
-  final String? mobileNumber, countryCode, title;
+  final String? mobileNumber, countryCode, title, generatedOtp;
   static route(RouteSettings settings) {
     Map? arguments = settings.arguments as Map?;
     return BlurredRouter(
@@ -502,12 +502,13 @@ class VerifyOtp extends StatefulWidget {
     );
   }
 
-  const VerifyOtp(
-      {Key? key,
-      required String this.mobileNumber,
-      this.countryCode,
-      this.title})
-      : super(key: key);
+  const VerifyOtp({
+    Key? key,
+    required String this.mobileNumber,
+    this.countryCode,
+    this.title,
+    this.generatedOtp,
+  }) : super(key: key);
 
   @override
   _MobileOTPState createState() => _MobileOTPState();
@@ -681,66 +682,28 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
   }
 
   void _onFormSubmitted() async {
-    String code = otp!.trim();
+    String code = otp!.trim(); // Get the entered OTP
 
     if (code.length == 6) {
-      _playAnimation();
+      _playAnimation(); // Start the loading animation
 
-      if (isFirebaseAuth!) {
-        AuthCredential authCredential = PhoneAuthProvider.credential(
-            verificationId: _verificationId, smsCode: code);
+      try {
+        // Verify OTP: Check if the entered OTP matches the sent OTP
+        if (code == widget.generatedOtp) {
+          // 'generatedOtp' is the OTP that was sent to the user
 
-        _firebaseAuth
-            .signInWithCredential(authCredential)
-            .then((UserCredential value) async {
-          if (value.user != null) {
-            SettingProvider settingsProvider =
-                Provider.of<SettingProvider>(context, listen: false);
-
-            await buttonController!.reverse();
-            setSnackbar(getTranslated(context, 'OTPMSG')!, context);
-            settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
-            settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
-            if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
-              Future.delayed(const Duration(seconds: 2)).then((_) {
-                // Navigator.pushReplacement(context,
-                //     CupertinoPageRoute(builder: (context) => const SignUp()));
-
-                Navigator.pushReplacementNamed(context, Routers.signupScreen);
-              });
-            } else if (widget.title ==
-                getTranslated(context, 'FORGOT_PASS_TITLE')) {
-              Future.delayed(const Duration(seconds: 2)).then((_) {
-                Navigator.pushNamed(context, Routers.setPassScreen,
-                    arguments: {"mobileNumber": widget.mobileNumber!});
-              });
-            }
-          } else {
-            setSnackbar(getTranslated(context, 'OTPERROR')!, context);
-            await buttonController!.reverse();
-          }
-        }).catchError((error) async {
-          setSnackbar(getTranslated(context, 'WRONGOTP')!, context);
-
-          await buttonController!.reverse();
-        });
-      } else {
-        var response = await apiBaseHelper.postAPICall(
-            verifyOtp, {"mobile": widget.mobileNumber, "otp": code});
-
-        if (!response['error']) {
           SettingProvider settingsProvider =
               Provider.of<SettingProvider>(context, listen: false);
 
-          await buttonController!.reverse();
-          setSnackbar(getTranslated(context, 'OTPMSG')!, context);
+          await buttonController!.reverse(); // Stop animation
+          setSnackbar(getTranslated(context, 'OTPMSG')!,
+              context); // Show success message
           settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
           settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
+
+          // Navigate to signup or password reset screen based on the context
           if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
             Future.delayed(const Duration(seconds: 2)).then((_) {
-              // Navigator.pushReplacement(context,
-              //     CupertinoPageRoute(builder: (context) => const SignUp()));
-
               Navigator.pushReplacementNamed(context, Routers.signupScreen);
             });
           } else if (widget.title ==
@@ -751,14 +714,99 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
             });
           }
         } else {
-          setSnackbar(getTranslated(context, 'OTPERROR')!, context);
-          await buttonController!.reverse();
+          // OTP entered does not match the sent OTP
+          setSnackbar(getTranslated(context, 'WRONGOTP')!, context);
+          await buttonController!.reverse(); // Stop animation
         }
+      } catch (error) {
+        setSnackbar(error.toString(), context); // Show error message
+        await buttonController!.reverse();
       }
     } else {
+      // If OTP code is less than 6 digits
       setSnackbar(getTranslated(context, 'ENTEROTP')!, context);
     }
   }
+
+  // void _onFormSubmitted() async {
+  //   String code = otp!.trim();
+
+  //   if (code.length == 6) {
+  //     _playAnimation();
+
+  //     if (isFirebaseAuth!) {
+  //       AuthCredential authCredential = PhoneAuthProvider.credential(
+  //           verificationId: _verificationId, smsCode: code);
+
+  //       _firebaseAuth
+  //           .signInWithCredential(authCredential)
+  //           .then((UserCredential value) async {
+  //         if (value.user != null) {
+  //           SettingProvider settingsProvider =
+  //               Provider.of<SettingProvider>(context, listen: false);
+
+  //           await buttonController!.reverse();
+  //           setSnackbar(getTranslated(context, 'OTPMSG')!, context);
+  //           settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
+  //           settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
+  //           if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
+  //             Future.delayed(const Duration(seconds: 2)).then((_) {
+  //               // Navigator.pushReplacement(context,
+  //               //     CupertinoPageRoute(builder: (context) => const SignUp()));
+
+  //               Navigator.pushReplacementNamed(context, Routers.signupScreen);
+  //             });
+  //           } else if (widget.title ==
+  //               getTranslated(context, 'FORGOT_PASS_TITLE')) {
+  //             Future.delayed(const Duration(seconds: 2)).then((_) {
+  //               Navigator.pushNamed(context, Routers.setPassScreen,
+  //                   arguments: {"mobileNumber": widget.mobileNumber!});
+  //             });
+  //           }
+  //         } else {
+  //           setSnackbar(getTranslated(context, 'OTPERROR')!, context);
+  //           await buttonController!.reverse();
+  //         }
+  //       }).catchError((error) async {
+  //         setSnackbar(getTranslated(context, 'WRONGOTP')!, context);
+
+  //         await buttonController!.reverse();
+  //       });
+  //     } else {
+  //       var response = await apiBaseHelper.postAPICall(
+  //           verifyOtp, {"mobile": widget.mobileNumber, "otp": code});
+
+  //       if (!response['error']) {
+  //         SettingProvider settingsProvider =
+  //             Provider.of<SettingProvider>(context, listen: false);
+
+  //         await buttonController!.reverse();
+  //         setSnackbar(getTranslated(context, 'OTPMSG')!, context);
+  //         settingsProvider.setPrefrence(MOBILE, widget.mobileNumber!);
+  //         settingsProvider.setPrefrence(COUNTRY_CODE, widget.countryCode!);
+  //         if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
+  //           Future.delayed(const Duration(seconds: 2)).then((_) {
+  //             // Navigator.pushReplacement(context,
+  //             //     CupertinoPageRoute(builder: (context) => const SignUp()));
+
+  //             Navigator.pushReplacementNamed(context, Routers.signupScreen);
+  //           });
+  //         } else if (widget.title ==
+  //             getTranslated(context, 'FORGOT_PASS_TITLE')) {
+  //           Future.delayed(const Duration(seconds: 2)).then((_) {
+  //             Navigator.pushNamed(context, Routers.setPassScreen,
+  //                 arguments: {"mobileNumber": widget.mobileNumber!});
+  //           });
+  //         }
+  //       } else {
+  //         setSnackbar(getTranslated(context, 'OTPERROR')!, context);
+  //         await buttonController!.reverse();
+  //       }
+  //     }
+  //   } else {
+  //     setSnackbar(getTranslated(context, 'ENTEROTP')!, context);
+  //   }
+  // }
 
   Future<void> _playAnimation() async {
     try {
@@ -1022,7 +1070,10 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
       child: SizedBox(
         width: 100,
         height: 100,
-        child: SvgPicture.asset(getThemeColor(context)),
+        // child: SvgPicture.asset('mnb'),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: SvgPicture.asset(getThemeColor(context))),
       ),
     );
   }

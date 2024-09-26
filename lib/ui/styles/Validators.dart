@@ -49,9 +49,11 @@ String? validateCountryCode(String value, String msg1, String msg2) {
 String? validatePass(String value, String? msg1, String? msg2, {int? from}) {
   if (value.isEmpty) {
     return msg1;
-  } else if (from == null &&
-      !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-          .hasMatch(value)) {
+  } else if (from == null || from >= 5
+      //  &&
+      //     !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+      //         .hasMatch(value)
+      ) {
     return msg2;
   } else {
     return null;

@@ -57,6 +57,8 @@ String getWhatsappShareText(
 const String errorMesaage = 'Something went wrong, Error : ';
 const String androidLink = 'https://play.google.com/store/apps/details?id=';
 
+const String appLogo = 'assets/images/home/suvidhalogo.svg';
+
 GlobalKey<ConverstationScreenState> converstationScreenStateKey =
     GlobalKey<ConverstationScreenState>();
 

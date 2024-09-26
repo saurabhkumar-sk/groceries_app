@@ -10,6 +10,7 @@ import 'package:eshop/Provider/HomeProvider.dart';
 import 'package:eshop/Provider/OfferImagesProvider.dart';
 import 'package:eshop/Provider/ProductDetailProvider.dart';
 import 'package:eshop/Provider/ProductProvider.dart';
+import 'package:eshop/Provider/SmsServicesProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Provider/pushNotificationProvider.dart';
 import 'package:eshop/app/languages.dart';
@@ -27,6 +28,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +44,8 @@ import 'app/routes.dart';
 import 'firebase_options.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 ///4.2.0
 void main() async {
@@ -54,7 +58,28 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
+  // const IOSInitializationSettings initializationSettingsIOS =
+  //     IOSInitializationSettings(
+  //         requestAlertPermission: true,
+  //         requestBadgePermission: true,
+  //         requestSoundPermission: true);
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    // iOS: initializationSettingsIOS,
+  );
+
+  // await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //     onSelectNotification: (String? payload) async {
+  //   // Handle notification tap
+  //   if (payload != null) {
+  //     print('Notification payload: $payload');
+  //     // You can navigate to a different screen or show a dialog
+  //   }
+  // });
   //await Firebase.initializeApp();
   initializedDownload();
   HttpOverrides.global = MyHttpOverrides();
@@ -122,6 +147,9 @@ void main() async {
             create: (context) => PaymentIdProvider()),
         ChangeNotifierProvider<PushNotificationProvider>(
             create: (context) => PushNotificationProvider()),
+        ChangeNotifierProvider<SmsServiceProvider>(
+            create: (context) =>
+                SmsServiceProvider(flutterLocalNotificationsPlugin)),
         BlocProvider<PersonalConverstationsCubit>(
             create: (context) => PersonalConverstationsCubit(ChatRepository())),
         //cubit to get brand details on home page
@@ -198,8 +226,7 @@ class _MyAppState extends State<MyApp> {
         locale: _locale,
         supportedLocales: [...Languages().codes()],
         onGenerateRoute: Routers.onGenerateRouted,
-        initialRoute: Routers.dashboardScreen,
-        // initialRoute: Routers.splash,
+        initialRoute: Routers.splash,
         //scaffoldMessengerKey: scaffoldMessageKey,
         localizationsDelegates: const [
           AppLocalization.delegate,
@@ -221,7 +248,9 @@ class _MyAppState extends State<MyApp> {
         theme: lightTheme,
         debugShowCheckedModeBanner: false,
 
-        darkTheme: darkTheme,
+        darkTheme: lightTheme,
+        // darkTheme: darkTheme,
+
         themeMode: themeNotifier.getThemeMode(),
       );
     }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:developer';
 import '../settings.dart';
@@ -537,7 +539,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 (index, url) {
                   return AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
-                      width: _curSlider == index ? 30.0 : 8.0,
+                      width: _curSlider == index ? 8.0 : 8.0,
                       height: 8.0,
                       margin: const EdgeInsets.symmetric(
                           vertical: 2.0, horizontal: 4.0),
@@ -1014,179 +1016,185 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                  widget.saleIndex != null
-                      ? dataModel.saleList[widget.saleIndex!].status == "1"
-                          ? getPriceFormat(
-                              context,
-                              double.parse(
-                                  model.prVarientList![pos].saleFinalPrice!))!
-                          : '${getPriceFormat(context, price)!} '
-                      : model.isSalesOn == "1"
-                          ? getPriceFormat(
-                              context,
-                              double.parse(
-                                  model.prVarientList![pos].saleFinalPrice!))!
-                          : '${getPriceFormat(context, price)!} ',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.fontColor)),
-              // from
-              //     ? Selector<CartProvider, List<SectionModel>>(
-              //         builder: (context, data, child) {
-              //           if (!qtyChange) {
-              //             SectionModel? tempId = data.firstWhereOrNull((cp) =>
-              //                 cp.id == model.id &&
-              //                 cp.varientId == model.prVarientList![0].id!);
-              //             if (tempId != null) {
-              //               qtyController.text = tempId.qty!;
-              //             } else {
-              //               String qty = model
-              //                   .prVarientList![model.selVarient!].cartCount!;
-              //               if (qty == "0") {
-              //                 qtyController.text =
-              //                     model.minOrderQuntity.toString();
-              //               } else {
-              //                 qtyController.text = qty;
-              //               }
-              //             }
-              //           }
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                      widget.saleIndex != null
+                          ? dataModel.saleList[widget.saleIndex!].status == "1"
+                              ? getPriceFormat(
+                                  context,
+                                  double.parse(model
+                                      .prVarientList![pos].saleFinalPrice!))!
+                              : '${getPriceFormat(context, price)!} '
+                          : model.isSalesOn == "1"
+                              ? getPriceFormat(
+                                  context,
+                                  double.parse(model
+                                      .prVarientList![pos].saleFinalPrice!))!
+                              : '${getPriceFormat(context, price)!} ',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.fontColor)),
+                  _offPrice(_oldSelVarient, data),
+                ],
+              ),
+              from
+                  ? Selector<CartProvider, List<SectionModel>>(
+                      builder: (context, data, child) {
+                        if (!qtyChange) {
+                          SectionModel? tempId = data.firstWhereOrNull((cp) =>
+                              cp.id == model.id &&
+                              cp.varientId == model.prVarientList![0].id!);
+                          if (tempId != null) {
+                            qtyController.text = tempId.qty!;
+                          } else {
+                            String qty = model
+                                .prVarientList![model.selVarient!].cartCount!;
+                            if (qty == "0") {
+                              qtyController.text =
+                                  model.minOrderQuntity.toString();
+                            } else {
+                              qtyController.text = qty;
+                            }
+                          }
+                        }
 
-              //           return Padding(
-              //             padding: const EdgeInsetsDirectional.only(
-              //                 start: 3.0, bottom: 5, top: 3),
-              //             child: model.availability == "0"
-              //                 ? const SizedBox()
-              //                 : Row(
-              //                     children: <Widget>[
-              //                       InkWell(
-              //                         child: Card(
-              //                           shape: RoundedRectangleBorder(
-              //                             borderRadius:
-              //                                 BorderRadius.circular(50),
-              //                           ),
-              //                           child: const Padding(
-              //                             padding: EdgeInsets.all(8.0),
-              //                             child: Icon(
-              //                               Icons.remove,
-              //                               size: 15,
-              //                             ),
-              //                           ),
-              //                         ),
-              //                         onTap: () {
-              //                           if (context
-              //                                       .read<CartProvider>()
-              //                                       .isProgress ==
-              //                                   false &&
-              //                               (int.parse(qtyController.text)) >
-              //                                   1) {
-              //                             addAndRemoveQty(
-              //                                 qtyController.text,
-              //                                 2,
-              //                                 model.itemsCounter!.length *
-              //                                     int.parse(model.qtyStepSize!),
-              //                                 int.parse(model.qtyStepSize!),
-              //                                 model);
-              //                           }
-              //                         },
-              //                       ),
-              //                       Container(
-              //                         width: 37,
-              //                         height: 20,
-              //                         color: Colors.transparent,
-              //                         child: Stack(
-              //                           children: [
-              //                             TextField(
-              //                               textAlign: TextAlign.center,
-              //                               readOnly: true,
-              //                               style: TextStyle(
-              //                                   fontSize: 12,
-              //                                   color: Theme.of(context)
-              //                                       .colorScheme
-              //                                       .fontColor),
-              //                               controller: qtyController,
-              //                               decoration: const InputDecoration(
-              //                                 border: InputBorder.none,
-              //                               ),
-              //                             ),
-              //                             PopupMenuButton<String>(
-              //                               tooltip: '',
-              //                               icon: const Icon(
-              //                                 Icons.arrow_drop_down,
-              //                                 size: 1,
-              //                               ),
-              //                               onSelected: (String value) {
-              //                                 if (context
-              //                                         .read<CartProvider>()
-              //                                         .isProgress ==
-              //                                     false) {
-              //                                   addAndRemoveQty(
-              //                                       value,
-              //                                       3,
-              //                                       model.itemsCounter!.length *
-              //                                           int.parse(
-              //                                               model.qtyStepSize!),
-              //                                       int.parse(
-              //                                           model.qtyStepSize!),
-              //                                       model);
-              //                                 }
-              //                               },
-              //                               itemBuilder:
-              //                                   (BuildContext context) {
-              //                                 return model.itemsCounter!
-              //                                     .map<PopupMenuItem<String>>(
-              //                                         (String value) {
-              //                                   return PopupMenuItem(
-              //                                       value: value,
-              //                                       child: Text(value,
-              //                                           style: TextStyle(
-              //                                               color: Theme.of(
-              //                                                       context)
-              //                                                   .colorScheme
-              //                                                   .fontColor)));
-              //                                 }).toList();
-              //                               },
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                       InkWell(
-              //                         child: Card(
-              //                           shape: RoundedRectangleBorder(
-              //                             borderRadius:
-              //                                 BorderRadius.circular(50),
-              //                           ),
-              //                           child: const Padding(
-              //                             padding: EdgeInsets.all(8.0),
-              //                             child: Icon(
-              //                               Icons.add,
-              //                               size: 15,
-              //                             ),
-              //                           ),
-              //                         ),
-              //                         onTap: () {
-              //                           print(
-              //                               "counter*****${model.itemsCounter!.length}*******${model.qtyStepSize}");
-              //                           if (context
-              //                                   .read<CartProvider>()
-              //                                   .isProgress ==
-              //                               false) {
-              //                             addAndRemoveQty(
-              //                                 qtyController.text,
-              //                                 1,
-              //                                 model.itemsCounter!.length *
-              //                                     int.parse(model.qtyStepSize!),
-              //                                 int.parse(model.qtyStepSize!),
-              //                                 model);
-              //                           }
-              //                         },
-              //                       )
-              //                     ],
-              //                   ),
-              //           );
-              //         },
-              //         selector: (_, provider) => provider.cartList)
-              //     : const SizedBox(),
-              _offPrice(_oldSelVarient, data),
+                        return Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                              start: 3.0, bottom: 5, top: 3),
+                          child: model.availability == "0"
+                              ? const SizedBox()
+                              : Row(
+                                  children: <Widget>[
+                                    InkWell(
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.remove,
+                                            size: 15,
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        if (context
+                                                    .read<CartProvider>()
+                                                    .isProgress ==
+                                                false &&
+                                            (int.parse(qtyController.text)) >
+                                                1) {
+                                          addAndRemoveQty(
+                                              qtyController.text,
+                                              2,
+                                              model.itemsCounter!.length *
+                                                  int.parse(model.qtyStepSize!),
+                                              int.parse(model.qtyStepSize!),
+                                              model);
+                                        }
+                                      },
+                                    ),
+                                    Container(
+                                      width: 37,
+                                      height: 20,
+                                      color: Colors.transparent,
+                                      child: Stack(
+                                        children: [
+                                          TextField(
+                                            textAlign: TextAlign.center,
+                                            readOnly: true,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .fontColor),
+                                            controller: qtyController,
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                          PopupMenuButton<String>(
+                                            tooltip: '',
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              size: 1,
+                                            ),
+                                            onSelected: (String value) {
+                                              if (context
+                                                      .read<CartProvider>()
+                                                      .isProgress ==
+                                                  false) {
+                                                addAndRemoveQty(
+                                                    value,
+                                                    3,
+                                                    model.itemsCounter!.length *
+                                                        int.parse(
+                                                            model.qtyStepSize!),
+                                                    int.parse(
+                                                        model.qtyStepSize!),
+                                                    model);
+                                              }
+                                            },
+                                            itemBuilder:
+                                                (BuildContext context) {
+                                              return model.itemsCounter!
+                                                  .map<PopupMenuItem<String>>(
+                                                      (String value) {
+                                                return PopupMenuItem(
+                                                    value: value,
+                                                    child: Text(value,
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .fontColor)));
+                                              }).toList();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    InkWell(
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.add,
+                                            size: 15,
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        print(
+                                            "counter*****${model.itemsCounter!.length}*******${model.qtyStepSize}");
+                                        if (context
+                                                .read<CartProvider>()
+                                                .isProgress ==
+                                            false) {
+                                          addAndRemoveQty(
+                                              qtyController.text,
+                                              1,
+                                              model.itemsCounter!.length *
+                                                  int.parse(model.qtyStepSize!),
+                                              int.parse(model.qtyStepSize!),
+                                              model);
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                        );
+                      },
+                      selector: (_, provider) => provider.cartList)
+                  : const SizedBox(),
               const Spacer(),
               shareIcn(data),
             ],
@@ -2162,7 +2170,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                   _rate(data),
                                   _price(_oldSelVarient, true, data),
                                   _inclusiveTaxText(),
-                                  _offPrice(_oldSelVarient, data),
+                                  // _offPrice(_oldSelVarient, data),
                                   _brandName(data),
                                   // _packAndSizes(),
                                   // packAndSizesList(),
@@ -2288,7 +2296,8 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                             Expanded(
                                 child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.white,
+                                color:
+                                    Theme.of(context).colorScheme.primarytheme,
                               ),
                               child: InkWell(
                                 onTap: !context.read<CartProvider>().isProgress
@@ -2307,29 +2316,28 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                       .textTheme
                                       .labelLarge!
                                       .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primarytheme),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                 )),
                               ),
                             )),
-                            Expanded(
-                                child: SimBtn(
-                                    width: 0.8,
-                                    height: 55,
-                                    title: getTranslated(context, 'BUYNOW'),
-                                    onBtnSelected: !context
-                                            .read<CartProvider>()
-                                            .isProgress
-                                        ? () async {
-                                            String qty;
+                            // Expanded(
+                            //     child: SimBtn(
+                            //         width: 0.8,
+                            //         height: 55,
+                            //         title: getTranslated(context, 'BUYNOW'),
+                            //         onBtnSelected: !context
+                            //                 .read<CartProvider>()
+                            //                 .isProgress
+                            //             ? () async {
+                            //                 String qty;
 
-                                            qty = qtyController.text;
+                            //                 qty = qtyController.text;
 
-                                            addToCart(qty, true, true, data);
-                                          }
-                                        : () {})),
+                            //                 addToCart(qty, true, true, data);
+                            //               }
+                            //             : () {})),
                           ],
                         ]),
                       ))
@@ -2388,61 +2396,64 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                       ),
                                     ] else ...[
                                       const SizedBox(width: 15),
-                                      Container(
-                                        height: 30,
-                                        width: 30,
-                                        color: colors.lightWhite2,
-                                        child: favImg(data),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          color: colors.lightWhite2,
+                                          child: Center(child: favImg(data)),
+                                        ),
                                       ),
-                                      const SizedBox(width: 15),
-                                      SizedBox(
-                                        width: deviceWidth! * 0.35,
-                                        height: 45,
-                                        child: Expanded(
-                                            child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(6),
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                          child: InkWell(
-                                            onTap: !context
-                                                    .read<CartProvider>()
-                                                    .isProgress
-                                                ? () {
-                                                    String qty;
+                                      const SizedBox(width: 5),
+                                      // SizedBox(
+                                      //   width: deviceWidth! * 0.8,
+                                      //   // height: 45,
+                                      //   child: Expanded(
+                                      //       child: Container(
+                                      //     decoration: BoxDecoration(
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(6),
+                                      //       color: Theme.of(context)
+                                      //           .colorScheme
+                                      //           .primary,
+                                      //     ),
+                                      //     child: InkWell(
+                                      //       onTap: !context
+                                      //               .read<CartProvider>()
+                                      //               .isProgress
+                                      //           ? () {
+                                      //               String qty;
 
-                                                    qty = qtyController.text;
+                                      //               qty = qtyController.text;
 
-                                                    addToCart(
-                                                        qty, false, true, data);
-                                                  }
-                                                : () {},
-                                            child: Center(
-                                                child: Text(
-                                              getTranslated(
-                                                  context, 'ADD_CART')!,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelLarge!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .white),
-                                            )),
-                                          ),
-                                        )),
-                                      ),
+                                      //               addToCart(
+                                      //                   qty, false, true, data);
+                                      //             }
+                                      //           : () {},
+                                      //       child: Center(
+                                      //           child: Text(
+                                      //         getTranslated(
+                                      //             context, 'ADD_CART')!,
+                                      //         style: Theme.of(context)
+                                      //             .textTheme
+                                      //             .labelLarge!
+                                      //             .copyWith(
+                                      //                 fontWeight:
+                                      //                     FontWeight.bold,
+                                      //                 color: Theme.of(context)
+                                      //                     .colorScheme
+                                      //                     .white),
+                                      //       )),
+                                      //     ),
+                                      //   )),
+                                      // ),
                                       Expanded(
                                           child: SimBtn(
-                                              width: 0.35,
+                                              width: double.infinity,
                                               height: 45,
                                               title: getTranslated(
-                                                  context, 'BUYNOW'),
+                                                  context, 'ADD_CART'),
                                               onBtnSelected: !context
                                                       .read<CartProvider>()
                                                       .isProgress
@@ -2455,6 +2466,26 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                                           data);
                                                     }
                                                   : () {})),
+                                      const SizedBox(width: 5),
+
+                                      // Expanded(
+                                      //     child: SimBtn(
+                                      //         width: 0.35,
+                                      //         height: 45,
+                                      //         title: getTranslated(
+                                      //             context, 'BUYNOW'),
+                                      //         onBtnSelected: !context
+                                      //                 .read<CartProvider>()
+                                      //                 .isProgress
+                                      //             ? () async {
+                                      //                 String qty;
+
+                                      //                 qty = qtyController.text;
+
+                                      //                 addToCart(qty, true, true,
+                                      //                     data);
+                                      //               }
+                                      //             : () {})),
                                     ],
                                   ])),
                     )

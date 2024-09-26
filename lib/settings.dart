@@ -3,7 +3,7 @@ class AppSettings {
   ///Basic setup details
   ///
   ///App Name
-  static const String appName = 'eShop';
+  static const String appName = 'Suvidha';
   static const String packageName = 'com.orbitxmedia.suvidha';
   // static const String packageName = 'com.eshopsingle.customer';
   static const String iosPackage = 'com.wrteam.eshop';
@@ -11,14 +11,19 @@ class AppSettings {
   static const String appStoreId = '123456789';
   //change this with your client secret and API urls
 
-  static const String baseUrl = 'https://eshopweb.store/app/v1/api/';
+  static const String baseUrl = 'https://suvidhasupermarket.xyz/app/v1/api/';
+  // static const String baseUrl = 'https://eshopweb.store/app/v1/api/';
   // static const String baseUrl = 'https://suvidha.sonisamaj.xyz/app/v1/api/';
   // static const String baseUrl = 'PLACE_YOUR_HOST_URL_HERE';
   static const String chatBaseUrl = "PLACE_YOUR_CHAT_BASE_URL_HERE";
 
-  static const String deepLinkUrlPrefix = 'https://eshopwrteamin.page.link';
-  static const String deepLinkName = 'eshop.com';
-  static const String shareNavigationWebUrl = "eshopweb.store";
+  static const String deepLinkUrlPrefix = 'https://suvidhasupermarket.xyz/';
+  // static const String deepLinkUrlPrefix = 'https://eshopwrteamin.page.link';
+  static const String deepLinkName = 'https://suvidhasupermarket.xyz';
+  // static const String deepLinkName = 'suvidha.com';
+  static const String shareNavigationWebUrl = "suvidhasupermarket.xyz";
+  // static const String deepLinkName = 'eshop.com';
+  // static const String shareNavigationWebUrl = "eshopweb.store";
 
   static const bool disableDarkTheme = false;
 

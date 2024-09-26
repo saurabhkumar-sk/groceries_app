@@ -350,7 +350,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                             ),
                                             const Divider(),
                                             Container(
-                                              height: 90,
+                                              height: 100,
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 10),

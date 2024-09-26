@@ -1,17 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:eshop/Helper/Constant.dart';
+import 'package:eshop/Helper/PushNotificationService.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
+import 'package:eshop/Provider/SmsServicesProvider.dart';
 import 'package:eshop/Screen/Privacy_Policy.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../Helper/Color.dart';
 import '../Helper/Session.dart';
@@ -147,67 +153,167 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   Future<void> getVerifyUser() async {
     try {
-      var data = {
-        MOBILE: mobile,
-        "is_forgot_password":
-            (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')
-                    ? 1
-                    : 0)
-                .toString()
+      const String authorizationToken =
+          "TUtCij4Zzvxd1khM7wyXrOPFalGR5KHSb2LQW0V8NnqD9EpAfszUuiR4bBjVJ8CGKgIfcZFepyntsXo0";
+      final otp = (100000 +
+              (999999 - 100000) *
+                  (DateTime.now().millisecondsSinceEpoch % 100000) ~/
+                  100000)
+          .toString();
+
+      log(otp, name: "OTP");
+
+      final url =
+          "https://www.fast2sms.com/dev/bulkV2?authorization=$authorizationToken&route=otp&variables_values=$otp&flash=0&numbers=$mobile";
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+        'auth-token': authorizationToken,
       };
 
-      apiBaseHelper.postAPICall(getVerifyUserApi, data).then((getdata) async {
-        bool? error = getdata["error"];
-        String? msg = getdata["message"];
-        await buttonController!.reverse();
+      final response = await http.get(Uri.parse(url), headers: headers);
+      final responseBody = json.decode(response.body);
+
+      if (response.statusCode == 200 && responseBody['return'] == true) {
+        // OTP sent successfully
+        log("OTP sent successfully.", name: "API");
+        SmsServiceProvider smsServiceProvider =
+            Provider.of<SmsServiceProvider>(context, listen: false);
+        // smsServiceProvider.showNotification(otp);
 
         SettingProvider settingsProvider =
             Provider.of<SettingProvider>(context, listen: false);
+        await buttonController!.reverse();
 
         if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
-          if (!error!) {
-            setSnackbar(msg!, context);
-
-            Future.delayed(const Duration(seconds: 1)).then((_) {
-              Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => VerifyOtp(
-                            mobileNumber: mobile!,
-                            countryCode: countrycode,
-                            title: getTranslated(context, 'SEND_OTP_TITLE'),
-                          )));
-            });
-          } else {
-            setSnackbar(msg!, context);
-          }
+          setSnackbar(responseBody['message'][0], context);
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => VerifyOtp(
+                  generatedOtp: otp,
+                  mobileNumber: mobile!,
+                  countryCode: countrycode,
+                  title: getTranslated(context, 'SEND_OTP_TITLE'),
+                ),
+              ),
+            );
+          });
+        } else if (widget.title ==
+            getTranslated(context, 'FORGOT_PASS_TITLE')) {
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => VerifyOtp(
+                  mobileNumber: mobile!,
+                  countryCode: countrycode,
+                  title: getTranslated(context, 'FORGOT_PASS_TITLE'),
+                ),
+              ),
+            );
+          });
         }
-        if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
-          if (!error!) {
-            Future.delayed(const Duration(seconds: 1)).then((_) {
-              Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => VerifyOtp(
-                            mobileNumber: mobile!,
-                            countryCode: countrycode,
-                            title: getTranslated(context, 'FORGOT_PASS_TITLE'),
-                          )));
-            });
-          } else {
-            setSnackbar(getTranslated(context, 'FIRSTSIGNUP_MSG')!, context);
-          }
+      } else {
+        if (responseBody['message'][0] == "OTP sent successfully.") {
+          setSnackbar(responseBody['message'][0], context);
+        } else {
+          setSnackbar("OTP sending failed", context);
         }
-      }, onError: (error) {
-        setSnackbar(error.toString(), context);
-      });
-    } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      }
+    } catch (error) {
+      setSnackbar(error.toString(), context);
+    } finally {
       await buttonController!.reverse();
     }
-
-    return;
   }
+
+  // void _showNotification(String otp) async {
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     'otp_channel',
+  //     'OTP Notifications',
+  //     channelDescription: 'Channel for OTP notifications',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //   );
+
+  //   const NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     'Your OTP',
+  //     'Your OTP is: $otp',
+  //     platformChannelSpecifics,
+  //     payload: 'OTP Payload',
+  //   );
+  // }
+  // Future<void> getVerifyUser() async {
+  //   try {
+  //     var data = {
+  //       MOBILE: mobile,
+  //       "is_forgot_password":
+  //           (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')
+  //                   ? 1
+  //                   : 0)
+  //               .toString()
+  //     };
+
+  //     apiBaseHelper.postAPICall(getVerifyUserApi, data).then((getdata) async {
+  //       bool? error = getdata["error"];
+  //       String? msg = getdata["message"];
+  //       await buttonController!.reverse();
+
+  //       SettingProvider settingsProvider =
+  //           Provider.of<SettingProvider>(context, listen: false);
+
+  //       if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
+  //         if (!error!) {
+  //           setSnackbar(msg!, context);
+
+  //           Future.delayed(const Duration(seconds: 1)).then((_) {
+  //             Navigator.push(
+  //                 context,
+  //                 CupertinoPageRoute(
+  //                     builder: (context) => VerifyOtp(
+  //                           mobileNumber: mobile!,
+  //                           countryCode: countrycode,
+  //                           title: getTranslated(context, 'SEND_OTP_TITLE'),
+  //                         )));
+  //           });
+  //         } else {
+  //           setSnackbar(msg!, context);
+  //         }
+  //       }
+  //       if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
+  //         if (!error!) {
+  //           Future.delayed(const Duration(seconds: 1)).then((_) {
+  //             Navigator.push(
+  //                 context,
+  //                 CupertinoPageRoute(
+  //                     builder: (context) => VerifyOtp(
+  //                           mobileNumber: mobile!,
+  //                           countryCode: countrycode,
+  //                           title: getTranslated(context, 'FORGOT_PASS_TITLE'),
+  //                         )));
+  //           });
+  //         } else {
+  //           setSnackbar(getTranslated(context, 'FIRSTSIGNUP_MSG')!, context);
+  //         }
+  //       }
+  //     }, onError: (error) {
+  //       setSnackbar(error.toString(), context);
+  //     });
+  //   } on TimeoutException catch (_) {
+  //     setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+  //     await buttonController!.reverse();
+  //   }
+
+  //   return;
+  // }
 
   createAccTxt() {
     return Padding(
@@ -423,53 +529,54 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
   }
 
   Widget verifyBtn() {
-    // return AppBtn(
-    //     title: getTranslated(context, 'SIGN_UP_LBL'),
-    //     // ? getTranslated(context, 'SEND_OTP')
-    //     // : getTranslated(context, 'CONTINUE'),
-    // title: widget.title == getTranslated(context, 'SEND_OTP_TITLE')
-    //     ? getTranslated(context, 'SEND_OTP')
-    //     : getTranslated(context, 'CONTINUE'),
-    //     btnAnim: buttonSqueezeanimation,
-    //     btnCntrl: buttonController,
-    // onBtnSelected: () async {
-    //   FocusScope.of(context).requestFocus(FocusNode());
-    //   validateAndSubmit();
-    // });
-    return CupertinoButton(
-      child: Container(
-        width: buttonSqueezeanimation!.value,
-        height: 45,
-        alignment: FractionalOffset.center,
-        decoration: const BoxDecoration(
-          color: Color(0XFF4BA203),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        ),
-        child: buttonSqueezeanimation!.value > 75.0
-            ? Text(
-                getTranslated(context, 'SIGN_UP_LBL') ?? 'Sign Up',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: colors.whiteTemp,
-                      fontWeight: FontWeight.normal,
-                    ),
-              )
-            : CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.primarytheme,
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(colors.whiteTemp),
-              ),
-      ),
-      onPressed: () {
-        //if it's not loading do the thing
-        if (buttonSqueezeanimation!.value == 15) {
-          () async {
-            FocusScope.of(context).requestFocus(FocusNode());
-            validateAndSubmit();
-          };
-        }
-      },
-    );
+    return AppBtn(
+        // title: getTranslated(context, 'SIGN_UP_LBL'),
+        // ? getTranslated(context, 'SEND_OTP')
+        // : getTranslated(context, 'CONTINUE'),
+        title: widget.title == getTranslated(context, 'SEND_OTP_TITLE')
+            ? getTranslated(context, 'SEND_OTP')
+            : getTranslated(context, 'CONTINUE'),
+        btnAnim: buttonSqueezeanimation,
+        btnCntrl: buttonController,
+        onBtnSelected: () async {
+          FocusScope.of(context).requestFocus(FocusNode());
+
+          validateAndSubmit();
+        });
+    // return CupertinoButton(
+    //   child: Container(
+    //     width: buttonSqueezeanimation!.value,
+    //     height: 45,
+    //     alignment: FractionalOffset.center,
+    //     decoration: const BoxDecoration(
+    //       color: Color(0XFF4BA203),
+    //       borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    //     ),
+    //     child: buttonSqueezeanimation!.value > 75.0
+    //         ? Text(
+    //             getTranslated(context, 'SIGN_UP_LBL') ?? 'Sign Up',
+    //             textAlign: TextAlign.center,
+    //             style: Theme.of(context).textTheme.titleLarge!.copyWith(
+    //                   color: colors.whiteTemp,
+    //                   fontWeight: FontWeight.normal,
+    //                 ),
+    //           )
+    //         : CircularProgressIndicator(
+    //             color: Theme.of(context).colorScheme.primarytheme,
+    //             valueColor:
+    //                 const AlwaysStoppedAnimation<Color>(colors.whiteTemp),
+    //           ),
+    //   ),
+    //   onPressed: () {
+    //     //if it's not loading do the thing
+    //     if (buttonSqueezeanimation!.value == 15) {
+    //       () async {
+    //         FocusScope.of(context).requestFocus(FocusNode());
+    //         validateAndSubmit();
+    //       };
+    //     }
+    //   },
+    // );
   }
 
   Widget termAndPolicyTxt() {
@@ -640,42 +747,44 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
     deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 15,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 15,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        body: _isNetworkAvail
-            ? Stack(
-                children: [
-                  // Image.asset(
-                  //   'assets/images/doodle.png',
-                  //   fit: BoxFit.fill,
-                  //   width: double.infinity,
-                  //   height: double.infinity,
-                  //   color: Theme.of(context).colorScheme.primarytheme,
-                  // ),
-                  getLoginContainer(),
-                  getLogo(),
-                  Positioned(
-                      bottom: 20,
-                      left: 10,
-                      right: 10,
-                      child: termAndPolicyTxt()),
-                ],
-              )
-            : noInternet(context));
+      ),
+      body: _isNetworkAvail
+          ? Stack(
+              children: [
+                // Image.asset(
+                //   'assets/images/doodle.png',
+                //   fit: BoxFit.fill,
+                //   width: double.infinity,
+                //   height: double.infinity,
+                //   color: Theme.of(context).colorScheme.primarytheme,
+                // ),
+                getLoginContainer(),
+                getLogo(),
+                Positioned(
+                  bottom: 20,
+                  left: 10,
+                  right: 10,
+                  child: termAndPolicyTxt(),
+                ),
+              ],
+            )
+          : noInternet(context),
+    );
   }
 
   getLoginContainer() {
@@ -740,15 +849,16 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                   ),
                   // verifyCodeTxt(),
                   setCodeWithMono(),
-                  passwordField(),
+                  // passwordField(),
                   const SizedBox(
-                    height: 20,
+                    height: 70,
                   ),
-                  emailField(),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  // emailField(),
+                  // const SizedBox(
+                  //   height: 30,
+                  // ),
                   verifyBtn(),
+
                   // termAndPolicyTxt(),
                 ],
               ),

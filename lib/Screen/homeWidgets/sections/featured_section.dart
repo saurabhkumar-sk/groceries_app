@@ -11,10 +11,10 @@ import '../../../Model/Section_Model.dart';
 class FeaturedSectionGet {
   List<FeaturedSection> featuredSections = [
     DefaultStyleSection(),
-    StyleOneSection(),
-    StyleTwoSection(),
-    StyleThreeSection(),
-    StyleFourSection(),
+    // StyleOneSection(),
+    // StyleTwoSection(),
+    // StyleThreeSection(),
+    // StyleFourSection(),
   ];
 
   FeaturedSection get(String style,

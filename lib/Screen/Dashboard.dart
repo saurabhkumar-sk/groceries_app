@@ -199,6 +199,7 @@ class HomePageState extends State<Dashboard>
               backgroundColor: Theme.of(context).colorScheme.lightWhite,
               appBar: _selBottom == 0 || _selBottom == 2 ? null : _getAppBar(),
               body: PageView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 children: [
                   const HomePage(),
@@ -424,13 +425,15 @@ class HomePageState extends State<Dashboard>
           child: Container(
             // height: ,
             decoration: const BoxDecoration(
-              color: colors.blackTemp,
+              color: Color(0XFFF3F5F7),
+              // color: colors.blackTemp,
               // borderRadius: const BorderRadius.only(
               // topLeft: Radius.circular(20),
               // topRight: Radius.circular(20)
               // )
             ),
             child: BottomBar(
+              showActiveBackgroundColor: false,
               height: 74,
               duration: const Duration(milliseconds: 400),
               curve: Curves.easeInOut,
@@ -455,27 +458,28 @@ class HomePageState extends State<Dashboard>
                         "assets/images/home/home.png",
                         // "${imagePath}sel_home.svg",
                         color: _selBottom == 0
-                            ? Theme.of(context).colorScheme.primarytheme
-                            : Theme.of(context).colorScheme.white,
+                            ? const Color(0XFF4BA203)
+                            : const Color(0XFF4BA203),
 
                         width: 18,
                         height: 20,
                       ),
                       Text(
-                          getTranslated(
-                            context,
-                            'HOME_LBL',
-                          )!,
-                          style: TextStyle(
-                            color: _selBottom == 0
-                                ? Theme.of(context).colorScheme.primarytheme
-                                : Theme.of(context).colorScheme.white,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Poppins",
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true),
+                        getTranslated(
+                          context,
+                          'HOME_LBL',
+                        )!,
+                        style: TextStyle(
+                          color: _selBottom == 0
+                              ? const Color(0XFF4BA203)
+                              : const Color(0XFF4BA203),
+                          fontSize: 8,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins",
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
                     ],
                   ),
                   // title: Text(
@@ -485,39 +489,40 @@ class HomePageState extends State<Dashboard>
                   //     )!,
                   //     overflow: TextOverflow.ellipsis,
                   //     softWrap: true),
-                  activeColor: Theme.of(context).colorScheme.primarytheme,
+                  activeColor: const Color(0XFF4BA203),
                 ),
                 BottomBarItem(
-                    icon: Column(
-                      children: [
-                        Image.asset(
-                          "assets/images/home/categories.png",
-                          // "${imagePath}sel_home.svg",
-                          color: _selBottom == 1
-                              ? Theme.of(context).colorScheme.primarytheme
-                              : Theme.of(context).colorScheme.white,
+                  icon: Column(
+                    children: [
+                      Image.asset(
+                        "assets/images/home/categories.png",
+                        // "${imagePath}sel_home.svg",
+                        color: _selBottom == 1
+                            ? const Color(0XFF4BA203)
+                            : const Color(0XFF4BA203),
 
-                          width: 18,
-                          height: 20,
+                        width: 18,
+                        height: 20,
+                      ),
+                      Text(
+                        getTranslated(context, 'category')!,
+                        style: TextStyle(
+                          color: _selBottom == 1
+                              ? const Color(0XFF4BA203)
+                              : const Color(0XFF4BA203),
+                          fontSize: 8,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins",
                         ),
-                        Text(
-                          getTranslated(context, 'category')!,
-                          style: TextStyle(
-                            color: _selBottom == 1
-                                ? Theme.of(context).colorScheme.primarytheme
-                                : Theme.of(context).colorScheme.white,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Poppins",
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true,
-                        )
-                      ],
-                    ),
-                    // title: Text(getTranslated(context, 'category')!,
-                    //     overflow: TextOverflow.ellipsis, softWrap: true),
-                    activeColor: Theme.of(context).colorScheme.primarytheme),
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      )
+                    ],
+                  ),
+                  // title: Text(getTranslated(context, 'category')!,
+                  //     overflow: TextOverflow.ellipsis, softWrap: true),
+                  activeColor: const Color(0XFF4BA203),
+                ),
                 BottomBarItem(
                   icon: Column(
                     children: [
@@ -525,8 +530,8 @@ class HomePageState extends State<Dashboard>
                         "assets/images/home/favourite.png",
                         // "${imagePath}sel_home.svg",
                         color: _selBottom == 2
-                            ? Theme.of(context).colorScheme.primarytheme
-                            : Theme.of(context).colorScheme.white,
+                            ? const Color(0XFF4BA203)
+                            : const Color(0XFF4BA203),
 
                         width: 18,
                         height: 20,
@@ -535,8 +540,8 @@ class HomePageState extends State<Dashboard>
                         getTranslated(context, 'Favourite')!,
                         style: TextStyle(
                           color: _selBottom == 2
-                              ? Theme.of(context).colorScheme.primarytheme
-                              : Theme.of(context).colorScheme.white,
+                              ? const Color(0XFF4BA203)
+                              : const Color(0XFF4BA203),
                           fontSize: 8,
                           fontWeight: FontWeight.w500,
                           fontFamily: "Poppins",
@@ -548,7 +553,7 @@ class HomePageState extends State<Dashboard>
                   ),
                   // title: Text(getTranslated(context, 'SALE')!,
                   // overflow: TextOverflow.ellipsis, softWrap: true),
-                  activeColor: Theme.of(context).colorScheme.primarytheme,
+                  activeColor: const Color(0XFF4BA203),
                 ),
                 // BottomBarItem(
                 //   icon: _selBottom == 2
@@ -583,8 +588,8 @@ class HomePageState extends State<Dashboard>
                                 "assets/images/home/cart.png",
                                 // "${imagePath}sel_home.svg",
                                 color: _selBottom == 3
-                                    ? Theme.of(context).colorScheme.primarytheme
-                                    : Theme.of(context).colorScheme.white,
+                                    ? const Color(0XFF4BA203)
+                                    : const Color(0XFF4BA203),
 
                                 width: 18,
                                 height: 20,
@@ -592,10 +597,8 @@ class HomePageState extends State<Dashboard>
                               Text(getTranslated(context, 'CART')!,
                                   style: TextStyle(
                                     color: _selBottom == 3
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .primarytheme
-                                        : Theme.of(context).colorScheme.white,
+                                        ? const Color(0XFF4BA203)
+                                        : const Color(0XFF4BA203),
                                     fontSize: 8,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: "Poppins",
@@ -636,7 +639,7 @@ class HomePageState extends State<Dashboard>
                     },
                     selector: (_, homeProvider) => homeProvider.curCartCount,
                   ),
-                  activeColor: Theme.of(context).colorScheme.primarytheme,
+                  activeColor: const Color(0XFF4BA203),
                 ),
                 // BottomBarItem(
                 //   icon: _selBottom == 4

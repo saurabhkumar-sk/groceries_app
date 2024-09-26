@@ -16,7 +16,9 @@ class DefaultStyleSection extends FeaturedSection {
           padding: const EdgeInsetsDirectional.only(top: 5),
           crossAxisCount: 2,
           shrinkWrap: true,
-          //childAspectRatio: 0.8,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
           physics: const NeverScrollableScrollPhysics(),
           children: List.generate(
             products.length < 4 ? products.length : 4,

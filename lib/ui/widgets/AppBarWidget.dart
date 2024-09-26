@@ -43,6 +43,24 @@ getAppBar(String title, BuildContext context, {int? from}) {
     actions: <Widget>[
       from == 1 || title == "Profile"
           ? const SizedBox()
+          // : InkWell(
+          //     onTap: () {
+          //       if (title != "WishList") {
+          //         Navigator.pushNamed(
+          //           context,
+          //           Routers.favoriteScreen,
+          //         );
+          //       }
+          //     },
+          //     child: Padding(
+          //       padding: const EdgeInsets.only(right: 10.0),
+          //       child: Image.asset(
+          //         'assets/images/home/wishlist.png',
+          //         width: 20,
+          //         color: Theme.of(context).colorScheme.primarytheme,
+          //       ),
+          //     ),
+          //   ),
           : IconButton(
               icon: SvgPicture.asset(
                 "${imagePath}search.svg",
@@ -122,8 +140,8 @@ getAppBar(String title, BuildContext context, {int? from}) {
                       // )),
                       (data.isNotEmpty && data != "0")
                           ? Positioned(
-                              bottom: 21,
-                              right: 1,
+                              top: 2,
+                              right: 8,
                               child: Container(
                                   //  height: 20,
                                   decoration: const BoxDecoration(

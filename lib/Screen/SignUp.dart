@@ -248,7 +248,7 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
             fontWeight: FontWeight.normal),
         validator: (val) => validateUserName(
             val!,
-            getTranslated(context, 'USER_REQUIRED'),
+            getTranslated(context, 'Name is Required'),
             getTranslated(context, 'USER_LENGTH')),
         onSaved: (String? value) {
           name = value;
@@ -262,7 +262,7 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
             color: Theme.of(context).colorScheme.fontColor,
             size: 17,
           ),
-          hintText: getTranslated(context, 'NAMEHINT_LBL'),
+          hintText: getTranslated(context, 'Name'),
           hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
               color: Theme.of(context).colorScheme.fontColor,
               fontWeight: FontWeight.normal),
@@ -401,10 +401,14 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
               color: Theme.of(context).colorScheme.fontColor,
               fontWeight: FontWeight.normal),
           controller: passwordController,
-          validator: (val) => validatePass(
-              val!,
-              getTranslated(context, 'PWD_REQUIRED'),
-              getTranslated(context, 'PASSWORD_VALIDATION')),
+          validator: (value) {
+            return value = "Password is Required";
+          },
+          // validator: (val) => validatePass(
+          //   val!,
+          //   getTranslated(context, 'PWD_REQUIRED'),
+          //   getTranslated(context, 'PASSWORD_VALIDATION'),
+          // ),
           onSaved: (String? value) {
             password = value;
           },
@@ -684,7 +688,8 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
                       setUserName(),
                       setEmail(),
                       setPass(),
-                      setRefer(),
+                      // setRefer(),
+                      const SizedBox(height: 20),
                       verifyBtn(),
                       loginTxt(),
                     ],

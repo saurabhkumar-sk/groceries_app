@@ -1,6 +1,7 @@
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/Session.dart';
 import 'package:eshop/Screen/Dashboard.dart';
+import 'package:eshop/app/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -72,19 +73,24 @@ class StateSuccess extends State<OrderSuccess> {
                       color: Theme.of(context).colorScheme.primarytheme,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
-                    child: Text(getTranslated(context, 'CONTINUE_SHOPPING')!,
+                    child: Text(getTranslated(context, 'My Orders')!,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Theme.of(context).colorScheme.white,
                             fontWeight: FontWeight.normal))),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
-                    Dashboard.dashboardScreenKey = GlobalKey<HomePageState>();
-                    return Dashboard(
-                      key: Dashboard.dashboardScreenKey,
-                    );
-                  }));
+                  // Navigator.of(context)
+                  //     .pushReplacement(MaterialPageRoute(builder: (context) {
+                  //   Dashboard.dashboardScreenKey = GlobalKey<HomePageState>();
+                  //   return Dashboard(
+                  //     key: Dashboard.dashboardScreenKey,
+                  //   );
+                  // }));
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    Routers.myOrderScreen,
+                    (route) => route.isFirst,
+                  );
                 },
               ),
             )

@@ -68,12 +68,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
-  TextEditingController mobileController = TextEditingController();
   // TextEditingController(text: isDemoApp ? "9876543210" : );
-  // final mobileController =
-  //     TextEditingController(text: isDemoApp ? "9876543210" : "");
+  final mobileController =
+      TextEditingController(text: isDemoApp ? "8010308357" : "");
   final passwordController =
       TextEditingController(text: isDemoApp ? "12345678" : "");
+  // TextEditingController(text: isDemoApp ? "Qwerty@123" : "");
   String? countryName;
   FocusNode? passFocus, monoFocus = FocusNode();
 
@@ -114,9 +114,12 @@ class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
         vsync: this, duration: const Duration(milliseconds: 2500));
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
-    mobileController = TextEditingController(
-      text: isDemoApp ? "9876543210" : widget.mobileController,
-    );
+    // mobileController = TextEditingController(
+    //   text: widget.mobileController!.isEmpty
+    //       ? "8010308357"
+    //       : removeSpecialChars(widget.mobileController ?? ""),
+    //   // text: isDemoApp ? "8010308357" : widget.mobileController,
+    // );
     buttonSqueezeanimation = Tween(
       begin: deviceWidth! * 0.7,
       end: 50.0,
@@ -139,6 +142,10 @@ class _LoginPageState extends State<LoginScreen> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+  }
+
+  String removeSpecialChars(String input) {
+    return input.replaceAll(RegExp(r'[^0-9]'), '');
   }
 
   void getSetting() {

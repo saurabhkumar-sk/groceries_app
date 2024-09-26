@@ -24,7 +24,7 @@ class MyOrder extends StatefulWidget {
     Map? arguments = settings.arguments as Map?;
     return BlurredRouter(
       builder: (context) {
-        return MyOrder();
+        return const MyOrder();
       },
     );
   }

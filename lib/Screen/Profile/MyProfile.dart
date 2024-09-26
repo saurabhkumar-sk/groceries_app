@@ -14,9 +14,11 @@ import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Screen/Customer_Support.dart';
 import 'package:eshop/Screen/Faqs.dart';
 import 'package:eshop/Screen/HomePage.dart';
+import 'package:eshop/Screen/Login.dart';
 import 'package:eshop/Screen/Privacy_Policy.dart';
 import 'package:eshop/Screen/Profile/widget/editProfileBottomSheet.dart';
 import 'package:eshop/Screen/ReferEarn.dart';
+import 'package:eshop/Screen/SignInUpAcc.dart';
 import 'package:eshop/app/languages.dart';
 import 'package:eshop/app/routes.dart';
 import 'package:eshop/ui/widgets/AppBarWidget.dart';
@@ -281,14 +283,31 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                         decoration: TextDecoration.underline,
                                       )),
                               onTap: () {
-                                Navigator.pushNamed(
+                                // Navigator.pushNamed(
+                                //   context,
+                                //   Routers.loginScreen,
+                                //   arguments: {
+                                //     "isPop": true,
+                                //     "classType": const MyProfile()
+                                //   },
+                                // );
+                                Navigator.pushAndRemoveUntil(
                                   context,
-                                  Routers.loginScreen,
-                                  arguments: {
-                                    "isPop": true,
-                                    "classType": const MyProfile()
-                                  },
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const LoginScreen(isPop: false),
+                                  ),
+                                  (route) => false,
                                 );
+
+                                // Navigator.pushNamed(
+                                //   context,
+                                //   Routers.loginScreen,
+                                //   arguments: {
+                                //     "isPop": true,
+                                //     "classType": const MyProfile()
+                                //   },
+                                // );
                               },
                             ))
                         : const SizedBox.shrink();
@@ -477,10 +496,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             : _getDrawerItem(getTranslated(context, 'YOUR_PROM_CO')!,
                 'assets/images/promo.svg'),
         // CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
-        context.read<UserProvider>().userId == ""
-            ? const SizedBox.shrink()
-            : _getDrawerItem(getTranslated(context, 'MYTRANSACTION')!,
-                'assets/images/pro_th.svg'),
+        // context.read<UserProvider>().userId == ""
+        //     ? const SizedBox.shrink()
+        //     : _getDrawerItem(getTranslated(context, 'MYTRANSACTION')!,
+        //         'assets/images/pro_th.svg'),
         // CUR_USERID == "" || CUR_USERID == null ? SizedBox.shrink() : _getDivider(),
 
         // if (disableDarkTheme == false) ...{
@@ -1398,8 +1417,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
               width: 80,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                      width: 1.0, color: Theme.of(context).colorScheme.white)),
+                  border: Border.all(width: 5.0, color: Colors.white)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100.0),
                 child:
@@ -1431,12 +1449,11 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                     height: 25,
                     width: 25,
                     decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primarytheme,
+                        color: Colors.green,
                         borderRadius: const BorderRadius.all(
                           Radius.circular(20),
                         ),
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primarytheme)),
+                        border: Border.all(width: 3, color: Colors.white)),
                     child: Icon(
                       Icons.edit,
                       color: Theme.of(context).colorScheme.white,
