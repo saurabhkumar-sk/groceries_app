@@ -1096,6 +1096,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                               int.parse(model.qtyStepSize!),
                                               model);
                                         }
+                                        setState(() {});
                                       },
                                     ),
                                     Container(
@@ -1172,20 +1173,36 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                           ),
                                         ),
                                       ),
+                                      // onTap: () {
+                                      //   print(
+                                      //       "counter*****${model.itemsCounter!.length}*******${model.qtyStepSize}");
+                                      //   if (context
+                                      //           .read<CartProvider>()
+                                      //           .isProgress ==
+                                      //       false) {
+                                      //     addAndRemoveQty(
+                                      //         qtyController.text,
+                                      //         1,
+                                      //         model.itemsCounter!.length *
+                                      //             int.parse(model.qtyStepSize!),
+                                      //         int.parse(model.qtyStepSize!),
+                                      //         model);
+                                      //   }
+                                      // },
                                       onTap: () {
                                         print(
                                             "counter*****${model.itemsCounter!.length}*******${model.qtyStepSize}");
-                                        if (context
-                                                .read<CartProvider>()
-                                                .isProgress ==
-                                            false) {
+                                        if (!context
+                                            .read<CartProvider>()
+                                            .isProgress) {
                                           addAndRemoveQty(
-                                              qtyController.text,
-                                              1,
-                                              model.itemsCounter!.length *
-                                                  int.parse(model.qtyStepSize!),
-                                              int.parse(model.qtyStepSize!),
-                                              model);
+                                            qtyController.text,
+                                            1,
+                                            model.itemsCounter!.length *
+                                                int.parse(model.qtyStepSize!),
+                                            int.parse(model.qtyStepSize!),
+                                            model,
+                                          );
                                         }
                                       },
                                     )
@@ -1667,55 +1684,72 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       String qty, int from, int totalLen, int itemCounter, Product data) {
     Product model1 = data;
 
-    print("totallen****$totalLen");
-
+    // Ensure that userId is valid (if user is logged in)
     if (context.read<UserProvider>().userId != "") {
+      // Case when increasing the quantity
       if (from == 1) {
-        if (int.parse(qty) >= totalLen) {
+        // Check if quantity exceeds the maximum stock (totalLen)
+        if (int.parse(qty) + itemCounter > totalLen) {
           qtyController.text = totalLen.toString();
-          //qtyChange = true;
-          setSnackbar("${getTranslated(context, 'MAXQTY')!}  $qty", context);
+          setSnackbar(
+              "${getTranslated(context, 'MAXQTY')!}  $totalLen", context);
         } else {
-          qtyController.text = (int.parse(qty) + (itemCounter)).toString();
+          // Increment the quantity by itemCounter
+          qtyController.text = (int.parse(qty) + itemCounter).toString();
           qtyChange = true;
+          // Call setState to rebuild the UI with new quantity
+          setState(() {});
         }
-      } else if (from == 2) {
-        if (int.parse(qty) <= model1.minOrderQuntity!) {
-          qtyController.text = itemCounter.toString();
+      }
+      // Case when decreasing the quantity
+      else if (from == 2) {
+        if (int.parse(qty) - itemCounter < model1.minOrderQuntity!) {
+          qtyController.text = model1.minOrderQuntity!.toString();
           qtyChange = true;
         } else {
           qtyController.text = (int.parse(qty) - itemCounter).toString();
           qtyChange = true;
+          // Call setState to rebuild the UI with new quantity
+          setState(() {});
         }
       } else {
+        // Update quantity directly in other cases
         qtyController.text = qty;
         qtyChange = true;
+        setState(() {});
       }
+
+      // Reset progress in CartProvider after the quantity update
       context.read<CartProvider>().setProgress(false);
-      setState(() {});
     } else {
+      // Same logic for when the user is not logged in (userId is empty)
       if (from == 1) {
-        if (int.parse(qty) >= totalLen) {
+        if (int.parse(qty) + itemCounter > totalLen) {
           qtyController.text = totalLen.toString();
-          setSnackbar("${getTranslated(context, 'MAXQTY')!}  $qty", context);
+          setSnackbar(
+              "${getTranslated(context, 'MAXQTY')!}  $totalLen", context);
         } else {
-          qtyController.text = (int.parse(qty) + (itemCounter)).toString();
+          qtyController.text = (int.parse(qty) + itemCounter).toString();
           qtyChange = true;
+          setState(() {});
         }
       } else if (from == 2) {
-        if (int.parse(qty) <= model1.minOrderQuntity!) {
-          qtyController.text = itemCounter.toString();
+        if (int.parse(qty) - itemCounter < model1.minOrderQuntity!) {
+          qtyController.text = model1.minOrderQuntity!.toString();
           qtyChange = true;
         } else {
           qtyController.text = (int.parse(qty) - itemCounter).toString();
           qtyChange = true;
+          setState(() {});
         }
       } else {
         qtyController.text = qty;
         qtyChange = true;
+        setState(() {});
       }
+
+      // Reset progress in CartProvider after the quantity update
       context.read<CartProvider>().setProgress(false);
-      setState(() {});
     }
   }
 
@@ -2286,11 +2320,32 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                               width: 10,
                               height: 55,
                               title: getTranslated(context, 'VIEWINCART'),
-                              onBtnSelected: () => Navigator.push(
+                              onBtnSelected: () {
+                                // First, check if isProgress is not null and is true
+                                // if (context.read<CartProvider>().isProgress ??
+                                //     false) {
+                                String qty = qtyController.text;
+
+                                // Check if qty is not null or empty, and proceed with addToCart
+                                // if (qty.isNotEmpty) {
+                                addToCart(qty, false, true, data);
+                                // .then((_) {
+                                Navigator.push(
                                   context,
                                   CupertinoPageRoute(
-                                      builder: (context) =>
-                                          const Cart(fromBottom: false))),
+                                    builder: (context) =>
+                                        const Cart(fromBottom: false),
+                                  ),
+                                );
+                                // });
+                                // }
+                                // else {
+                                //   print('Quantity is empty');
+                                // }
+                                // } else {
+                                // print('Progress is not active');
+                                // }
+                              },
                             ))
                           ] else ...[
                             Expanded(

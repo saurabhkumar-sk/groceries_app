@@ -1589,31 +1589,32 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 )
               ],
             ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       getTranslated(context, 'TAXPER')!,
+            //       style: TextStyle(
+            //           color: Theme.of(context).colorScheme.lightBlack2),
+            //     ),
+            //     Text(
+            //       '${cartList[index].taxPercentage!}%',
+            //       style: TextStyle(
+            //           color: Theme.of(context).colorScheme.lightBlack2),
+            //     ),
+            //     Text(
+            //       ' ${getPriceFormat(context, double.parse(cartList[index].taxAmt!) * (int.parse(cartList[index].qty!)))}',
+            //       style: TextStyle(
+            //           color: Theme.of(context).colorScheme.lightBlack2),
+            //     )
+            //   ],
+            // ),
+            const SizedBox(height: 3),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  getTranslated(context, 'TAXPER')!,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack2),
-                ),
-                Text(
-                  '${cartList[index].taxPercentage!}%',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack2),
-                ),
-                Text(
-                  ' ${getPriceFormat(context, double.parse(cartList[index].taxAmt!) * (int.parse(cartList[index].qty!)))}',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.lightBlack2),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  getTranslated(context, 'TOTAL_LBL')!,
+                  getTranslated(context, 'Total (Incl. of all taxes)')!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.lightBlack2),
@@ -3546,6 +3547,55 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               ],
                             ),
                         Center(
+                          child: Column(
+                            children: [
+                              const Text("Looking for something else?"),
+                              CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  openWhatsApp("919101125757");
+                                },
+                                child: Container(
+                                  width: deviceWidth! * 0.9,
+                                  height: 35,
+                                  alignment: FractionalOffset.center,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Contact Us-",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                      ),
+                                      const SizedBox(width: 30),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5.0),
+                                        child: Image.asset(
+                                          'assets/images/home/WhatsApp_icon 1.png',
+                                          width: 34,
+                                          height: 34,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Center(
                           child: SimBtn(
                               width: 0.9,
                               height: 35,
@@ -3587,6 +3637,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ],
                 ),
               );
+  }
+
+  Future<void> openWhatsApp(String phoneNumber) async {
+    final whatsappUrl = "https://wa.me/$phoneNumber";
+    launchUrl(
+      Uri.parse(whatsappUrl),
+    );
   }
 
   ///1
@@ -4256,33 +4313,35 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       String? payVia;
       if (paymentMethod == getTranslated(context, 'COD_LBL')) {
         payVia = "COD";
-      } else if (paymentMethod == getTranslated(context, 'PAYPAL_LBL')) {
-        payVia = "PayPal";
-      } else if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {
-        payVia = "phonepe";
-      } else if (paymentMethod == getTranslated(context, 'PAYUMONEY_LBL')) {
-        payVia = "PayUMoney";
-      } else if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
-        payVia = "RazorPay";
-      } else if (paymentMethod == getTranslated(context, 'PAYSTACK_LBL')) {
-        payVia = "Paystack";
-      } else if (paymentMethod == getTranslated(context, 'FLUTTERWAVE_LBL')) {
-        payVia = "Flutterwave";
-      } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
-        payVia = "Stripe";
-      } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
-        payVia = "Paytm";
-      } else if (paymentMethod == getTranslated(context, 'INSTAMOJO_LBL')) {
-        payVia = "Instamojo";
-      } else if (paymentMethod == "Wallet") {
-        payVia = "Wallet";
-      } else if (paymentMethod == getTranslated(context, 'BANKTRAN')) {
-        payVia = "bank_transfer";
-      } else if (paymentMethod == getTranslated(context, 'MIDTRANS_LBL')) {
-        payVia = 'MidTrans';
-      } else if (paymentMethod == getTranslated(context, 'MY_FATOORAH_LBL')) {
-        payVia = 'my fatoorah';
+      } else if (paymentMethod == getTranslated(context, 'UPI on Delivery')) {
+        payVia = "UPI on Delivery";
+      } else if (paymentMethod ==
+          getTranslated(context, 'Credit - Debit Card')) {
+        payVia = "Credit - Debit Card";
       }
+      // else if (paymentMethod == getTranslated(context, 'PAYUMONEY_LBL')) {
+      //   payVia = "PayUMoney";
+      // } else if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
+      //   payVia = "RazorPay";
+      // } else if (paymentMethod == getTranslated(context, 'PAYSTACK_LBL')) {
+      //   payVia = "Paystack";
+      // } else if (paymentMethod == getTranslated(context, 'FLUTTERWAVE_LBL')) {
+      //   payVia = "Flutterwave";
+      // } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
+      //   payVia = "Stripe";
+      // } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
+      //   payVia = "Paytm";
+      // } else if (paymentMethod == getTranslated(context, 'INSTAMOJO_LBL')) {
+      //   payVia = "Instamojo";
+      // } else if (paymentMethod == "Wallet") {
+      //   payVia = "Wallet";
+      // } else if (paymentMethod == getTranslated(context, 'BANKTRAN')) {
+      //   payVia = "bank_transfer";
+      // } else if (paymentMethod == getTranslated(context, 'MIDTRANS_LBL')) {
+      //   payVia = 'MidTrans';
+      // } else if (paymentMethod == getTranslated(context, 'MY_FATOORAH_LBL')) {
+      //   payVia = 'my fatoorah';
+      // }
 
       var request = http.MultipartRequest("POST", placeOrderApi);
       request.headers.addAll(headers);
@@ -4330,7 +4389,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           request.fields[LOCAL_PICKUP] = isStorePickUp == "true" ? "1" : "0";
         }
 
-        if (paymentMethod == getTranslated(context, 'COD_LBL')) {
+        if (paymentMethod == getTranslated(context, 'COD_LBL') ||
+            paymentMethod == getTranslated(context, 'UPI on Delivery') ||
+            paymentMethod == getTranslated(context, 'Credit - Debit Card')) {
           request.fields[ACTIVE_STATUS] = PLACED;
         } else {
           if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {

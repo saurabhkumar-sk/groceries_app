@@ -50,23 +50,54 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addCartItem(SectionModel? item) {
+  // addCartItem(SectionModel? item) {
+  //   if (item != null) {
+  //     _cartList.add(item);
+  //     notifyListeners();
+  //   }
+  // }
+
+  void addCartItem(SectionModel? item) {
     if (item != null) {
-      _cartList.add(item);
+      // If the product is already in the cart, update the quantity
+      final existingIndex = _cartList
+          .indexWhere((cartItem) => cartItem.varientId == item.varientId);
+      if (existingIndex != -1) {
+        _cartList[existingIndex].qty =
+            (int.parse(_cartList[existingIndex].qty!) + 1).toString();
+      } else {
+        _cartList.add(item); // Add new product if not already in the cart
+      }
       notifyListeners();
     }
   }
 
-  updateCartItem(String? id, String qty, int index, String vId) {
-    final i = _cartList.indexWhere((cp) => cp.id == id && cp.varientId == vId);
+  // updateCartItem(String? id, String qty, int index, String vId) {
+  //   final i = _cartList.indexWhere((cp) => cp.id == id && cp.varientId == vId);
 
-    _cartList[i].qty = qty;
-    _cartList[i].productList![0].prVarientList![index].cartCount = qty;
+  //   _cartList[i].qty = qty;
+  //   _cartList[i].productList![0].prVarientList![index].cartCount = qty;
 
-    notifyListeners();
+  //   notifyListeners();
+  // }
+
+  void updateCartItem(String? id, String qty, int index, String vId) {
+    final i =
+        _cartList.indexWhere((item) => item.id == id && item.varientId == vId);
+
+    if (i != -1) {
+      _cartList[i].qty = qty;
+      _cartList[i].productList![0].prVarientList![index].cartCount = qty;
+      notifyListeners(); // Notify only after the update
+    }
   }
 
-  setCartlist(List<SectionModel> cartList) {
+  // setCartlist(List<SectionModel> cartList) {
+  //   _cartList.clear();
+  //   _cartList.addAll(cartList);
+  //   notifyListeners();
+  // }
+  void setCartlist(List<SectionModel> cartList) {
     _cartList.clear();
     _cartList.addAll(cartList);
     notifyListeners();

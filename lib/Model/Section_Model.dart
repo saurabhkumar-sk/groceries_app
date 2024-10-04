@@ -93,6 +93,8 @@ class SectionModel {
         productId: parsedJson[PRODUCT_ID],
         productList: productList);
   }
+
+  get variants => null;
 }
 
 class Product {

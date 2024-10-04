@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
@@ -12,12 +14,14 @@ import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Model/Model.dart';
 import 'package:eshop/Model/OfferImages.dart';
 import 'package:eshop/Model/Section_Model.dart';
+import 'package:eshop/Model/User.dart';
 import 'package:eshop/Provider/CartProvider.dart';
 import 'package:eshop/Provider/CategoryProvider.dart';
 import 'package:eshop/Provider/FavoriteProvider.dart';
 import 'package:eshop/Provider/HomeProvider.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
+import 'package:eshop/Screen/Add_Address.dart';
 import 'package:eshop/Screen/All_Category.dart';
 import 'package:eshop/Screen/Profile/MyProfile.dart';
 import 'package:eshop/Screen/cart/Cart.dart';
@@ -29,6 +33,7 @@ import 'package:eshop/ui/widgets/AppBtn.dart';
 import 'package:eshop/ui/widgets/ProductListView.dart';
 import 'package:eshop/ui/widgets/SimBtn.dart';
 import 'package:eshop/ui/widgets/setTitleWidget.dart';
+import 'package:eshop/ui/widgets/user_custom_radio.dart';
 import 'package:eshop/utils/Extensions/extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +56,7 @@ import 'homeWidgets/sections/styles/style_1.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -94,9 +99,23 @@ class _HomePageState extends State<HomePage>
   List<Product> mostFavProList = [];
   PopUpOfferImage popUpOffer = PopUpOfferImage();
   Map? selectedCity;
+  int? selectedAddress = 0;
+  List<User> addressList = [];
+  String? selAddress, paymentMethod = '', selTime, selDate, promocode;
+  bool _isLoading = false;
 
   String? pincodeOrCityName;
   String? slectedCityId = "";
+  StateSetter? checkoutState; //39
+  bool deliverable = false; //10
+  ///2
+  updateProgress(bool progress) {
+    if (mounted) {
+      checkoutState?.call(() {
+        context.read<CartProvider>().setProgress(progress);
+      });
+    }
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -106,6 +125,12 @@ class _HomePageState extends State<HomePage>
     super.initState();
     initCityOrPinCodeWiseDelivery();
     callApi();
+    selectedAddress;
+    _getAddress();
+    _section();
+    _refresh();
+    addressList;
+
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
 
@@ -133,6 +158,18 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  updateCheckout() {
+    if (mounted) checkoutState?.call(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    selectedAddress;
+    addressList;
+    _section();
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
     _scrollBottomBarController.removeListener(() {});
@@ -149,111 +186,113 @@ class _HomePageState extends State<HomePage>
     featuredSectionList =
         context.watch<FetchFeaturedSectionsCubit>().getFeaturedSections();
     hideAppbarAndBottomBarOnScroll(_scrollBottomBarController, context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.lightWhite,
-      body: _isNetworkAvail
-          ? RefreshIndicator(
-              color: Theme.of(context).colorScheme.primarytheme,
-              key: _refreshIndicatorKey,
-              onRefresh: _refresh,
-              child: BlocListener<FetchFeaturedSectionsCubit,
-                  FetchFeaturedSectionsState>(
-                listener: (context, state) {
-                  if (state is FetchFeaturedSectionsSuccess) {
-                    setState(() {});
-                    if (pincodeOrCityName != null &&
-                        pincodeOrCityName.toString().isNotEmpty) {
-                      context.read<SettingProvider>().setPrefrence(
-                          pinCodeOrCityNameKey, pincodeOrCityName!);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.lightWhite,
+        body: _isNetworkAvail
+            ? RefreshIndicator(
+                color: Theme.of(context).colorScheme.primarytheme,
+                key: _refreshIndicatorKey,
+                onRefresh: _refresh,
+                child: BlocListener<FetchFeaturedSectionsCubit,
+                    FetchFeaturedSectionsState>(
+                  listener: (context, state) {
+                    if (state is FetchFeaturedSectionsSuccess) {
+                      setState(() {});
+                      if (pincodeOrCityName != null &&
+                          pincodeOrCityName.toString().isNotEmpty) {
+                        context.read<SettingProvider>().setPrefrence(
+                            pinCodeOrCityNameKey, pincodeOrCityName!);
 
-                      context.read<SettingProvider>().setPrefrenceBool(
-                          "is_city_wise_delivery", isCityWiseDelivery!);
-                    }
-                    context.read<HomeProvider>().setSecLoading(false);
-                  }
-
-                  if (state is FetchFeaturedSectionsFail) {
-                    if (pincodeOrCityName != null) {
-                      setState(() {
-                        pincodeOrCityName = null;
-                      });
+                        context.read<SettingProvider>().setPrefrenceBool(
+                            "is_city_wise_delivery", isCityWiseDelivery!);
+                      }
                       context.read<HomeProvider>().setSecLoading(false);
                     }
-                    setSnackbar(state.error!.toString(), context);
-                  }
-                },
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  controller: _scrollBottomBarController,
-                  child: Stack(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _topbarContainer(),
-                          const SizedBox(height: 105),
-                          // _deliverPincode(),
-                          // _getSearchBar(),
-                          _categoriesAndSeeAllBtn(context),
-                          _catList(),
-                          const SizedBox(height: 5),
-                          _section(),
-                          const SizedBox(height: 60),
 
-                          // _bestSellingBtn(context),
-                          // popularItems(0, context),
-                          // _bestSellingProductsDetails(),
+                    if (state is FetchFeaturedSectionsFail) {
+                      if (pincodeOrCityName != null) {
+                        setState(() {
+                          pincodeOrCityName = null;
+                        });
+                        context.read<HomeProvider>().setSecLoading(false);
+                      }
+                      setSnackbar(state.error!.toString(), context);
+                    }
+                  },
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics()),
+                    controller: _scrollBottomBarController,
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _topbarContainer(),
+                            const SizedBox(height: 75),
+                            // _deliverPincode(),
+                            // _getSearchBar(),
+                            _categoriesAndSeeAllBtn(context),
+                            _catList(),
+                            const SizedBox(height: 5),
+                            _section(),
+                            const SizedBox(height: 0),
 
-                          // _mostLike(),
-                          // const SizedBox(height: 5),
+                            // _bestSellingBtn(context),
+                            // popularItems(0, context),
+                            // _bestSellingProductsDetails(),
 
-                          // oneStopPantryShop(context),
-                          // _mostFav(),
-                          // oneStopPantryProductList(context),
-                          // _slider(),
-                          // const BrandsListWidget(),
+                            // _mostLike(),
+                            // const SizedBox(height: 5),
 
-                          // _section(),
-                          // _mostLike(),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          _appBar(context),
-                          const SizedBox(height: 2),
-                          searchBar(),
-                          const SizedBox(height: 12),
-                          _slider(),
+                            // oneStopPantryShop(context),
+                            // _mostFav(),
+                            // oneStopPantryProductList(context),
+                            // _slider(),
+                            // const BrandsListWidget(),
 
-                          // carouselSlider(),
-                        ],
-                      ),
-                    ],
+                            // _section(),
+                            // _mostLike(),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            _appBar(context),
+                            const SizedBox(height: 2),
+                            searchBar(),
+                            const SizedBox(height: 20),
+                            _slider(),
+
+                            // carouselSlider(),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              )
+            : noInternet(context),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 0.0, left: 15),
+            child: FloatingActionButton(
+              backgroundColor: const Color(0XFF23AA49),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(15),
+                  bottomRight: Radius.circular(15),
+                ),
               ),
-            )
-          : noInternet(context),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 80.0, left: 15),
-          child: FloatingActionButton(
-            backgroundColor: const Color(0XFF23AA49),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15),
-                bottomRight: Radius.circular(15),
+              onPressed: () {
+                openWhatsApp("919101125757");
+              },
+              child: Image.asset(
+                'assets/images/home/WhatsApp_icon 1.png',
+                width: 34,
+                height: 34,
               ),
-            ),
-            onPressed: () {
-              openWhatsApp("919101125757");
-            },
-            child: Image.asset(
-              'assets/images/home/WhatsApp_icon 1.png',
-              width: 34,
-              height: 34,
             ),
           ),
         ),
@@ -1414,7 +1453,7 @@ class _HomePageState extends State<HomePage>
         builder: (context, userName, child) {
           // nameController = TextEditingController(text: userName);
           return ListTile(
-            contentPadding: const EdgeInsets.only(top: 38, left: 18, right: 18),
+            contentPadding: const EdgeInsets.only(top: 0, left: 18, right: 18),
             leading: InkWell(
               onTap: () {
                 Navigator.push(
@@ -1458,28 +1497,88 @@ class _HomePageState extends State<HomePage>
                   // ),
                   ),
             ),
-            title: const Text(
-              'Hello, Welcome',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                fontFamily: "Poppins",
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              userName == "" ? getTranslated(context, 'GUEST')! : userName,
+            title: Text(
+              'Welcome ${userName == "" ? getTranslated(context, 'GUEST')! : userName}',
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
                 fontFamily: "Poppins",
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            subtitle: _isLoading
+                ? const Text("Loading.....")
+                : addressList.isNotEmpty
+                    ? ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              // setState(() {
+                              //   selectedAddress = index;
+                              //   selAddress = addressList[index].id;
+                              // });
+                            },
+                            child: Text(
+                              addressList[selectedAddress!].area.toString(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        },
+                      )
+                    : InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => AddAddress(
+                                      update: false,
+                                      index: addressList.length,
+                                      //updateState: widget.update!,
+                                    )),
+                          );
+                        },
+                        child: const Text('Set your location'),
+                      ),
+            //       _isLoading
+            // ? Center(child: CircularProgressIndicator())
+            // : _isNetworkAvail
+            //     ? ListView.builder(
+            //         itemCount: addressList.length,
+            //         itemBuilder: (context, index) {
+            //           return ListTile(
+            //             title: Text(addressList[index].address),
+            //             subtitle: Text("Delivery Charge: ${addressList[index].deliveryCharge}"),
+            //             trailing: addressList[index].isDefault == "1"
+            //                 ? Icon(Icons.check, color: Colors.green)
+            //                 : null,
+            // onTap: () {
+            //   setState(() {
+            //     selectedAddress = index;
+            //     selAddress = addressList[index].id;
+            //   });
+            //             },
+            //           );
+            //         },
+            //       )
+            //     : Center(child: Text("No network available")),
+            // subtitle: Text(
+            //   userName == "" ? getTranslated(context, 'GUEST')! : userName,
+            //   style: const TextStyle(
+            //     color: Colors.black,
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.w500,
+            //     fontFamily: "Poppins",
+            //   ),
+            //   maxLines: 1,
+            //   overflow: TextOverflow.ellipsis,
+            // ),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1583,6 +1682,291 @@ class _HomePageState extends State<HomePage>
         });
   }
 
+  // address() {
+  //   return Card(
+  //     elevation: 1,
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               const Icon(Icons.location_on),
+  //               Padding(
+  //                   padding: const EdgeInsetsDirectional.only(start: 8.0),
+  //                   child: Text(
+  //                     getTranslated(context, 'SHIPPING_DETAIL') ?? '',
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.bold,
+  //                         color: Theme.of(context).colorScheme.fontColor),
+  //                   )),
+  //             ],
+  //           ),
+  //           const Divider(),
+  //           addressList.isNotEmpty
+  //               ? Padding(
+  //                   padding: const EdgeInsetsDirectional.only(start: 8.0),
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Row(
+  //                         children: [
+  //                           Expanded(
+  //                               child:
+  //                                   Text(addressList[selectedAddress!].name!)),
+  //                           InkWell(
+  //                             child: Padding(
+  //                               padding:
+  //                                   const EdgeInsets.symmetric(horizontal: 8.0),
+  //                               child: Text(
+  //                                 getTranslated(context, 'CHANGE')!,
+  //                                 style: TextStyle(
+  //                                   color: Theme.of(context)
+  //                                       .colorScheme
+  //                                       .primarytheme,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             onTap: () async {
+  //                               await Navigator.pushNamed(
+  //                                   context, Routers.manageAddressScreen,
+  //                                   arguments: {
+  //                                     "home": false,
+  //                                     "update": updateCheckout,
+  //                                     "updateProgress": updateProgress
+  //                                   }).then((value) {
+  //                                 checkoutState?.call(() {
+  //                                   deliverable = false;
+  //                                 });
+  //                               });
+  //                             },
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Text(
+  //                         "${addressList[selectedAddress!].address!}, ${addressList[selectedAddress!].area!}, ${addressList[selectedAddress!].city!}, ${addressList[selectedAddress!].state!}, ${addressList[selectedAddress!].country!}, ${addressList[selectedAddress!].pincode!}",
+  //                         style: Theme.of(context)
+  //                             .textTheme
+  //                             .bodySmall!
+  //                             .copyWith(
+  //                                 color:
+  //                                     Theme.of(context).colorScheme.lightBlack),
+  //                       ),
+  //                       Padding(
+  //                         padding: const EdgeInsets.symmetric(vertical: 5.0),
+  //                         child: Row(
+  //                           children: [
+  //                             Text(
+  //                               addressList[selectedAddress!].mobile!,
+  //                               style: Theme.of(context)
+  //                                   .textTheme
+  //                                   .bodySmall!
+  //                                   .copyWith(
+  //                                       color: Theme.of(context)
+  //                                           .colorScheme
+  //                                           .lightBlack),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 )
+  //               : Padding(
+  //                   padding: const EdgeInsetsDirectional.only(start: 8.0),
+  //                   child: InkWell(
+  //                     child: Text(
+  //                       getTranslated(context, 'ADDADDRESSs')!,
+  //                       style: TextStyle(
+  //                         color: Theme.of(context).colorScheme.fontColor,
+  //                       ),
+  //                     ),
+  //                     onTap: () async {
+  //                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  //                       Navigator.push(
+  //                         context,
+  //                         CupertinoPageRoute(
+  //                             builder: (context) => AddAddress(
+  //                                   update: false,
+  //                                   index: addressList.length,
+  //                                   updateState: updateCheckout,
+  //                                 )),
+  //                       ).then((value) async {
+  //                         //await getShipRocketDeliveryCharge();
+  //                       });
+  //                       if (mounted) setState(() {});
+  //                     },
+  //                   ),
+  //                 )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // _getAddress() async {
+  //   _isNetworkAvail = await isNetworkAvailable();
+  //   if (_isNetworkAvail) {
+  //     try {
+  //       Map parameter = {
+  //         // USER_ID: context.read<UserProvider>().userId,
+  //       };
+
+  //       apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
+  //         bool error = getdata["error"];
+  //         if (!error) {
+  //           var data = getdata["data"];
+  //           setState(() {});
+
+  //           addressList =
+  //               (data as List).map((data) => User.fromAddress(data)).toList();
+
+  //           for (int i = 0; i < addressList.length; i++) {
+  //             if (addressList[i].isDefault == "1") {
+  //               selectedAddress = i;
+  //               selAddress = addressList[i].id;
+  //               setState(() {});
+  //               //   if (IS_SHIPROCKET_ON == "0") {
+  //               //     if (!ISFLAT_DEL) {
+  //               //       if (totalPrice < double.parse(addressList[i].freeAmt!)) {
+  //               //         deliveryCharge =
+  //               //             double.parse(addressList[i].deliveryCharge!);
+  //               //       } else {
+  //               //         deliveryCharge = 0;
+  //               //       }
+  //               //     }
+  //               //   }
+  //             }
+  //           }
+
+  //           // addAddressModel();
+  //         } else {}
+  //         if (mounted) {
+  //           setState(() {
+  //             _isLoading = false;
+  //           });
+  //         }
+  //       }, onError: (error) {
+  //         setSnackbar(error.toString(), context);
+  //       });
+  //     } on TimeoutException catch (_) {}
+  //   } else {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isNetworkAvail = false;
+  //       });
+  //     }
+  //   }
+  //   return;
+  // }
+
+  _getAddress() async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      try {
+        Map<String, dynamic> parameter = {
+          // Replace with actual user ID if necessary
+          // 'user_id': context.read<UserProvider>().userId,
+        };
+
+        // Call the API to get the address data
+        var getdata = await apiBaseHelper.postAPICall(getAddressApi, parameter);
+
+        // Check if there was no error in the response
+        bool error = getdata["error"];
+        if (!error) {
+          var data = getdata["data"];
+          // Update the address list and UI
+          setState(() {
+            addressList =
+                (data as List).map((data) => User.fromAddress(data)).toList();
+          });
+
+          // Find the default address and update the UI
+          for (int i = 0; i < addressList.length; i++) {
+            if (addressList[i].isDefault == "1") {
+              setState(() {
+                selectedAddress = i;
+                selAddress = addressList[i].id;
+              });
+
+              // Add any additional logic for shipping here
+            }
+          }
+        } else {
+          // Handle the case where there's an error in the API response
+          setSnackbar("Error fetching address", context);
+        }
+
+        // Update loading state after fetching data
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      } on TimeoutException catch (_) {
+        setSnackbar("Request timed out", context);
+      } catch (e) {
+        setSnackbar(e.toString(), context);
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _isNetworkAvail = false;
+        });
+      }
+    }
+  }
+
+  // void addAddressModel() {
+  //   for (int i = 0; i < addressList.length; i++) {
+  //     addModel.add(RadioModel(
+  //         isSelected: i == selectedAddress ? true : false,
+  //         name: "${addressList[i].name!}, ${addressList[i].mobile!}",
+  //         add:
+  //             "${addressList[i].address!}, ${addressList[i].area!}, ${addressList[i].city!}, ${addressList[i].state!}, ${addressList[i].country!}, ${addressList[i].pincode!}",
+  //         addItem: addressList[i],
+  //         show: !widget.home!,
+  //         onSetDefault: () {
+  //           if (mounted) {
+  //             setState(() {
+  //               _isProgress = true;
+  //             });
+  //           }
+  //           setAsDefault(i);
+  //         },
+  //         onDeleteSelected: () {
+  //           if (mounted) {
+  //             setState(() {
+  //               _isProgress = true;
+  //             });
+  //           }
+  //           deleteAddress(i);
+  //         },
+  //         onEditSelected: () async {
+  //           await Navigator.push(
+  //               context,
+  //               CupertinoPageRoute(
+  //                 builder: (context) => AddAddress(
+  //                   update: true,
+  //                   index: i,
+  //                   updateState: widget.update,
+  //                 ),
+  //               )).then((value) {
+  //             if (mounted) {
+  //               setState(() {
+  //                 addModel.clear();
+
+  //                 addAddressModel();
+  //               });
+  //             }
+  //           });
+  //         }));
+  //   }
+  // }
+
   Container notificationCircle(BuildContext context, String text) {
     return Container(
       height: 15,
@@ -1618,7 +2002,8 @@ class _HomePageState extends State<HomePage>
     context.read<HomeProvider>().setSliderLoading(true);
     context.read<CategoryProvider>().setCurSelected(0);
     proIds.clear();
-
+    _section();
+    _getAddress();
     return callApi();
   }
 
@@ -3917,6 +4302,7 @@ class _LocationSelectorWidgetState extends State<LocationSelectorWidget> {
   @override
   void initState() {
     context.read<FetchCitiesCubit>().fetch();
+
     _pageScrollController.addListener(() {
       if (_pageScrollController.isEndReached()) {
         if (context.read<FetchCitiesCubit>().hasMoreData()) {

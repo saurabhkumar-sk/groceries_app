@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/Constant.dart';
@@ -23,6 +24,7 @@ import 'package:eshop/repository/chatRepository.dart';
 import 'package:eshop/ui/styles/themedata.dart';
 import 'package:eshop/utils/Hive/hive_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -67,7 +69,8 @@ void main() async {
   //         requestBadgePermission: true,
   //         requestSoundPermission: true);
 
-  final InitializationSettings initializationSettings = InitializationSettings(
+  final InitializationSettings initializationSettings =
+      const InitializationSettings(
     android: initializationSettingsAndroid,
     // iOS: initializationSettingsIOS,
   );

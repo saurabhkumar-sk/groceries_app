@@ -317,6 +317,21 @@ class StateOrder extends State<OrderDetail>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Text("${getTranslated(context, 'Payment Method')!} :",
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.lightBlack2)),
+                    Text(widget.model!.payMethod ?? "",
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.lightBlack2))
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     Text(
                         "${getTranslated(context, 'Price (Incl. of Taxes)')!} :",
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(

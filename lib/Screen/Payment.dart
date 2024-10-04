@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
@@ -56,39 +58,42 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   bool _isLoading = true;
   String? startingDate;
 
-  late bool cod,
-      paypal,
-      razorpay,
-      paumoney,
-      paystack,
-      flutterwave,
-      instamojo,
-      stripe,
-      phonepe,
-      paytm = true,
-      gpay = false,
-      bankTransfer = true,
-      midTrans,
-      myfatoorah;
+  late bool cod, upiOnDelivery, creditAndDebit;
+  // paypal,
+  // razorpay,
+  // paumoney,
+  // paystack,
+  // flutterwave,
+  // instamojo,
+  // stripe,
+  // phonepe,
+  // paytm = true,
+  // gpay = false,
+  // bankTransfer = true,
+  // midTrans,
+  // myfatoorah;
   List<RadioModel> timeModel = [];
   List<RadioModel> payModel = [];
   List<RadioModel> timeModelList = [];
   List<String?> paymentMethodList = [];
   List<String> paymentIconList = [
-    Platform.isIOS ? 'assets/images/applepay.svg' : 'assets/images/gpay.svg',
     'assets/images/cod_payment.svg',
-    'assets/images/paypal.svg',
-    'assets/images/payu.svg',
-    'assets/images/rozerpay.svg',
-    'assets/images/paystack.svg',
-    'assets/images/flutterwave.svg',
-    'assets/images/stripe.svg',
-    'assets/images/paytm.svg',
-    'assets/images/banktransfer.svg',
-    'assets/images/midtrans.svg',
-    'assets/images/myfatoorah.svg',
-    'assets/images/instamojo.svg',
-    'assets/images/phonepe.svg',
+    'assets/images/categories/upi-icon.svg',
+    'assets/images/categories/debit-card-svgrepo-com.svg',
+    // Platform.isIOS ? 'assets/images/applepay.svg' : 'assets/images/gpay.svg',
+
+    // 'assets/images/paypal.svg',
+    // 'assets/images/payu.svg',
+    // 'assets/images/rozerpay.svg',
+    // 'assets/images/paystack.svg',
+    // 'assets/images/flutterwave.svg',
+    // 'assets/images/stripe.svg',
+    // 'assets/images/paytm.svg',
+    // 'assets/images/banktransfer.svg',
+    // 'assets/images/midtrans.svg',
+    // 'assets/images/myfatoorah.svg',
+    // 'assets/images/instamojo.svg',
+    // 'assets/images/phonepe.svg',
   ];
 
   Animation? buttonSqueezeanimation;
@@ -104,22 +109,25 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
     Future.delayed(Duration.zero, () {
       paymentMethodList = [
-        Platform.isIOS
-            ? getTranslated(context, 'APPLEPAY')
-            : getTranslated(context, 'GPAY'),
         getTranslated(context, 'COD_LBL'),
-        getTranslated(context, 'PAYPAL_LBL'),
-        getTranslated(context, 'PAYUMONEY_LBL'),
-        getTranslated(context, 'RAZORPAY_LBL'),
-        getTranslated(context, 'PAYSTACK_LBL'),
-        getTranslated(context, 'FLUTTERWAVE_LBL'),
-        getTranslated(context, 'STRIPE_LBL'),
-        getTranslated(context, 'PAYTM_LBL'),
-        getTranslated(context, 'BANKTRAN'),
-        getTranslated(context, 'MIDTRANS_LBL')!,
-        getTranslated(context, 'MY_FATOORAH_LBL')!,
-        getTranslated(context, 'INSTAMOJO_LBL'),
-        getTranslated(context, 'PHONEPE_LBL'),
+        getTranslated(context, 'UPI on Delivery'),
+        getTranslated(context, 'Credit - Debit Card'),
+        // Platform.isIOS
+        //     ? getTranslated(context, 'APPLEPAY')
+        //     : getTranslated(context, 'GPAY'),
+
+        // getTranslated(context, 'PAYPAL_LBL'),
+        // getTranslated(context, 'PAYUMONEY_LBL'),
+        // getTranslated(context, 'RAZORPAY_LBL'),
+        // getTranslated(context, 'PAYSTACK_LBL'),
+        // getTranslated(context, 'FLUTTERWAVE_LBL'),
+        // getTranslated(context, 'STRIPE_LBL'),
+        // getTranslated(context, 'PAYTM_LBL'),
+        // getTranslated(context, 'BANKTRAN'),
+        // getTranslated(context, 'MIDTRANS_LBL')!,
+        // getTranslated(context, 'MY_FATOORAH_LBL')!,
+        // getTranslated(context, 'INSTAMOJO_LBL'),
+        // getTranslated(context, 'PHONEPE_LBL'),
       ];
     });
     if (widget.msg != '') {
@@ -408,54 +416,59 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                               itemCount:
                                                   paymentMethodList.length,
                                               itemBuilder: (context, index) {
-                                                if (index == 1 &&
-                                                    cod &&
-                                                    context
-                                                            .read<
-                                                                CartProvider>()
-                                                            .cartList[0]
-                                                            .productList![0]
-                                                            .productType !=
-                                                        'digital_product') {
+                                                if (index == 0 && cod
+                                                    //  &&
+                                                    // context
+                                                    //         .read<
+                                                    //             CartProvider>()
+                                                    //         .cartList[0]
+                                                    //         .productList![0]
+                                                    //         .productType !=
+                                                    //     'digital_product'
+                                                    ) {
                                                   return paymentItem(index);
-                                                } else if (index == 2 &&
-                                                    paypal) {
+                                                } else if (index == 1) {
                                                   return paymentItem(index);
-                                                } else if (index == 3 &&
-                                                    paumoney) {
+                                                } else if (index == 2) {
                                                   return paymentItem(index);
-                                                } else if (index == 4 &&
-                                                    razorpay) {
-                                                  return paymentItem(index);
-                                                } else if (index == 5 &&
-                                                    paystack) {
-                                                  return paymentItem(index);
-                                                } else if (index == 6 &&
-                                                    flutterwave) {
-                                                  return paymentItem(index);
-                                                } else if (index == 7 &&
-                                                    stripe) {
-                                                  return paymentItem(index);
-                                                } else if (index == 8 &&
-                                                    paytm) {
-                                                  return paymentItem(index);
-                                                } else if (index == 0 && gpay) {
-                                                  return paymentItem(index);
-                                                } else if (index == 9 &&
-                                                    bankTransfer) {
-                                                  return paymentItem(index);
-                                                } else if (index == 10 &&
-                                                    midTrans) {
-                                                  return paymentItem(index);
-                                                } else if (index == 11 &&
-                                                    myfatoorah) {
-                                                  return paymentItem(index);
-                                                } else if (index == 12 &&
-                                                    instamojo) {
-                                                  return paymentItem(index);
-                                                } else if (index == 13 &&
-                                                    phonepe) {
-                                                  return paymentItem(index);
+                                                  // } else if (index == 2 &&
+                                                  //     paypal) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 3 &&
+                                                  //     paumoney) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 4 &&
+                                                  //     razorpay) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 5 &&
+                                                  //     paystack) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 6 &&
+                                                  //     flutterwave) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 7 &&
+                                                  //     stripe) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 8 &&
+                                                  //     paytm) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 0 && gpay) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 9 &&
+                                                  //     bankTransfer) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 10 &&
+                                                  //     midTrans) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 11 &&
+                                                  //     myfatoorah) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 12 &&
+                                                  //     instamojo) {
+                                                  //   return paymentItem(index);
+                                                  // } else if (index == 13 &&
+                                                  //     phonepe) {
+                                                  //   return paymentItem(index);
                                                 } else {
                                                   return const SizedBox
                                                       .shrink();
@@ -678,72 +691,72 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                     ? true
                     : false
                 : false;
-            paypal = payment["paypal_payment_method"] == "1" ? true : false;
-            paumoney =
-                payment["payumoney_payment_method"] == "1" ? true : false;
-            flutterwave =
-                payment["flutterwave_payment_method"] == "1" ? true : false;
-            razorpay = payment["razorpay_payment_method"] == "1" ? true : false;
-            paystack = payment["paystack_payment_method"] == "1" ? true : false;
-            stripe = payment["stripe_payment_method"] == "1" ? true : false;
-            paytm = payment["paytm_payment_method"] == "1" ? true : false;
-            instamojo =
-                payment["instamojo_payment_method"] == "1" ? true : false;
-            bankTransfer =
-                payment["direct_bank_transfer"] == "1" ? true : false;
-            midTrans = payment['midtrans_payment_method'] == '1' ? true : false;
-            myfatoorah =
-                payment['myfaoorah_payment_method'] == '1' ? true : false;
-            phonepe = payment['phonepe_payment_method'] == '1' ? true : false;
-            if (myfatoorah) {
-              myfatoorahToken = payment['myfatoorah_token'];
-              myfatoorahPaymentMode = payment['myfatoorah_payment_mode'];
-              myfatoorahSuccessUrl = payment['myfatoorah__successUrl'];
-              myfatoorahErrorUrl = payment['myfatoorah__errorUrl'];
-              myfatoorahLanguage = payment['myfatoorah_language'];
-              myfatoorahCountry = payment['myfatoorah_country'];
-            }
+            // paypal = payment["paypal_payment_method"] == "1" ? true : false;
+            // paumoney =
+            //     payment["payumoney_payment_method"] == "1" ? true : false;
+            // flutterwave =
+            //     payment["flutterwave_payment_method"] == "1" ? true : false;
+            // razorpay = payment["razorpay_payment_method"] == "1" ? true : false;
+            // paystack = payment["paystack_payment_method"] == "1" ? true : false;
+            // stripe = payment["stripe_payment_method"] == "1" ? true : false;
+            // paytm = payment["paytm_payment_method"] == "1" ? true : false;
+            // instamojo =
+            //     payment["instamojo_payment_method"] == "1" ? true : false;
+            // bankTransfer =
+            //     payment["direct_bank_transfer"] == "1" ? true : false;
+            // midTrans = payment['midtrans_payment_method'] == '1' ? true : false;
+            // myfatoorah =
+            //     payment['myfaoorah_payment_method'] == '1' ? true : false;
+            // phonepe = payment['phonepe_payment_method'] == '1' ? true : false;
+            // if (myfatoorah) {
+            //   myfatoorahToken = payment['myfatoorah_token'];
+            //   myfatoorahPaymentMode = payment['myfatoorah_payment_mode'];
+            //   myfatoorahSuccessUrl = payment['myfatoorah__successUrl'];
+            //   myfatoorahErrorUrl = payment['myfatoorah__errorUrl'];
+            //   myfatoorahLanguage = payment['myfatoorah_language'];
+            //   myfatoorahCountry = payment['myfatoorah_country'];
+            // }
 
-            if (midTrans) {
-              midTranshMerchandId = payment['midtrans_merchant_id'];
-              midtransPaymentMethod = payment['midtrans_payment_method'];
-              midtransPaymentMode = payment['midtrans_payment_mode'];
-              midtransServerKey = payment['midtrans_server_key'];
-              midtrashClientKey = payment['midtrans_client_key'];
-            }
+            // if (midTrans) {
+            //   midTranshMerchandId = payment['midtrans_merchant_id'];
+            //   midtransPaymentMethod = payment['midtrans_payment_method'];
+            //   midtransPaymentMode = payment['midtrans_payment_mode'];
+            //   midtransServerKey = payment['midtrans_server_key'];
+            //   midtrashClientKey = payment['midtrans_client_key'];
+            // }
 
-            if (razorpay) razorpayId = payment["razorpay_key_id"];
-            if (paystack) {
-              paystackId = payment["paystack_key_id"];
+            // if (razorpay) razorpayId = payment["razorpay_key_id"];
+            // if (paystack) {
+            //   paystackId = payment["paystack_key_id"];
 
-              await plugin.initialize(publicKey: paystackId!);
-            }
-            if (stripe) {
-              stripeId = payment['stripe_publishable_key'];
-              stripeSecret = payment['stripe_secret_key'];
-              stripeCurCode = payment['stripe_currency_code'];
-              stripeMode = payment['stripe_mode'] ?? 'test';
-              StripeService.secret = stripeSecret;
-              StripeService.init(stripeId, stripeMode);
-            }
-            if (paytm) {
-              paytmMerId = payment['paytm_merchant_id'];
-              paytmMerKey = payment['paytm_merchant_key'];
-              payTesting = payment['paytm_payment_mode'] == 'sandbox';
-            }
+            //   await plugin.initialize(publicKey: paystackId!);
+            // }
+            // if (stripe) {
+            //   stripeId = payment['stripe_publishable_key'];
+            //   stripeSecret = payment['stripe_secret_key'];
+            //   stripeCurCode = payment['stripe_currency_code'];
+            //   stripeMode = payment['stripe_mode'] ?? 'test';
+            //   StripeService.secret = stripeSecret;
+            //   StripeService.init(stripeId, stripeMode);
+            // }
+            // if (paytm) {
+            //   paytmMerId = payment['paytm_merchant_id'];
+            //   paytmMerKey = payment['paytm_merchant_key'];
+            //   payTesting = payment['paytm_payment_mode'] == 'sandbox';
+            // }
 
-            if (bankTransfer) {
-              bankName = payment['bank_name'];
-              bankNo = payment['bank_code'];
-              acName = payment['account_name'];
-              acNo = payment['account_number'];
-              exDetails = payment['notes'];
-            }
-            if (phonepe) {
-              phonePeMode = payment["phonepe_payment_mode"];
-              phonePeMerId = payment["phonepe_marchant_id"];
-              phonePeAppId = payment["phonepe_app_id"];
-            }
+            // if (bankTransfer) {
+            //   bankName = payment['bank_name'];
+            //   bankNo = payment['bank_code'];
+            //   acName = payment['account_name'];
+            //   acNo = payment['account_number'];
+            //   exDetails = payment['notes'];
+            // }
+            // if (phonepe) {
+            //   phonePeMode = payment["phonepe_payment_mode"];
+            //   phonePeMerId = payment["phonepe_marchant_id"];
+            //   phonePeAppId = payment["phonepe_app_id"];
+            // }
             for (int i = 0; i < paymentMethodList.length; i++) {
               payModel.add(RadioModel(
                   isSelected: i == selectedMethod ? true : false,

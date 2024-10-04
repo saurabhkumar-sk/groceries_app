@@ -28,7 +28,7 @@ import 'HomePage.dart';
 class Chat extends StatefulWidget {
   final String? id, status;
 
-  const Chat({Key? key, this.id, this.status}) : super(key: key);
+  const Chat({super.key, this.id, this.status});
 
   @override
   _ChatState createState() => _ChatState();
@@ -372,9 +372,7 @@ class _ChatState extends State<Chat> {
     }
   }
 
-
-
- /* msgRow() {
+  /* msgRow() {
     return widget.status != "4"
         ? Align(
             alignment: Alignment.bottomLeft,
@@ -484,17 +482,17 @@ class _ChatState extends State<Chat> {
             Expanded(
               child: files.isNotEmpty
                   ? _buildFileList()
-                  :  TextField(
-                controller: msgController,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.fontColor),
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: "Write message...",
-                    hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.lightBlack),
-                    border: InputBorder.none),
-              ),
+                  : TextField(
+                      controller: msgController,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.fontColor),
+                      maxLines: null,
+                      decoration: InputDecoration(
+                          hintText: "Write message...",
+                          hintStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.lightBlack),
+                          border: InputBorder.none),
+                    ),
             ),
             SizedBox(width: 10),
             FloatingActionButton(
@@ -519,16 +517,15 @@ class _ChatState extends State<Chat> {
   }
 
   Widget _buildFileList() {
-    return
-      Row(
+    return Row(
       children: [
-        Expanded(child:
-        Text(
-          files.map((file) => file.path.split('/').last).join(', '),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.fontColor,
+        Expanded(
+          child: Text(
+            files.map((file) => file.path.split('/').last).join(', '),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.fontColor,
+            ),
           ),
-        ),
         ),
         IconButton(
           icon: Icon(Icons.close),
@@ -541,9 +538,6 @@ class _ChatState extends State<Chat> {
       ],
     );
   }
-
-
-
 
   Widget attachItem(List<attachment> attach, int index, Model message) {
     String? file = attach[index].media;
