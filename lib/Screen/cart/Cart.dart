@@ -3568,7 +3568,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Contact Us-",
+                                        "Contact Us",
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
@@ -3578,7 +3578,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                               fontWeight: FontWeight.normal,
                                             ),
                                       ),
-                                      const SizedBox(width: 30),
+                                      const SizedBox(width: 15),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 5.0),
@@ -4316,8 +4316,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       } else if (paymentMethod == getTranslated(context, 'UPI on Delivery')) {
         payVia = "UPI on Delivery";
       } else if (paymentMethod ==
-          getTranslated(context, 'Credit - Debit Card')) {
-        payVia = "Credit - Debit Card";
+          getTranslated(context, 'Credit/Debit Card on Delivery')) {
+        payVia = "Credit/Debit Card on Delivery";
       }
       // else if (paymentMethod == getTranslated(context, 'PAYUMONEY_LBL')) {
       //   payVia = "PayUMoney";
@@ -4391,7 +4391,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
         if (paymentMethod == getTranslated(context, 'COD_LBL') ||
             paymentMethod == getTranslated(context, 'UPI on Delivery') ||
-            paymentMethod == getTranslated(context, 'Credit - Debit Card')) {
+            paymentMethod ==
+                getTranslated(context, 'Credit/Debit Card on Delivery')) {
           request.fields[ACTIVE_STATUS] = PLACED;
         } else {
           if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {

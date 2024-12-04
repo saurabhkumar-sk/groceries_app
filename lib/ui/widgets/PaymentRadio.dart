@@ -49,8 +49,8 @@ class RadioItem extends StatelessWidget {
           _item.img != ""
               ? SvgPicture.asset(
                   _item.img!,
-                  height: 30,
-                  width: 30,
+                  height: 20,
+                  width: 20,
                 )
               : const SizedBox.shrink()
         ],

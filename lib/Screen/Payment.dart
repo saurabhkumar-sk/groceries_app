@@ -77,9 +77,17 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   List<RadioModel> timeModelList = [];
   List<String?> paymentMethodList = [];
   List<String> paymentIconList = [
-    'assets/images/cod_payment.svg',
-    'assets/images/categories/upi-icon.svg',
-    'assets/images/categories/debit-card-svgrepo-com.svg',
+    // 'assets/images/cod_payment.svg',
+    'assets/images/categories/cash_payment.svg',
+    // 'assets/images/categories/cod_payment 1.svg',
+    // 'assets/images/categories/64px-UPI-Logo-vector.svg (1).svg',
+    'assets/images/categories/upi-ar21.svg',
+    // 'assets/images/categories/upi-icon.svg',
+    'assets/images/categories/master-card-icon.svg',
+    // 'assets/images/categories/debit-card-svgrepo-com.svg',
+    // 'assets/images/categories/UPI-Logo-vector.svg',
+    // 'assets/images/categories/upi-icon.svg',
+
     // Platform.isIOS ? 'assets/images/applepay.svg' : 'assets/images/gpay.svg',
 
     // 'assets/images/paypal.svg',
@@ -111,7 +119,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       paymentMethodList = [
         getTranslated(context, 'COD_LBL'),
         getTranslated(context, 'UPI on Delivery'),
-        getTranslated(context, 'Credit - Debit Card'),
+        getTranslated(context, 'Credit/Debit Card \non Delivery'),
         // Platform.isIOS
         //     ? getTranslated(context, 'APPLEPAY')
         //     : getTranslated(context, 'GPAY'),
