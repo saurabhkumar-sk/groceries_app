@@ -95,6 +95,10 @@ final Uri getConverstationApi = Uri.parse('${chatBaseUrl}load_chat');
 const String sendMessageApi = '${chatBaseUrl}send_msg';
 final Uri searchAdminApi = Uri.parse('${chatBaseUrl}search_user');
 
+//WhatsApp Number Api
+
+final Uri whatsAppNumberApi = Uri.parse('${chatBaseUrl}get_system_settings');
+
 const String ISFIRSTTIME = 'isfirst$appName';
 const String HISTORYLIST = '$appName+historyList';
 const String FCMTOKEN = 'fcmtoken';

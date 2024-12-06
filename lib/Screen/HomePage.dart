@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
+// import 'dart:math';
 
 import 'package:eshop/Helper/ApiBaseHelper.dart';
 import 'package:eshop/Helper/Color.dart';
@@ -21,6 +22,7 @@ import 'package:eshop/Provider/FavoriteProvider.dart';
 import 'package:eshop/Provider/HomeProvider.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
+import 'package:eshop/Provider/WhatsAppNumberProvider.dart';
 import 'package:eshop/Screen/Add_Address.dart';
 import 'package:eshop/Screen/All_Category.dart';
 import 'package:eshop/Screen/Profile/MyProfile.dart';
@@ -108,6 +110,9 @@ class _HomePageState extends State<HomePage>
   String? slectedCityId = "";
   StateSetter? checkoutState; //39
   bool deliverable = false; //10
+
+  String whatsAppNumber = "";
+
   ///2
   updateProgress(bool progress) {
     if (mounted) {
@@ -130,7 +135,6 @@ class _HomePageState extends State<HomePage>
     _section();
     _refresh();
     addressList;
-
     buttonController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
 
@@ -146,6 +150,18 @@ class _HomePageState extends State<HomePage>
     ));
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _animateSlider());
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    // whatsAppNumber = context
+    //         .read<WhatsAppNumberProvider>()
+    //         .whatsAppNumberModel
+    //         ?.data
+    //         .systemSettings
+    //         .first
+    //         .whatsappNumber
+    //         .toString() ??
+    //     "";
+    // });
   }
 
   initCityOrPinCodeWiseDelivery() async {
@@ -167,6 +183,10 @@ class _HomePageState extends State<HomePage>
     selectedAddress;
     addressList;
     _section();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<WhatsAppNumberProvider>(context, listen: false)
+          .getWhatsAppNumber();
+    });
     super.didChangeDependencies();
   }
 
@@ -286,7 +306,18 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               onPressed: () {
-                openWhatsApp("919101125757");
+                // context.read<WhatsAppNumberProvider>().getWhatsAppNumber();
+                openWhatsApp(context
+                        .read<WhatsAppNumberProvider>()
+                        .whatsAppNumberModel
+                        ?.data
+                        .systemSettings
+                        .first
+                        .whatsappNumber ??
+                    "");
+                // if (whatsAppNumber.isNotEmpty) openWhatsApp(whatsAppNumber);
+                debugPrint(
+                    "Whatsapp Number: ${context.read<WhatsAppNumberProvider>().whatsAppNumberModel?.data.systemSettings.first.whatsappNumber ?? ""}");
               },
               child: Image.asset(
                 'assets/images/home/WhatsApp_icon 1.png',
@@ -302,6 +333,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> openWhatsApp(String phoneNumber) async {
     final whatsappUrl = "https://wa.me/$phoneNumber";
+
     launchUrl(
       Uri.parse(whatsappUrl),
     );

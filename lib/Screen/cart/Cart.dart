@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:collection/src/iterable_extensions.dart';
@@ -11,6 +12,7 @@ import 'package:eshop/Helper/SqliteData.dart';
 import 'package:eshop/Provider/CartProvider.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
+import 'package:eshop/Provider/WhatsAppNumberProvider.dart';
 import 'package:eshop/Screen/Dashboard.dart';
 import 'package:eshop/Screen/MyOrder.dart';
 import 'package:eshop/app/routes.dart';
@@ -137,6 +139,15 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         0.150,
       ),
     ));
+  }
+
+  @override
+  void didChangeDependencies() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<WhatsAppNumberProvider>(context, listen: false)
+          .getWhatsAppNumber();
+    });
+    super.didChangeDependencies();
   }
 
   //3
@@ -3553,7 +3564,26 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  openWhatsApp("919101125757");
+                                  openWhatsApp(context
+                                          .read<WhatsAppNumberProvider>()
+                                          .whatsAppNumberModel
+                                          ?.data
+                                          .systemSettings
+                                          .first
+                                          .whatsappNumber
+                                          .toString() ??
+                                      "");
+                                  log(
+                                      context
+                                              .read<WhatsAppNumberProvider>()
+                                              .whatsAppNumberModel
+                                              ?.data
+                                              .systemSettings
+                                              .first
+                                              .whatsappNumber
+                                              .toString() ??
+                                          "",
+                                      name: "whatsapp number");
                                 },
                                 child: Container(
                                   width: deviceWidth! * 0.9,

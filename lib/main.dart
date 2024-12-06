@@ -13,6 +13,7 @@ import 'package:eshop/Provider/ProductDetailProvider.dart';
 import 'package:eshop/Provider/ProductProvider.dart';
 import 'package:eshop/Provider/SmsServicesProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
+import 'package:eshop/Provider/WhatsAppNumberProvider.dart';
 import 'package:eshop/Provider/pushNotificationProvider.dart';
 import 'package:eshop/app/languages.dart';
 import 'package:eshop/cubits/brandsListCubit.dart';
@@ -125,6 +126,9 @@ void main() async {
         ),
         Provider<SettingProvider>(
           create: (context) => SettingProvider(prefs),
+        ),
+        Provider<WhatsAppNumberProvider>(
+          create: (context) => WhatsAppNumberProvider(),
         ),
         ChangeNotifierProvider<UserProvider>(
             create: (context) => UserProvider()),
