@@ -224,27 +224,28 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                 height: 0,
                               );
                       }),*/
-                  Selector<UserProvider, String>(
-                      selector: (_, provider) => provider.mob,
-                      builder: (context, userMobile, child) {
-                        mobileController =
-                            TextEditingController(text: userMobile);
-                        return userMobile != ""
-                            ? Text(
-                                userMobile,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .fontColor,
-                                        fontWeight: FontWeight.normal),
-                              )
-                            : Container(
-                                height: 0,
-                              );
-                      }),
+                  if (context.read<UserProvider>().userName.isNotEmpty)
+                    Selector<UserProvider, String>(
+                        selector: (_, provider) => provider.mob,
+                        builder: (context, userMobile, child) {
+                          mobileController =
+                              TextEditingController(text: userMobile);
+                          return userMobile != ""
+                              ? Text(
+                                  userMobile,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .fontColor,
+                                          fontWeight: FontWeight.normal),
+                                )
+                              : Container(
+                                  height: 0,
+                                );
+                        }),
                   Selector<UserProvider, String>(
                       selector: (_, provider) => provider.email,
                       builder: (context, userEmail, child) {
@@ -809,11 +810,11 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                             pass = val;
                           });
                         },
-                        validator: (val) => validatePass(
-                            val!,
-                            getTranslated(context, 'PWD_REQUIRED'),
-                            getTranslated(context, 'PASSWORD_VALIDATION'),
-                            from: 123),
+                        // validator: (val) => validatePass(
+                        //     val!,
+                        //     getTranslated(context, 'PWD_REQUIRED'),
+                        //     getTranslated(context, 'PASSWORD_VALIDATION'),
+                        //     from: 123),
                         //this is to not apply 2nd validation
                         enabled: true,
                         textAlign: TextAlign.left,
@@ -1999,10 +2000,13 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             onSaved: (String? value) {
               currentPwd = value;
             },
-            validator: (val) => validatePass(
-                val!,
-                getTranslated(context, 'PWD_REQUIRED'),
-                getTranslated(context, 'PASSWORD_VALIDATION')),
+            validator: (value) {
+              return "Current password is required";
+            },
+            // validator: (val) => validatePass(
+            //     val!,
+            //     getTranslated(context, 'PWD_REQUIRED'),
+            //     getTranslated(context, 'PASSWORD_VALIDATION')),
           ),
         ),
       ),
@@ -2054,10 +2058,14 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
             onSaved: (String? value) {
               newPwd = value;
             },
-            validator: (val) => validatePass(
-                val!,
-                getTranslated(context, 'PWD_REQUIRED'),
-                getTranslated(context, 'PASSWORD_VALIDATION')),
+            validator: (value) {
+              if (value!.isEmpty) return "Password is required";
+              return null;
+            },
+            // validator: (val) => validatePass(
+            //     val!,
+            //     getTranslated(context, 'PWD_REQUIRED'),
+            //     getTranslated(context, 'PASSWORD_VALIDATION')),
           ),
         ),
       ),
@@ -2086,7 +2094,8 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                 border: InputBorder.none),
             validator: (value) {
               if (value!.isEmpty) {
-                return getTranslated(context, 'CON_PASS_REQUIRED_MSG');
+                return "Confirm password is required";
+                // return getTranslated(context, 'CON_PASS_REQUIRED_MSG');
               }
               if (value != newPwd) {
                 confirmpassController.text = "";

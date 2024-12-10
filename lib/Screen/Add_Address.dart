@@ -402,10 +402,19 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
                 .textTheme
                 .titleSmall!
                 .copyWith(color: Theme.of(context).colorScheme.fontColor),
-            validator: (val) => validateMob(
-                val!,
-                getTranslated(context, 'MOB_REQUIRED'),
-                getTranslated(context, 'VALID_MOB')),
+            // validator: (val) => validateMob(
+            //     val!,
+            //     getTranslated(context, 'MOB_REQUIRED'),
+            //     getTranslated(context, 'VALID_MOB')),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a number';
+              }
+              if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                return 'Enter a valid 10-digit number';
+              }
+              return null;
+            },
             onSaved: (String? value) {
               mobile = value;
             },

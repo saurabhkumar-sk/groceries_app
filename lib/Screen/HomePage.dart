@@ -1941,7 +1941,8 @@ class _HomePageState extends State<HomePage>
       } on TimeoutException catch (_) {
         setSnackbar("Request timed out", context);
       } catch (e) {
-        setSnackbar(e.toString(), context);
+        debugPrint("Error address : $e");
+        // setSnackbar(e.toString(), context);
       }
     } else {
       if (mounted) {

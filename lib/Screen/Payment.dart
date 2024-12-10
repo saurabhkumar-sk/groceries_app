@@ -119,7 +119,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       paymentMethodList = [
         getTranslated(context, 'COD_LBL'),
         getTranslated(context, 'UPI on Delivery'),
-        getTranslated(context, 'Credit/Debit Card \non Delivery'),
+        'Credit/Debit Card on Delivery',
         // Platform.isIOS
         //     ? getTranslated(context, 'APPLEPAY')
         //     : getTranslated(context, 'GPAY'),

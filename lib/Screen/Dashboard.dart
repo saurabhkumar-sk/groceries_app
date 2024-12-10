@@ -204,7 +204,9 @@ class HomePageState extends State<Dashboard>
                 children: [
                   const HomePage(),
                   AllCategory(),
-                  const Favorite(),
+                  Favorite(
+                    fromBottom: true,
+                  ),
                   // FlashSale(),
                   // Sale(),
                   const Cart(

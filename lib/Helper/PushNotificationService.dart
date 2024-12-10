@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:eshop/Helper/routes.dart';
@@ -9,6 +10,7 @@ import 'package:eshop/Model/personalChatHistory.dart';
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/pushNotificationProvider.dart';
 import 'package:eshop/Screen/Dashboard.dart';
+import 'package:eshop/Screen/MyOrder.dart';
 import 'package:eshop/cubits/personalConverstationsCubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -313,8 +315,8 @@ class PushNotificationService {
       } else if (type == "wallet") {
         Navigator.pushNamed(context, Routers.myWalletScreen);
       } else if (type == 'order' || type == 'place_order') {
-        // Navigator.push(context,
-        //     (CupertinoPageRoute(builder: (context) => const MyOrder())));
+        Navigator.push(context,
+            (CupertinoPageRoute(builder: (context) => const MyOrder())));
         Navigator.pushNamed(context, Routers.myOrderScreen);
       } else if (type == "ticket_message") {
         Navigator.push(
@@ -403,7 +405,7 @@ class PushNotificationService {
 
   @pragma('vm:entry-point')
   static Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
-    print("openNotification:background>${message.data}");
+    log("openNotification:background>${message.data}");
     setPrefrenceBool(ISFROMBACK, true);
     await Firebase.initializeApp();
   }

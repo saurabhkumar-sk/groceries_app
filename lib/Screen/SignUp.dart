@@ -98,7 +98,8 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
   Future<void> checkNetwork() async {
     bool avail = await isNetworkAvailable();
     if (avail) {
-      if (referCode != null) getRegisterUser();
+      // if (referCode != null)
+      getRegisterUser();
     } else {
       Future.delayed(const Duration(seconds: 2)).then((_) async {
         if (mounted) {
@@ -171,9 +172,9 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
         NAME: name,
         EMAIL: email,
         PASSWORD: password,
-        COUNTRY_CODE: countrycode,
-        REFERCODE: referCode,
-        FRNDCODE: friendCode
+        COUNTRY_CODE: countrycode ?? "IN",
+        REFERCODE: referCode ?? "",
+        FRNDCODE: friendCode ?? ""
       };
       apiBaseHelper.postAPICall(getUserSignUpApi, data).then((getdata) async {
         bool error = getdata["error"];
@@ -402,7 +403,10 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
               fontWeight: FontWeight.normal),
           controller: passwordController,
           validator: (value) {
-            return value = "Password is Required";
+            if (value == null || value.isEmpty) {
+              return "Password is Required";
+            }
+            return null; // Input is valid
           },
           // validator: (val) => validatePass(
           //   val!,
@@ -413,6 +417,16 @@ class _SignUpPageState extends State<SignUp> with TickerProviderStateMixin {
             password = value;
           },
           decoration: InputDecoration(
+            suffixIcon: IconButton(
+              onPressed: () {
+                _showPassword = !_showPassword!;
+                setState(() {});
+              },
+              icon: Icon(
+                _showPassword! ? Icons.visibility : Icons.visibility_off,
+                color: Theme.of(context).colorScheme.fontColor,
+              ),
+            ),
             errorMaxLines: 4,
             prefixIcon: SvgPicture.asset(
               "assets/images/password.svg",

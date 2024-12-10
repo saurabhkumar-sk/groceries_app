@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:eshop/Provider/SettingProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
@@ -66,9 +67,9 @@ class _SplashScreen extends State<Splash> {
             Provider.of<SettingProvider>(context, listen: false);
 
         String getToken = await settingsProvider.getPrefrence(FCMTOKEN) ?? '';
-        print("fcm token****$token");
+        log("fcm token****$token");
         if (token != getToken && token != null) {
-          print("register token***$token");
+          log("register token***$token");
           registerToken(token);
         }
       },
@@ -91,12 +92,12 @@ class _SplashScreen extends State<Splash> {
 
     var getdata = json.decode(response.body);
 
-    print("param noti fcm***$parameter");
+    log("param noti fcm***$parameter");
 
-    print("value notification****$getdata");
+    log("value notification****$getdata");
 
     if (getdata['error'] == false) {
-      print("fcm token****$token");
+      log("fcm token****$token");
       settingsProvider.setPrefrence(FCMTOKEN, token!);
     }
   }

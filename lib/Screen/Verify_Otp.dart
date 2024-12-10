@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:eshop/Helper/Color.dart';
@@ -596,6 +597,8 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
         btnAnim: buttonSqueezeanimation,
         btnCntrl: buttonController,
         onBtnSelected: () async {
+          log(otp.toString(), name: "Otp: ");
+
           FocusScope.of(context).requestFocus(FocusNode());
           _onFormSubmitted();
         });
@@ -689,7 +692,8 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
 
       try {
         // Verify OTP: Check if the entered OTP matches the sent OTP
-        if (code == widget.generatedOtp) {
+        if (code == otp) {
+          // if (code == widget.generatedOtp) {
           // 'generatedOtp' is the OTP that was sent to the user
 
           SettingProvider settingsProvider =

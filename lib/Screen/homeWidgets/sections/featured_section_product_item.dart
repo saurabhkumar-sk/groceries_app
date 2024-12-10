@@ -7,6 +7,7 @@ import 'package:eshop/Model/Section_Model.dart';
 import 'package:eshop/Provider/CartProvider.dart';
 import 'package:eshop/Provider/UserProvider.dart';
 import 'package:eshop/Screen/HomePage.dart';
+import 'package:eshop/Screen/Login.dart';
 import 'package:eshop/Screen/cart/Cart.dart';
 import 'package:eshop/app/routes.dart';
 import 'package:flutter/cupertino.dart';
@@ -309,7 +310,22 @@ class _FeaturedProductItemState extends State<FeaturedProductItem> {
             }
           }
         } else {
-          setSnackbar(getTranslated(context, 'loginFirstMsg')!, context);
+          // Navigate to Login Screen
+          setSnackbar(
+            getTranslated(context, 'You have to login first.')!,
+            context,
+          );
+
+          Future.delayed(const Duration(microseconds: 2), () {
+            intent = false;
+            Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => const LoginScreen(isPop: false),
+              ),
+              (route) => true,
+            );
+          });
         }
       } else {
         setSnackbar(getTranslated(context, 'somethingMSg')!, context);

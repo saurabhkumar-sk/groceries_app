@@ -10,7 +10,7 @@ import '../../Screen/cart/Cart.dart';
 import '../../app/routes.dart';
 import '../styles/DesignConfig.dart';
 
-getAppBar(String title, BuildContext context, {int? from}) {
+getAppBar(String title, BuildContext context, {int? from, bool? fromBottom}) {
   return AppBar(
     centerTitle: true,
     elevation: 0,
@@ -22,13 +22,15 @@ getAppBar(String title, BuildContext context, {int? from}) {
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () => Navigator.of(context).pop(),
-          child: const Center(
-            child: Icon(
-              Icons.arrow_back_ios_rounded,
-              color: Colors.black,
-              // color: Theme.of(context).colorScheme.primarytheme,
-            ),
-          ),
+          child: fromBottom == true
+              ? const SizedBox()
+              : const Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_rounded,
+                    color: Colors.black,
+                    // color: Theme.of(context).colorScheme.primarytheme,
+                  ),
+                ),
         ),
       );
     }),

@@ -22,12 +22,14 @@ import '../ui/widgets/AppBtn.dart';
 import '../utils/blured_router.dart';
 
 class Favorite extends StatefulWidget {
-  const Favorite({Key? key}) : super(key: key);
+  bool? fromBottom;
+
+  Favorite({Key? key, this.fromBottom}) : super(key: key);
   static route(RouteSettings settings) {
     Map? arguments = settings.arguments as Map?;
     return BlurredRouter(
       builder: (context) {
-        return const Favorite();
+        return Favorite();
       },
     );
   }
@@ -121,7 +123,8 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(getTranslated(context, 'FAVORITE')!, context),
+      appBar: getAppBar(getTranslated(context, 'FAVORITE')!, context,
+          fromBottom: widget.fromBottom),
       body: _isNetworkAvail
           ? Stack(
               children: <Widget>[

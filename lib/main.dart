@@ -1,8 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/Constant.dart';
+import 'package:eshop/Helper/PushNotificationService.dart';
 import 'package:eshop/Provider/CartProvider.dart';
 import 'package:eshop/Provider/CategoryProvider.dart';
 import 'package:eshop/Provider/FavoriteProvider.dart';
@@ -53,6 +54,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 ///4.2.0
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await HiveUtils.initBoxes();
   if (Firebase.apps.isNotEmpty) {
     await Firebase.initializeApp(
@@ -70,10 +72,23 @@ void main() async {
   //         requestBadgePermission: true,
   //         requestSoundPermission: true);
 
-  final InitializationSettings initializationSettings =
-      const InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     // iOS: initializationSettingsIOS,
+  );
+// Initialize the notification plugin
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (NotificationResponse response) {
+      // Handle when the user taps on a notification
+      // You can extract the payload here
+      String? payload = response.payload;
+      if (payload != null) {
+        // Handle the payload, navigate or perform actions based on the notification
+        log("Notification payload: $payload");
+      }
+    },
   );
 
   // await flutterLocalNotificationsPlugin.initialize(initializationSettings,

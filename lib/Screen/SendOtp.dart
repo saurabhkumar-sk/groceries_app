@@ -822,7 +822,9 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                   //   ),
                   // ),
                   Text(
-                    "Create Account",
+                    widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')
+                        ? getTranslated(context, 'Forgot Password')!
+                        : "Create Account",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.black,
                       fontSize: 30,
@@ -833,7 +835,9 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                     height: 10,
                   ),
                   Text(
-                    "Almost there ! Put your valid details \nbelow and create an account",
+                    widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')
+                        ? "Almost there ! Put your valid details \nbelow and forgot password "
+                        : "Almost there ! Put your valid details \nbelow and create an account",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context)

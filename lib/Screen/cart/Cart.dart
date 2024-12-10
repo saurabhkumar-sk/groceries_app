@@ -3806,167 +3806,177 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                           padding: const EdgeInsets.only(
                                               right: 10.0),
                                           child: SimBtn(
-                                              height: 35,
-                                              width: 0.4,
-                                              title: getTranslated(
-                                                  context, 'PLACE_ORDER'),
-                                              onBtnSelected: /*_placeOrder
-                                                  ?*/
-                                                  () {
+                                            height: 35,
+                                            width: 0.4,
+                                            title: getTranslated(
+                                                context, 'PLACE_ORDER'),
+                                            onBtnSelected: () {
+                                              log(paymentMethod.toString(),
+                                                  name: "Payment Method ");
+
+                                              checkoutState?.call(() {
+                                                _placeOrder = false;
+                                              });
+
+                                              if (cartList[0]
+                                                          .productList
+                                                          ?.isNotEmpty ==
+                                                      true &&
+                                                  cartList[0]
+                                                          .productList![0]
+                                                          .productType !=
+                                                      'digital_product' &&
+                                                  isStorePickUp == "false" &&
+                                                  (selAddress == null ||
+                                                      selAddress!.isEmpty)) {
+                                                msg = getTranslated(
+                                                    context, 'addressWarning');
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  Routers.manageAddressScreen,
+                                                  arguments: {
+                                                    "home": false,
+                                                    "update": updateCheckout,
+                                                    "updateProgress":
+                                                        updateProgress,
+                                                  },
+                                                );
                                                 checkoutState?.call(() {
-                                                  _placeOrder = false;
+                                                  _placeOrder = true;
                                                 });
-
-                                                if (cartList[0]
-                                                            .productList![0]
-                                                            .productType !=
-                                                        'digital_product' &&
-                                                    isStorePickUp == "false" &&
-                                                    (selAddress == "" ||
-                                                        selAddress!.isEmpty)) {
-                                                  msg = getTranslated(context,
-                                                      'addressWarning');
-
-                                                  Navigator.pushReplacementNamed(
-                                                      context,
-                                                      Routers
-                                                          .manageAddressScreen,
-                                                      arguments: {
-                                                        "home": false,
-                                                        "update":
-                                                            updateCheckout,
-                                                        "updateProgress":
-                                                            updateProgress,
-                                                      });
-
+                                              } else if (paymentMethod == null ||
+                                                  paymentMethod!.isEmpty) {
+                                                msg = getTranslated(
+                                                    context, 'payWarning');
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  Routers.paymentScreen,
+                                                  arguments: {
+                                                    "update": updateCheckout,
+                                                    "msg": msg,
+                                                  },
+                                                ).then((value) async {
+                                                  if (cartList[0]
+                                                              .productList
+                                                              ?.isNotEmpty ==
+                                                          true &&
+                                                      cartList[0]
+                                                              .productList![0]
+                                                              .productType !=
+                                                          'digital_product' &&
+                                                      isStorePickUp ==
+                                                          "false" &&
+                                                      !deliverable) {
+                                                    await checkDeliverable(2,
+                                                        showErrorMessage:
+                                                            false);
+                                                  }
                                                   checkoutState?.call(() {
                                                     _placeOrder = true;
                                                   });
-                                                } else if (paymentMethod ==
-                                                        null ||
-                                                    paymentMethod!.isEmpty) {
-                                                  msg = getTranslated(
-                                                      context, 'payWarning');
-
-                                                  Navigator.pushNamed(context,
-                                                      Routers.paymentScreen,
-                                                      arguments: {
-                                                        "update":
-                                                            updateCheckout,
-                                                        "msg": msg
-                                                      }).then((value) async {
-                                                    if (cartList[0]
-                                                                .productList![0]
-                                                                .productType !=
-                                                            'digital_product' &&
-                                                        isStorePickUp ==
-                                                            "false" &&
-                                                        !deliverable) {
-                                                      await checkDeliverable(2,
-                                                          showErrorMessage:
-                                                              false);
-                                                    }
-                                                    checkoutState?.call(() {
-                                                      _placeOrder = true;
-                                                    });
-                                                  });
-                                                } else if (cartList[0]
-                                                            .productList![0]
-                                                            .productType !=
-                                                        'digital_product' &&
-                                                    isTimeSlot! &&
-                                                    (isLocalDelCharge == null ||
-                                                        isLocalDelCharge!) &&
-                                                    int.parse(allowDay!) > 0 &&
-                                                    (selDate == null ||
-                                                        selDate!.isEmpty) &&
-                                                    IS_LOCAL_ON != '0') {
-                                                  msg = getTranslated(
-                                                      context, 'dateWarning');
-                                                  Navigator.pushNamed(context,
-                                                      Routers.paymentScreen,
-                                                      arguments: {
-                                                        "update":
-                                                            updateCheckout,
-                                                        "msg": msg
-                                                      }).then((value) async {
-                                                    if (cartList[0]
-                                                                .productList![0]
-                                                                .productType !=
-                                                            'digital_product' &&
-                                                        isStorePickUp ==
-                                                            "false" &&
-                                                        !deliverable) {
-                                                      await checkDeliverable(2,
-                                                          showErrorMessage:
-                                                              false);
-                                                    }
-                                                    checkoutState?.call(() {
-                                                      _placeOrder = true;
-                                                    });
-                                                  });
-                                                } else if (cartList[0]
-                                                            .productList![0]
-                                                            .productType !=
-                                                        'digital_product' &&
-                                                    isTimeSlot! &&
-                                                    (isLocalDelCharge == null ||
-                                                        isLocalDelCharge!) &&
-                                                    timeSlotList.isNotEmpty &&
-                                                    (selTime == null ||
-                                                        selTime!.isEmpty) &&
-                                                    IS_LOCAL_ON != '0') {
-                                                  msg = getTranslated(
-                                                      context, 'timeWarning');
-                                                  Navigator.pushNamed(context,
-                                                      Routers.paymentScreen,
-                                                      arguments: {
-                                                        "update":
-                                                            updateCheckout,
-                                                        "msg": msg
-                                                      }).then((value) async {
-                                                    if (cartList[0]
-                                                                .productList![0]
-                                                                .productType !=
-                                                            'digital_product' &&
-                                                        isStorePickUp ==
-                                                            "false" &&
-                                                        !deliverable) {
-                                                      await checkDeliverable(2,
-                                                          showErrorMessage:
-                                                              false);
-                                                    }
-                                                    checkoutState?.call(() {
-                                                      _placeOrder = true;
-                                                    });
-                                                  });
-                                                } else if (double.parse(
-                                                        MIN_ALLOW_CART_AMT!) >
-                                                    originalPrice) {
-                                                  setSnackbar(
-                                                      getTranslated(context,
-                                                          'MIN_CART_AMT')!,
-                                                      context);
-                                                } else if (cartList[0]
-                                                            .productList![0]
-                                                            .productType !=
-                                                        'digital_product' &&
-                                                    isStorePickUp == "false" &&
-                                                    !deliverable) {
-                                                  checkDeliverable(1);
-                                                } else {
-                                                  // if (confDia) {
-                                                  if (!context
-                                                      .read<CartProvider>()
-                                                      .isProgress) {
-                                                    confirmDialog(cartList);
-                                                    setState(() {
-                                                      confDia = false;
-                                                    });
-                                                    // }
+                                                });
+                                              } else if (allowDay != null &&
+                                                  int.tryParse(allowDay!)! >
+                                                      0 &&
+                                                  (selDate == null ||
+                                                      selDate!.isEmpty) &&
+                                                  IS_LOCAL_ON != '0') {
+                                                msg = getTranslated(
+                                                    context, 'dateWarning');
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  Routers.paymentScreen,
+                                                  arguments: {
+                                                    "update": updateCheckout,
+                                                    "msg": msg,
+                                                  },
+                                                ).then((value) async {
+                                                  if (cartList[0]
+                                                              .productList
+                                                              ?.isNotEmpty ==
+                                                          true &&
+                                                      cartList[0]
+                                                              .productList![0]
+                                                              .productType !=
+                                                          'digital_product' &&
+                                                      isStorePickUp ==
+                                                          "false" &&
+                                                      !deliverable) {
+                                                    await checkDeliverable(2,
+                                                        showErrorMessage:
+                                                            false);
                                                   }
+                                                  checkoutState?.call(() {
+                                                    _placeOrder = true;
+                                                  });
+                                                });
+                                              } else if (timeSlotList
+                                                      .isNotEmpty &&
+                                                  (selTime == null ||
+                                                      selTime!.isEmpty) &&
+                                                  IS_LOCAL_ON != '0') {
+                                                msg = getTranslated(
+                                                    context, 'timeWarning');
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  Routers.paymentScreen,
+                                                  arguments: {
+                                                    "update": updateCheckout,
+                                                    "msg": msg,
+                                                  },
+                                                ).then((value) async {
+                                                  if (cartList[0]
+                                                              .productList
+                                                              ?.isNotEmpty ==
+                                                          true &&
+                                                      cartList[0]
+                                                              .productList![0]
+                                                              .productType !=
+                                                          'digital_product' &&
+                                                      isStorePickUp ==
+                                                          "false" &&
+                                                      !deliverable) {
+                                                    await checkDeliverable(2,
+                                                        showErrorMessage:
+                                                            false);
+                                                  }
+                                                  checkoutState?.call(() {
+                                                    _placeOrder = true;
+                                                  });
+                                                });
+                                              } else if (MIN_ALLOW_CART_AMT !=
+                                                      null &&
+                                                  double.tryParse(
+                                                          MIN_ALLOW_CART_AMT!)! >
+                                                      originalPrice) {
+                                                setSnackbar(
+                                                  getTranslated(
+                                                      context, 'MIN_CART_AMT')!,
+                                                  context,
+                                                );
+                                              } else if (cartList[0]
+                                                          .productList
+                                                          ?.isNotEmpty ==
+                                                      true &&
+                                                  cartList[0]
+                                                          .productList![0]
+                                                          .productType !=
+                                                      'digital_product' &&
+                                                  isStorePickUp == "false" &&
+                                                  !deliverable) {
+                                                checkDeliverable(1);
+                                              } else {
+                                                if (!context
+                                                    .read<CartProvider>()
+                                                    .isProgress) {
+                                                  confirmDialog(cartList);
+                                                  setState(() {
+                                                    confDia = false;
+                                                  });
                                                 }
-                                              } /*: null*/),
+                                              }
+                                            }, /*: null*/
+                                          ),
                                         )
                                       ]),
                                     ),
@@ -4322,6 +4332,230 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   }
 
   ///3
+  // Future<void> placeOrder(String? tranId) async {
+  //   _isNetworkAvailable = await isNetworkAvailable();
+  //   if (_isNetworkAvailable) {
+  //     context.read<CartProvider>().setProgress(true);
+
+  //     SettingProvider settingsProvider =
+  //         Provider.of<SettingProvider>(context, listen: false);
+
+  //     String? mob = settingsProvider.mobile;
+
+  //     String? varientId, quantity;
+
+  //     List<SectionModel> cartList = context.read<CartProvider>().cartList;
+  //     for (SectionModel sec in cartList) {
+  //       varientId =
+  //           varientId != null ? "$varientId,${sec.varientId!}" : sec.varientId;
+  //       quantity = quantity != null ? "$quantity,${sec.qty!}" : sec.qty;
+  //     }
+  //     String? payVia;
+  //     if (paymentMethod == getTranslated(context, 'COD_LBL')) {
+  //       payVia = "COD";
+  //     } else if (paymentMethod == getTranslated(context, 'UPI on Delivery')) {
+  //       payVia = "UPI on Delivery";
+  //     } else if (paymentMethod == 'Credit/Debit Card on Delivery') {
+  //       payVia = 'Credit/Debit Card on Delivery';
+  //       setState(() {});
+  //     }
+  //     // else if (paymentMethod == getTranslated(context, 'PAYUMONEY_LBL')) {
+  //     //   payVia = "PayUMoney";
+  //     // } else if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
+  //     //   payVia = "RazorPay";
+  //     // } else if (paymentMethod == getTranslated(context, 'PAYSTACK_LBL')) {
+  //     //   payVia = "Paystack";
+  //     // } else if (paymentMethod == getTranslated(context, 'FLUTTERWAVE_LBL')) {
+  //     //   payVia = "Flutterwave";
+  //     // } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
+  //     //   payVia = "Stripe";
+  //     // } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
+  //     //   payVia = "Paytm";
+  //     // } else if (paymentMethod == getTranslated(context, 'INSTAMOJO_LBL')) {
+  //     //   payVia = "Instamojo";
+  //     // } else if (paymentMethod == "Wallet") {
+  //     //   payVia = "Wallet";
+  //     // } else if (paymentMethod == getTranslated(context, 'BANKTRAN')) {
+  //     //   payVia = "bank_transfer";
+  //     // } else if (paymentMethod == getTranslated(context, 'MIDTRANS_LBL')) {
+  //     //   payVia = 'MidTrans';
+  //     // } else if (paymentMethod == getTranslated(context, 'MY_FATOORAH_LBL')) {
+  //     //   payVia = 'my fatoorah';
+  //     // }
+
+  //     var request = http.MultipartRequest("POST", placeOrderApi);
+  //     request.headers.addAll(headers);
+
+  //     log(payVia.toString() + request.toString(), name: "Payment Method");
+
+  //     try {
+  //       request.fields[USER_ID] = context.read<UserProvider>().userId;
+  //       request.fields[MOBILE] = mob;
+  //       request.fields[PRODUCT_VARIENT_ID] = varientId!;
+  //       request.fields[QUANTITY] = quantity!;
+  //       request.fields[TOTAL] = originalPrice.toString();
+  //       request.fields[FINAL_TOTAL] = usedBalance > 0
+  //           ? totalPrice.toString()
+  //           : isStorePickUp == "false"
+  //               ? (totalPrice + deliveryCharge).toString()
+  //               : totalPrice.toString();
+
+  //       request.fields[TAX_PER] = taxPersontage.toString();
+  //       request.fields[PAYMENT_METHOD] = payVia!;
+
+  //       request.fields[ISWALLETBALUSED] = isUseWallet! ? "1" : "0";
+  //       request.fields[WALLET_BAL_USED] = usedBalance.toString();
+  //       request.fields[ORDER_NOTE] = noteC.text;
+  //       if (IS_LOCAL_PICKUP != "1" || isStorePickUp != "true") {
+  //         request.fields[DEL_CHARGE] = deliveryCharge.toString();
+  //       }
+
+  //       if (cartList[0].productList![0].productType != 'digital_product') {
+  //         if (IS_LOCAL_PICKUP != "1" || isStorePickUp != "true") {
+  //           request.fields[ADD_ID] = selAddress!;
+  //         }
+  //         if (isTimeSlot!) {
+  //           request.fields[DELIVERY_TIME] = selTime ?? 'Anytime';
+  //           request.fields[DELIVERY_DATE] = selDate ?? '';
+  //         }
+  //       }
+  //       if (cartList[0].productList![0].productType == 'digital_product') {
+  //         request.fields[EMAIL] = emailController.text;
+  //       }
+  //       if (isPromoValid!) {
+  //         request.fields[PROMOCODE] = promocode!;
+  //         request.fields[PROMO_DIS] = promoAmount.toString();
+  //       }
+
+  //       if (IS_LOCAL_PICKUP == "1") {
+  //         request.fields[LOCAL_PICKUP] = isStorePickUp == "true" ? "1" : "0";
+  //       }
+
+  //       if (paymentMethod == getTranslated(context, 'COD_LBL') ||
+  //               paymentMethod == getTranslated(context, 'UPI on Delivery') ||
+  //               paymentMethod == 'Credit/Debit Card on Delivery'
+  //           // getTranslated(context, 'Credit/Debit Card on Delivery')
+  //           ) {
+  //         request.fields[ACTIVE_STATUS] = PLACED;
+  //       } else {
+  //         if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {
+  //           request.fields[ACTIVE_STATUS] = 'draft';
+  //         } else {
+  //           request.fields[ACTIVE_STATUS] = WAITING;
+  //         }
+  //       }
+  //       print("request field***${request.fields}");
+  //       if (prescriptionImages.isNotEmpty) {
+  //         for (var i = 0; i < prescriptionImages.length; i++) {
+  //           final mimeType = lookupMimeType(prescriptionImages[i].path);
+
+  //           var extension = mimeType!.split("/");
+
+  //           var pic = await http.MultipartFile.fromPath(
+  //             DOCUMENT,
+  //             prescriptionImages[i].path,
+  //             contentType: MediaType('image', extension[1]),
+  //           );
+
+  //           request.files.add(pic);
+  //         }
+  //       }
+
+  //       var response = await request.send();
+  //       var responseData = await response.stream.toBytes();
+  //       var responseString = String.fromCharCodes(responseData);
+
+  //       _placeOrder = true;
+  //       print("response status code ***${response.statusCode}");
+  //       print("response body: ${responseString}");
+  //       if (response.statusCode == 200) {
+  //         var getdata = json.decode(responseString);
+  //         print("getdata cart****$getdata");
+  //         bool error = getdata["error"];
+  //         String? msg = getdata["message"];
+
+  //         if (!error) {
+  //           print("get new balance***${getdata["balance"][0]["balance"]}");
+  //           context
+  //               .read<UserProvider>()
+  //               .setBalance(getdata["balance"][0]["balance"]);
+
+  //           String orderId = getdata["order_id"].toString();
+  //           if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
+  //             razorpayPayment(orderId, msg);
+  //             //addTransaction(tranId, orderId, SUCCESS, msg, true);
+  //           } else if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {
+  //             initPhonePeSdk(orderId: orderId);
+  //           } else if (paymentMethod == getTranslated(context, 'PAYPAL_LBL')) {
+  //             paypalPayment(orderId);
+  //           } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
+  //             stripePayment(stripePayId, orderId,
+  //                 tranId == 'succeeded' ? PLACED : WAITING, msg, true);
+  //             // addTransaction(stripePayId, orderId,
+  //             //  tranId == "succeeded" ? PLACED : WAITING, msg, true);
+  //           } else if (paymentMethod ==
+  //               getTranslated(context, 'PAYSTACK_LBL')) {
+  //             paystackPayment(context, tranId, orderId, SUCCESS, msg, true);
+  //             // addTransaction(tranId, orderId, SUCCESS, msg, true);
+  //           } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
+  //             paytmPayment(tranId, orderId, SUCCESS, msg, true);
+  //             //addTransaction(tranId, orderId, SUCCESS, msg, true);
+  //           } else if (paymentMethod ==
+  //               getTranslated(context, 'FLUTTERWAVE_LBL')) {
+  //             flutterwavePayment(tranId, orderId, SUCCESS, msg, true);
+  //             // addTransaction(tranId, orderId, SUCCESS, msg, true);
+  //           } else if (paymentMethod ==
+  //               getTranslated(context, 'MIDTRANS_LBL')) {
+  //             midTrasPayment(
+  //                 orderId, tranId == 'succeeded' ? PLACED : WAITING, msg, true);
+  //           } else if (paymentMethod ==
+  //               getTranslated(context, 'MY_FATOORAH_LBL')) {
+  //             fatoorahPayment(tranId, orderId,
+  //                 tranId == 'succeeded' ? PLACED : WAITING, msg, true);
+  //           } else if (paymentMethod ==
+  //               getTranslated(context, 'INSTAMOJO_LBL')) {
+  //             instamojoPayment(orderId);
+  //             /*
+  //             * success = 200
+  //             *
+  //             *
+  //             * */
+  //           } else {
+  //             context.read<UserProvider>().setCartCount("0");
+
+  //             clearCart();
+
+  //             // Navigator.pushAndRemoveUntil(
+  //             //   context,
+  //             //   CupertinoPageRoute(
+  //             //       builder: (BuildContext context) => const OrderSuccess()),
+  //             //   (final Route route) => route.isFirst,
+  //             // );
+
+  //             Navigator.pushNamedAndRemoveUntil(context,
+  //                 Routers.orderSuccessScreen, (route) => route.isFirst);
+  //           }
+  //         } else {
+  //           setSnackbar(msg.toString(), context);
+  //           context.read<CartProvider>().setProgress(false);
+  //         }
+  //       }
+  //     } on TimeoutException catch (_) {
+  //       if (mounted) {
+  //         checkoutState?.call(() {
+  //           _placeOrder = true;
+  //         });
+  //       }
+  //       context.read<CartProvider>().setProgress(false);
+  //     }
+  //   } else {
+  //     if (mounted) {
+  //       checkoutState?.call(() {
+  //         _isNetworkAvailable = false;
+  //       });
+  //     }
+  //   }
+  // }
   Future<void> placeOrder(String? tranId) async {
     _isNetworkAvailable = await isNetworkAvailable();
     if (_isNetworkAvailable) {
@@ -4329,7 +4563,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
       SettingProvider settingsProvider =
           Provider.of<SettingProvider>(context, listen: false);
-
       String? mob = settingsProvider.mobile;
 
       String? varientId, quantity;
@@ -4340,41 +4573,23 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             varientId != null ? "$varientId,${sec.varientId!}" : sec.varientId;
         quantity = quantity != null ? "$quantity,${sec.qty!}" : sec.qty;
       }
+
       String? payVia;
+
+      // Updated condition for payment methods
       if (paymentMethod == getTranslated(context, 'COD_LBL')) {
         payVia = "COD";
       } else if (paymentMethod == getTranslated(context, 'UPI on Delivery')) {
         payVia = "UPI on Delivery";
-      } else if (paymentMethod ==
-          getTranslated(context, 'Credit/Debit Card on Delivery')) {
-        payVia = "Credit/Debit Card on Delivery";
+      } else if (paymentMethod == 'Credit/Debit Card on Delivery') {
+        payVia = 'Credit/Debit Card on Delivery';
+        setState(() {});
       }
-      // else if (paymentMethod == getTranslated(context, 'PAYUMONEY_LBL')) {
-      //   payVia = "PayUMoney";
-      // } else if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
-      //   payVia = "RazorPay";
-      // } else if (paymentMethod == getTranslated(context, 'PAYSTACK_LBL')) {
-      //   payVia = "Paystack";
-      // } else if (paymentMethod == getTranslated(context, 'FLUTTERWAVE_LBL')) {
-      //   payVia = "Flutterwave";
-      // } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
-      //   payVia = "Stripe";
-      // } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
-      //   payVia = "Paytm";
-      // } else if (paymentMethod == getTranslated(context, 'INSTAMOJO_LBL')) {
-      //   payVia = "Instamojo";
-      // } else if (paymentMethod == "Wallet") {
-      //   payVia = "Wallet";
-      // } else if (paymentMethod == getTranslated(context, 'BANKTRAN')) {
-      //   payVia = "bank_transfer";
-      // } else if (paymentMethod == getTranslated(context, 'MIDTRANS_LBL')) {
-      //   payVia = 'MidTrans';
-      // } else if (paymentMethod == getTranslated(context, 'MY_FATOORAH_LBL')) {
-      //   payVia = 'my fatoorah';
-      // }
 
       var request = http.MultipartRequest("POST", placeOrderApi);
       request.headers.addAll(headers);
+
+      log("$payVia ${request.fields}", name: "Payment Method");
 
       try {
         request.fields[USER_ID] = context.read<UserProvider>().userId;
@@ -4394,6 +4609,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         request.fields[ISWALLETBALUSED] = isUseWallet! ? "1" : "0";
         request.fields[WALLET_BAL_USED] = usedBalance.toString();
         request.fields[ORDER_NOTE] = noteC.text;
+
         if (IS_LOCAL_PICKUP != "1" || isStorePickUp != "true") {
           request.fields[DEL_CHARGE] = deliveryCharge.toString();
         }
@@ -4419,10 +4635,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           request.fields[LOCAL_PICKUP] = isStorePickUp == "true" ? "1" : "0";
         }
 
+        // Adjust the active status based on payment method
         if (paymentMethod == getTranslated(context, 'COD_LBL') ||
             paymentMethod == getTranslated(context, 'UPI on Delivery') ||
-            paymentMethod ==
-                getTranslated(context, 'Credit/Debit Card on Delivery')) {
+            paymentMethod == 'Credit/Debit Card on Delivery') {
           request.fields[ACTIVE_STATUS] = PLACED;
         } else {
           if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {
@@ -4431,11 +4647,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             request.fields[ACTIVE_STATUS] = WAITING;
           }
         }
+
         print("request field***${request.fields}");
+
+        // Handle prescription images
         if (prescriptionImages.isNotEmpty) {
           for (var i = 0; i < prescriptionImages.length; i++) {
             final mimeType = lookupMimeType(prescriptionImages[i].path);
-
             var extension = mimeType!.split("/");
 
             var pic = await http.MultipartFile.fromPath(
@@ -4455,9 +4673,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         _placeOrder = true;
         print("response status code ***${response.statusCode}");
         print("response body: ${responseString}");
+
         if (response.statusCode == 200) {
           var getdata = json.decode(responseString);
           print("getdata cart****$getdata");
+
           bool error = getdata["error"];
           String? msg = getdata["message"];
 
@@ -4468,9 +4688,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 .setBalance(getdata["balance"][0]["balance"]);
 
             String orderId = getdata["order_id"].toString();
+
+            // Handle payment methods post-order
             if (paymentMethod == getTranslated(context, 'RAZORPAY_LBL')) {
               razorpayPayment(orderId, msg);
-              //addTransaction(tranId, orderId, SUCCESS, msg, true);
             } else if (paymentMethod == getTranslated(context, 'PHONEPE_LBL')) {
               initPhonePeSdk(orderId: orderId);
             } else if (paymentMethod == getTranslated(context, 'PAYPAL_LBL')) {
@@ -4478,19 +4699,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             } else if (paymentMethod == getTranslated(context, 'STRIPE_LBL')) {
               stripePayment(stripePayId, orderId,
                   tranId == 'succeeded' ? PLACED : WAITING, msg, true);
-              // addTransaction(stripePayId, orderId,
-              //  tranId == "succeeded" ? PLACED : WAITING, msg, true);
             } else if (paymentMethod ==
                 getTranslated(context, 'PAYSTACK_LBL')) {
               paystackPayment(context, tranId, orderId, SUCCESS, msg, true);
-              // addTransaction(tranId, orderId, SUCCESS, msg, true);
             } else if (paymentMethod == getTranslated(context, 'PAYTM_LBL')) {
               paytmPayment(tranId, orderId, SUCCESS, msg, true);
-              //addTransaction(tranId, orderId, SUCCESS, msg, true);
             } else if (paymentMethod ==
                 getTranslated(context, 'FLUTTERWAVE_LBL')) {
               flutterwavePayment(tranId, orderId, SUCCESS, msg, true);
-              // addTransaction(tranId, orderId, SUCCESS, msg, true);
             } else if (paymentMethod ==
                 getTranslated(context, 'MIDTRANS_LBL')) {
               midTrasPayment(
@@ -4502,23 +4718,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             } else if (paymentMethod ==
                 getTranslated(context, 'INSTAMOJO_LBL')) {
               instamojoPayment(orderId);
-              /*
-              * success = 200
-              *
-              *
-              * */
             } else {
               context.read<UserProvider>().setCartCount("0");
-
               clearCart();
-
-              // Navigator.pushAndRemoveUntil(
-              //   context,
-              //   CupertinoPageRoute(
-              //       builder: (BuildContext context) => const OrderSuccess()),
-              //   (final Route route) => route.isFirst,
-              // );
-
               Navigator.pushNamedAndRemoveUntil(context,
                   Routers.orderSuccessScreen, (route) => route.isFirst);
             }
@@ -5932,6 +6134,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                             }
                           } else {
                             print("paymethod****$paymentMethod");
+                            log("paymethod****$paymentMethod");
                             if (paymentMethod ==
                                 getTranslated(context, 'BANKTRAN')) {
                               Navigator.pop(context);

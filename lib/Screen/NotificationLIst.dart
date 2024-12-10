@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:eshop/Helper/PushNotificationService.dart';
 import 'package:eshop/Model/Notification_Model.dart';
 import 'package:eshop/Model/Section_Model.dart';
 import 'package:eshop/Screen/Chat.dart';
 import 'package:eshop/Screen/Customer_Support.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -25,7 +27,7 @@ class NotificationList extends StatefulWidget {
   static route(RouteSettings settings) {
     return BlurredRouter(
       builder: (context) {
-        return NotificationList();
+        return const NotificationList();
       },
     );
   }
@@ -357,6 +359,100 @@ class StateNoti extends State<NotificationList> with TickerProviderStateMixin {
 
     return;
   }
+//   Future<void> getNotification() async {
+//     _isNetworkAvail = await isNetworkAvailable();
+//     if (_isNetworkAvail) {
+//       try {
+//         var parameter = {
+//           LIMIT: perPage.toString(),
+//           OFFSET: offset.toString(),
+//         };
+
+//         apiBaseHelper.postAPICall(getNotificationApi, parameter).then(
+//             (getdata) {
+//           bool error = getdata["error"];
+//           String? msg = getdata["message"];
+
+//           if (!error) {
+//             total = int.parse(getdata["total"]);
+
+//             if ((offset) < total) {
+//               tempList.clear();
+//               var data = getdata["data"];
+//               tempList = (data as List)
+//                   .map((data) => NotificationModel.fromJson(data))
+//                   .toList();
+
+//               // Add notifications to the list
+//               notiList.addAll(tempList);
+//               offset = offset + perPage;
+
+//               // Trigger a local notification for each new notification item
+//               for (var notification in tempList) {
+//                 _showNotification(
+//                   notification.title.toString(),
+//                   notification.date.toString(),
+//                   notification.id.toString(),
+//                 );
+//               }
+//             }
+//           } else {
+//             if (msg != "Products Not Found !") setSnackbar(msg!, context);
+//             isLoadingmore = false;
+//           }
+
+//           if (mounted) {
+//             setState(() {
+//               _isLoading = false;
+//             });
+//           }
+//         }, onError: (error) {
+//           setSnackbar(error.toString(), context);
+//         });
+//       } on TimeoutException catch (_) {
+//         setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+//         if (mounted) {
+//           setState(() {
+//             _isLoading = false;
+//             isLoadingmore = false;
+//           });
+//         }
+//       }
+//     } else if (mounted) {
+//       setState(() {
+//         _isNetworkAvail = false;
+//       });
+//     }
+
+//     return;
+//   }
+
+// // Method to trigger a local notification
+//   void _showNotification(String title, String body, String payload) async {
+//     var androidDetails = const AndroidNotificationDetails(
+//       'your_channel_id',
+//       'your_channel_name',
+//       channelDescription: 'your_channel_description',
+//       importance: Importance.max,
+//       priority: Priority.high,
+//       ticker: 'ticker',
+//     );
+
+//     var iosDetails = const DarwinNotificationDetails();
+
+//     var platformDetails = NotificationDetails(
+//       android: androidDetails,
+//       iOS: iosDetails,
+//     );
+
+//     // await flutterLocalNotificationsPlugin.show(
+//     //   0, // Notification ID, can be dynamically generated
+//     //   title,
+//     //   body,
+//     //   platformDetails,
+//     //   payload: payload, // This can be any data related to the notification
+//     // );
+//   }
 
   _scrollListener() {
     if (controller.offset >= controller.position.maxScrollExtent &&

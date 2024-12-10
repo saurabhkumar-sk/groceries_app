@@ -195,10 +195,16 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
                     color: Theme.of(context).colorScheme.fontColor,
                     fontWeight: FontWeight.normal),
                 controller: passwordController,
-                validator: (val) => validatePass(
-                    val!,
-                    getTranslated(context, 'PWD_REQUIRED'),
-                    getTranslated(context, 'PASSWORD_VALIDATION')),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password is Required";
+                  }
+                  return null; // Input is valid
+                },
+                // validator: (val) => validatePass(
+                //     val!,
+                //     getTranslated(context, 'PWD_REQUIRED'),
+                //     getTranslated(context, 'PASSWORD_VALIDATION')),
                 onSaved: (String? value) {
                   password = value;
                 },
