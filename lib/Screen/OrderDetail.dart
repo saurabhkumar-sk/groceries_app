@@ -285,8 +285,8 @@ class StateOrder extends State<OrderDetail>
                       ),
                     ],
                   ),
-                  showCircularProgress(context, _isProgress,
-                      Theme.of(context).colorScheme.primarytheme),
+                  // showCircularProgress(context, _isProgress,
+                  //     Theme.of(context).colorScheme.primarytheme),
                 ],
               )
             : noInternet(context),
@@ -1838,7 +1838,7 @@ class StateOrder extends State<OrderDetail>
             setSnackbar(msg, context);
           }
         }, onError: (error) {
-          setSnackbar(error.toString(), context);
+          // setSnackbar(error.toString(), context);
         });
       } on TimeoutException catch (_) {
         setSnackbar(getTranslated(context, 'somethingMSg')!, context);
